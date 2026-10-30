@@ -21,6 +21,11 @@
     --mm: #FCE3EA;   --mm-d: #D17A96;
     --kd: #DDF3EA;   --kd-d: #5FA889;
     --nt: #FFEBD6;   --nt-d: #E09A57;
+    --rx: #DCEBFB;   --rx-d: #5A8CC8;
+    --gm: #FFF3C7;   --gm-d: #BF9520;
+    --mr: #F4E2F6;   --mr-d: #A866B0;
+    --ct: #D9F1F4;   --ct-d: #3E9AA8;
+    --tl: #FFE3DD;   --tl-d: #D9695F;
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
@@ -90,6 +95,35 @@
   .res.empty .v { color: #C8C0CF; }
   .note { font-size: 11px; color: var(--sub); margin-top: 12px; line-height: 1.6; }
   .reset { all: unset; font-size: 13px; color: var(--acc); margin-top: 12px; cursor: pointer; display: inline-block; }
+
+  .rx .ico { background: var(--rx); }  .rx { --acc: var(--rx-d); --tint: var(--rx); }
+  .gm .ico { background: var(--gm); }  .gm { --acc: var(--gm-d); --tint: var(--gm); }
+  .mr .ico { background: var(--mr); }  .mr { --acc: var(--mr-d); --tint: var(--mr); }
+  .ct .ico { background: var(--ct); }  .ct { --acc: var(--ct-d); --tint: var(--ct); }
+  .tl .ico { background: var(--tl); }  .tl { --acc: var(--tl-d); --tint: var(--tl); }
+
+  .res.txt .v { font-size: 17px; }
+  .res.alert { background: #FFE1DE; }
+  .res.alert .v { color: #C0473B; }
+  .res .d b { font-weight: 600; }
+  .checks.sub { margin-top: 8px; }
+  .sublbl { font-size: 12px; color: var(--sub); margin: 10px 0 4px; }
+
+  table.tier { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+  table.tier th { font-size: 11px; color: var(--sub); font-weight: 500; text-align: left; padding: 4px 8px; }
+  table.tier td { padding: 7px 8px; border-top: 1px solid var(--line); vertical-align: top; }
+  table.tier td:first-child { white-space: nowrap; color: var(--sub); width: 1%; }
+  table.tier tr.hit td { background: var(--tint); font-weight: 600; color: var(--ink); }
+
+  .tbl3 { display: grid; grid-template-columns: 4.4em repeat(3, minmax(0, 1fr)); gap: 6px; align-items: center; }
+  .tbl3 .th { font-size: 11px; color: var(--sub); text-align: center; }
+  .tbl3 .rh { font-size: 13px; line-height: 1.2; }
+  .tbl3 .rh small { display: block; font-size: 10px; color: var(--sub); }
+  .tbl3 input {
+    min-width: 0; width: 100%; font-size: 16px; padding: 8px 6px; border-radius: 10px;
+    border: 1.5px solid var(--line); background: #FCFBFD; color: var(--ink); -webkit-appearance: none; appearance: none;
+  }
+  .tbl3 input:focus { outline: none; border-color: var(--acc); background: #fff; }
   footer { text-align: center; font-size: 11px; color: var(--sub); padding: 12px 20px; }
 </style>
 </head>
@@ -212,6 +246,80 @@
   </div>
 </section>
 
+<!-- ================= MM 治療効果判定 ================= -->
+<section class="card mr" id="mr">
+  <button class="head" type="button">
+    <div class="ico">
+      <!-- 経過グラフ付きのクリップボード -->
+      <svg viewBox="0 0 64 64">
+        <rect x="12" y="10" width="40" height="46" rx="7" fill="#FBF3FC" stroke="#A866B0" stroke-width="2.5"/>
+        <rect x="24" y="6" width="16" height="9" rx="4" fill="#E2BCE7" stroke="#A866B0" stroke-width="2"/>
+        <path d="M19 25l8 7 7-3 11 13" fill="none" stroke="#C98BD1" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="45" cy="42" r="3.5" fill="#A866B0"/>
+        <path d="M19 49h26" stroke="#E2BCE7" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="ttl"><b>MM治療効果判定</b><small>IMWG 効果判定基準（sCR・CR・VGPR・PR・MR・SD・PD）</small></div>
+    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
+  <div class="body">
+    <h3>M蛋白・遊離軽鎖（FLC）</h3>
+    <div class="tbl3">
+      <span></span><span class="th">治療前</span><span class="th">最良値</span><span class="th">現在</span>
+      <span class="rh">血清M<small>g/dL</small></span>
+      <input type="number" inputmode="decimal" id="mr-sm0"><input type="number" inputmode="decimal" id="mr-sm1"><input type="number" inputmode="decimal" id="mr-sm2">
+      <span class="rh">尿M<small>mg/24h</small></span>
+      <input type="number" inputmode="decimal" id="mr-um0"><input type="number" inputmode="decimal" id="mr-um1"><input type="number" inputmode="decimal" id="mr-um2">
+      <span class="rh">iFLC<small>mg/L 病的</small></span>
+      <input type="number" inputmode="decimal" id="mr-if0"><input type="number" inputmode="decimal" id="mr-if1"><input type="number" inputmode="decimal" id="mr-if2">
+      <span class="rh">uFLC<small>mg/L 非病的</small></span>
+      <input type="number" inputmode="decimal" id="mr-uf0"><input type="number" inputmode="decimal" id="mr-uf1"><input type="number" inputmode="decimal" id="mr-uf2">
+    </div>
+    <h3>免疫固定法・骨髄・画像</h3>
+    <div class="grid">
+      <label class="f">血清 IFE
+        <select id="mr-sife"><option value="">未検</option><option value="pos">陽性</option><option value="neg">陰性</option></select>
+      </label>
+      <label class="f">尿 IFE
+        <select id="mr-uife"><option value="">未検</option><option value="pos">陽性</option><option value="neg">陰性</option></select>
+      </label>
+      <label class="f">骨髄形質細胞 治療前 <span class="unit">%</span><input type="number" inputmode="decimal" id="mr-bm0"></label>
+      <label class="f">骨髄形質細胞 現在 <span class="unit">%</span><input type="number" inputmode="decimal" id="mr-bm"></label>
+      <label class="f">FLC κ/λ比
+        <select id="mr-flcr"><option value="">未検</option><option value="norm">正常化</option><option value="abn">異常</option></select>
+      </label>
+      <label class="f">骨髄クローナル細胞 <span class="unit">IHC/FCM</span>
+        <select id="mr-clon"><option value="">未検</option><option value="neg">なし</option><option value="pos">あり</option></select>
+      </label>
+      <label class="f">MRD <span class="unit">NGF/NGS 10⁻⁵</span>
+        <select id="mr-mrd"><option value="">未検</option><option value="neg">陰性</option><option value="pos">陽性</option></select>
+      </label>
+      <label class="f">形質細胞腫（軟部）
+        <select id="mr-pc">
+          <option value="none">なし（治療前から）</option><option value="gone">消失</option>
+          <option value="p50">≥50% 縮小</option><option value="lt50">縮小 &lt;50%・不変</option><option value="prog">≥50% 増大</option>
+        </select>
+      </label>
+    </div>
+    <div class="checks sub">
+      <label class="chk"><input type="checkbox" id="mr-new"><span>新規骨病変・軟部病変</span></label>
+      <label class="chk"><input type="checkbox" id="mr-cpc"><span>末梢血形質細胞 ≥50%増加（≥200/μL）</span></label>
+    </div>
+    <div class="results">
+      <div class="res full" id="r-mr"></div>
+      <div class="res full" id="r-mrx"></div>
+    </div>
+    <p class="note">測定可能病変：血清M ≥1 g/dL、尿M ≥200 mg/24h、または（両者とも測定不能なら）iFLC ≥100 mg/L かつ κ/λ比異常。<br>
+      <b>sCR</b>：CR＋FLC比正常＋骨髄クローナル細胞なし。<b>CR</b>：血清・尿IFE陰性、軟部形質細胞腫消失、骨髄形質細胞 &lt;5%。<br>
+      <b>VGPR</b>：IFEでのみM蛋白検出、または血清M ≥90%減少＋尿M &lt;100 mg/24h（FLCのみ測定可能例は dFLC ≥90%減少）。<br>
+      <b>PR</b>：血清M ≥50%減少＋尿M ≥90%減少または &lt;200 mg/24h。M蛋白測定不能なら dFLC ≥50%減少、FLCも測定不能なら骨髄形質細胞 ≥50%減少（治療前 ≥30%）。形質細胞腫があれば ≥50%縮小。<br>
+      <b>MR</b>：血清M 25–49%減少＋尿M 50–89%減少。<br>
+      <b>PD</b>：最良値から ≥25%増加 かつ 血清M 絶対値 +0.5 g/dL 以上（最良値 ≥5 g/dL なら +1 g/dL）、尿M +200 mg/24h 以上、dFLC +100 mg/L 超（M蛋白測定不能例）、骨髄形質細胞 +10%以上、または新規病変・形質細胞腫の増大・末梢血形質細胞増加。<br>
+      最良値が空欄なら治療前値を基準にする。判定には2回連続の評価で確認が必要（Kumar S, et al. Lancet Oncol 2016）。</p>
+    <button class="reset" type="button">入力をクリア</button>
+  </div>
+</section>
+
 <!-- ================= 腎機能 ================= -->
 <section class="card kd" id="kd">
   <button class="head" type="button">
@@ -252,6 +360,62 @@
     <p class="note">eGFRcr＝194×Cr<sup>−1.094</sup>×年齢<sup>−0.287</sup>（女性×0.739）。eGFRcys＝104×Cys<sup>−1.019</sup>×0.996<sup>年齢</sup>（女性×0.929）−8。<br>
       個別化＝標準化eGFR×BSA/1.73（BSAはDuBois式）。<br>
       eCCr＝Cockcroft-Gault（(140−年齢)×体重/(72×Cr)、女性×0.85）。日本の酵素法Crは Jaffe 法より約0.2 mg/dL低いため、Cr+0.2 で計算した値も併記。</p>
+    <button class="reset" type="button">入力をクリア</button>
+  </div>
+</section>
+
+<!-- ================= 腎機能別 投与量 ================= -->
+<section class="card rx" id="rx">
+  <button class="head" type="button">
+    <div class="ico">
+      <!-- カプセル＋錠剤 -->
+      <svg viewBox="0 0 64 64">
+        <g transform="rotate(-40 30 30)">
+          <rect x="10" y="20" width="40" height="20" rx="10" fill="#fff" stroke="#5A8CC8" stroke-width="2.5"/>
+          <path d="M30 20h10a10 10 0 0 1 0 20H30z" fill="#9CC2EE"/>
+          <rect x="10" y="20" width="40" height="20" rx="10" fill="none" stroke="#5A8CC8" stroke-width="2.5"/>
+          <ellipse cx="18" cy="25" rx="4" ry="1.8" fill="#DCEBFB"/>
+        </g>
+        <circle cx="46" cy="47" r="10" fill="#fff" stroke="#5A8CC8" stroke-width="2.5"/>
+        <path d="M39 47h14" stroke="#9CC2EE" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="ttl"><b>腎機能別 投与量</b><small>抗菌薬 ・ 抗ウイルス薬 ・ タリージェ ・ バリキサ ・ レナリドミド など</small></div>
+    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
+  <div class="body">
+    <h3>腎機能（腎機能カードと共通）</h3>
+    <div class="grid">
+      <div class="f full" style="font-size:12px;color:var(--sub)">性別
+        <div class="seg">
+          <label><input type="radio" name="rx-sex" value="M" data-sync="sex"><span>男性</span></label>
+          <label><input type="radio" name="rx-sex" value="F" data-sync="sex"><span>女性</span></label>
+        </div>
+      </div>
+      <label class="f">年齢<input type="number" inputmode="numeric" id="rx-age" data-sync="age" placeholder="歳"></label>
+      <label class="f">Cr <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="rx-cr" data-sync="cr"></label>
+      <label class="f">身長 <span class="unit">cm</span><input type="number" inputmode="decimal" id="rx-ht" data-sync="ht"></label>
+      <label class="f">体重 <span class="unit">kg</span><input type="number" inputmode="decimal" id="rx-wt" data-sync="wt"></label>
+      <label class="f">判定に使う値
+        <select id="rx-basis">
+          <option value="cg" selected>eCCr（CG）</option><option value="cg2">eCCr（Cr+0.2）</option>
+          <option value="egfr">個別化 eGFRcr</option><option value="man">手入力</option>
+        </select>
+      </label>
+      <label class="f" id="rx-manwrap">CCr 手入力 <span class="unit">mL/min</span><input type="number" inputmode="decimal" id="rx-man"></label>
+    </div>
+    <div class="checks sub">
+      <label class="chk"><input type="checkbox" id="rx-hd"><span>血液透析中</span></label>
+    </div>
+    <h3>薬剤</h3>
+    <label class="f"><select id="rx-drug"></select></label>
+    <div class="results">
+      <div class="res full" id="r-rxc"></div>
+      <div class="res full" id="r-rx"></div>
+    </div>
+    <div id="rx-tbl"></div>
+    <p class="note" id="rx-note"></p>
+    <p class="note">添付文書・Sanford Guide・日本腎臓病薬物療法学会の腎機能別投与量一覧などを参考にした成人の目安。添付文書の CCr は Cockcroft-Gault 式（実測Cr）を前提とするものが多い。eGFR を使う場合は体表面積補正を外した個別化 eGFR を用いる。るい痩・高齢者では Cr が低く過大評価になりやすい。必ず最新の添付文書・施設基準で確認する。</p>
     <button class="reset" type="button">入力をクリア</button>
   </div>
 </section>
@@ -310,6 +474,221 @@
   </div>
 </section>
 
+<!-- ================= ガンマ計算 ================= -->
+<section class="card gm" id="gm">
+  <button class="head" type="button">
+    <div class="ico">
+      <!-- シリンジポンプ -->
+      <svg viewBox="0 0 64 64">
+        <rect x="6" y="30" width="52" height="22" rx="6" fill="#FFFBEA" stroke="#BF9520" stroke-width="2.5"/>
+        <rect x="12" y="36" width="20" height="10" rx="3" fill="#E9D27A"/>
+        <text x="22" y="44.5" font-size="8" font-weight="700" text-anchor="middle" fill="#7A5E0E" font-family="-apple-system, sans-serif">2.4</text>
+        <circle cx="42" cy="41" r="3" fill="#F2B7C8"/><circle cx="51" cy="41" r="3" fill="#A9DCC6"/>
+        <rect x="10" y="14" width="34" height="11" rx="3" fill="#fff" stroke="#BF9520" stroke-width="2.2"/>
+        <rect x="12" y="16" width="18" height="7" rx="2" fill="#FFE08A"/>
+        <path d="M44 19.5h10M6 19.5h4" stroke="#BF9520" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="ttl"><b>ガンマ計算</b><small>γ（μg/kg/min）⇄ mL/時 ・ 主な持続静注薬</small></div>
+    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
+  <div class="body">
+    <h3>薬剤・希釈</h3>
+    <div class="grid">
+      <label class="f full">薬剤（選ぶと組成を自動入力）<select id="gm-drug"></select></label>
+      <label class="f">薬剤量 <span class="unit">mg</span><input type="number" inputmode="decimal" id="gm-mg"></label>
+      <label class="f">全量 <span class="unit">mL</span><input type="number" inputmode="decimal" id="gm-ml"></label>
+      <label class="f">体重 <span class="unit">kg</span><input type="number" inputmode="decimal" id="gm-wt" data-sync="wt"></label>
+      <label class="f">単位
+        <select id="gm-unit">
+          <option value="g" selected>μg/kg/min（γ）</option><option value="kgh">μg/kg/時</option>
+          <option value="mgkgh">mg/kg/時</option><option value="mgh">mg/時</option>
+        </select>
+      </label>
+    </div>
+    <h3>換算</h3>
+    <div class="grid">
+      <label class="f">投与量 <span class="unit" id="gm-ulbl">γ</span><input type="number" inputmode="decimal" id="gm-dose"></label>
+      <label class="f">流量 <span class="unit">mL/時</span><input type="number" inputmode="decimal" id="gm-rate"></label>
+    </div>
+    <div class="results">
+      <div class="res full" id="r-gmc"></div>
+      <div class="res" id="r-gm1"></div>
+      <div class="res" id="r-gmr"></div>
+      <div class="res full" id="r-gmd"></div>
+    </div>
+    <p class="note">mL/時 ＝ 投与量（μg/kg/min）× 体重 × 60 ÷ 濃度（μg/mL）。<br>
+      組成は代表例。施設の標準希釈と異なる場合は薬剤量・全量を書き換えて使う。用量範囲は目安。</p>
+    <button class="reset" type="button">入力をクリア</button>
+  </div>
+</section>
+
+<!-- ================= CRS / ICANS ================= -->
+<section class="card ct" id="ct">
+  <button class="head" type="button">
+    <div class="ico">
+      <!-- CAR-T 細胞 -->
+      <svg viewBox="0 0 64 64">
+        <g stroke="#3E9AA8" stroke-width="2.4" stroke-linecap="round">
+          <path d="M32 8v8M32 48v8M8 32h8M48 32h8M15 15l6 6M43 43l6 6M15 49l6-6M43 21l6-6"/>
+        </g>
+        <g fill="#7CCAD4"><circle cx="32" cy="7" r="3"/><circle cx="32" cy="57" r="3"/><circle cx="7" cy="32" r="3"/><circle cx="57" cy="32" r="3"/>
+          <circle cx="14" cy="14" r="3"/><circle cx="50" cy="50" r="3"/><circle cx="14" cy="50" r="3"/><circle cx="50" cy="14" r="3"/></g>
+        <circle cx="32" cy="32" r="16" fill="#F0FAFB" stroke="#3E9AA8" stroke-width="2.5"/>
+        <circle cx="32" cy="32" r="10" fill="#9FD8DF"/>
+        <ellipse cx="27" cy="27" rx="3" ry="2" fill="#fff" opacity=".7" transform="rotate(-35 27 27)"/>
+      </svg>
+    </div>
+    <div class="ttl"><b>CRS / ICANS</b><small>ASTCT コンセンサスグレーディング ・ ICE スコア</small></div>
+    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
+  <div class="body">
+    <h3>CRS</h3>
+    <div class="grid">
+      <label class="f full">発熱（≥38.0℃）
+        <select id="ct-fever"><option value="0">なし</option><option value="1">あり</option><option value="2">解熱薬・トシリズマブ・ステロイドで消失</option></select>
+      </label>
+      <label class="f full">血圧低下
+        <select id="ct-bp"><option value="0">なし</option><option value="2">あり（昇圧薬不要）</option>
+          <option value="3">昇圧薬1剤（±バソプレシン）</option><option value="4">昇圧薬複数（バソプレシン除く）</option></select>
+      </label>
+      <label class="f full">低酸素
+        <select id="ct-o2"><option value="0">なし</option><option value="2">低流量鼻カニュラ（≤6 L/分）・blow-by</option>
+          <option value="3">高流量鼻カニュラ（>6 L/分）・マスク・リザーバー・ベンチュリー</option><option value="4">陽圧換気（CPAP・BiPAP・挿管）</option></select>
+      </label>
+      <label class="f">体重 <span class="unit">kg（トシリズマブ用）</span><input type="number" inputmode="decimal" id="ct-wt" data-sync="wt"></label>
+    </div>
+    <h3>ICANS ・ ICE スコア（できた項目）</h3>
+    <div class="sublbl">見当識（年・月・市町村・病院）</div>
+    <div class="checks">
+      <label class="chk"><input type="checkbox" id="ct-i1" checked><span>年</span></label>
+      <label class="chk"><input type="checkbox" id="ct-i2" checked><span>月</span></label>
+      <label class="chk"><input type="checkbox" id="ct-i3" checked><span>市町村</span></label>
+      <label class="chk"><input type="checkbox" id="ct-i4" checked><span>病院名</span></label>
+    </div>
+    <div class="sublbl">呼称（物品3つ）</div>
+    <div class="checks">
+      <label class="chk"><input type="checkbox" id="ct-i5" checked><span>物品1</span></label>
+      <label class="chk"><input type="checkbox" id="ct-i6" checked><span>物品2</span></label>
+      <label class="chk"><input type="checkbox" id="ct-i7" checked><span>物品3</span></label>
+    </div>
+    <div class="sublbl">指示・書字・注意</div>
+    <div class="checks">
+      <label class="chk"><input type="checkbox" id="ct-i8" checked><span>簡単な指示に従う</span></label>
+      <label class="chk"><input type="checkbox" id="ct-i9" checked><span>定型文を書く</span></label>
+      <label class="chk"><input type="checkbox" id="ct-i10" checked><span>100から10ずつ逆唱</span></label>
+    </div>
+    <div class="checks sub">
+      <label class="chk"><input type="checkbox" id="ct-unar"><span>覚醒せず ICE 評価不能</span></label>
+    </div>
+    <div class="grid" style="margin-top:10px">
+      <label class="f full">意識レベル低下
+        <select id="ct-loc"><option value="0">なし</option><option value="1">自発的に覚醒</option><option value="2">呼びかけで覚醒</option>
+          <option value="3">触覚刺激でのみ覚醒</option><option value="4">覚醒しない／強い反復刺激が必要・昏迷・昏睡</option></select>
+      </label>
+      <label class="f full">痙攣
+        <select id="ct-sz"><option value="0">なし</option><option value="3">速やかに消失する発作、または介入で消失する脳波上の非痙攣性発作</option>
+          <option value="4">5分超の遷延・反復発作（発作間に回復しない）</option></select>
+      </label>
+      <label class="f full">運動所見
+        <select id="ct-mot"><option value="0">なし</option><option value="4">深部の局所運動麻痺（片麻痺・対麻痺）</option></select>
+      </label>
+      <label class="f full">頭蓋内圧亢進・脳浮腫
+        <select id="ct-icp"><option value="0">なし</option><option value="3">画像上の局所性浮腫</option>
+          <option value="4">びまん性脳浮腫・除脳/除皮質肢位・外転神経麻痺・乳頭浮腫・Cushing 三徴</option></select>
+      </label>
+    </div>
+    <div class="results">
+      <div class="res" id="r-crs"></div>
+      <div class="res" id="r-icans"></div>
+      <div class="res full txt" id="r-ctm"></div>
+    </div>
+    <p class="note">CRS は発熱が必須で、血圧低下・低酸素のうち重いほうで判定（他の原因によるものは除く）。ICANS は ICE スコア・意識・痙攣・運動所見・脳浮腫のうち最も重いもので判定（Lee DW, et al. Biol Blood Marrow Transplant 2019）。<br>
+      対応は ASCO・NCCN ガイドラインなどを参考にした一般的な目安。製品ごとの適正使用ガイド・施設プロトコルを優先する。トシリズマブは本邦では体重 30 kg 以上 8 mg/kg、30 kg 未満 12 mg/kg。</p>
+    <button class="reset" type="button">入力をクリア</button>
+  </div>
+</section>
+
+<!-- ================= TLS ================= -->
+<section class="card tl" id="tl">
+  <button class="head" type="button">
+    <div class="ico">
+      <!-- 点滴バッグ -->
+      <svg viewBox="0 0 64 64">
+        <path d="M32 4v6" stroke="#D9695F" stroke-width="2.4" stroke-linecap="round"/>
+        <rect x="16" y="10" width="32" height="34" rx="9" fill="#FFF5F3" stroke="#D9695F" stroke-width="2.5"/>
+        <path d="M18 28c6 3 22 3 28 0v8a7 7 0 0 1-7 7H25a7 7 0 0 1-7-7z" fill="#FFB4A8"/>
+        <path d="M24 17h8M24 22h5" stroke="#F2B0A6" stroke-width="2" stroke-linecap="round"/>
+        <path d="M32 44v6" stroke="#D9695F" stroke-width="2.4"/>
+        <path d="M32 52c-3 4-4 6-4 7.5a4 4 0 0 0 8 0c0-1.5-1-3.5-4-7.5z" fill="#9CC2EE"/>
+      </svg>
+    </div>
+    <div class="ttl"><b>TLS</b><small>腫瘍崩壊症候群の診断 ・ リスク評価 ・ 輸液量 ・ 尿酸対策</small></div>
+    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
+  <div class="body">
+    <h3>疾患・腫瘍量</h3>
+    <div class="grid">
+      <label class="f full">疾患
+        <select id="tl-dz">
+          <option value="">—</option>
+          <option value="aml">AML</option><option value="all">ALL</option>
+          <option value="bl">Burkitt リンパ腫・白血病</option><option value="lbl">リンパ芽球性リンパ腫</option>
+          <option value="agg">DLBCL・PTCL・ATL・MCL など中高悪性度</option>
+          <option value="ind">低悪性度リンパ腫・Hodgkin リンパ腫</option>
+          <option value="cll">CLL（従来治療）</option><option value="cllv">CLL（ベネトクラクス導入）</option>
+          <option value="cml">CML</option><option value="mm">多発性骨髄腫</option><option value="st">固形腫瘍</option>
+        </select>
+      </label>
+      <label class="f">WBC <span class="unit">/μL</span><input type="number" inputmode="numeric" id="tl-wbc" placeholder="例 25000"></label>
+      <label class="f">LDH <span class="unit">U/L</span><input type="number" inputmode="decimal" id="tl-ldh" data-sync="ldh"></label>
+      <label class="f">LDH 基準上限 <span class="unit">U/L</span><input type="number" inputmode="decimal" id="tl-uln" data-sync="uln" value="222"></label>
+    </div>
+    <div id="tl-ven" class="grid" style="margin-top:8px">
+      <label class="f">最大リンパ節径 <span class="unit">cm</span><input type="number" inputmode="decimal" id="tl-ln"></label>
+      <label class="f">リンパ球数 <span class="unit">/μL</span><input type="number" inputmode="numeric" id="tl-alc"></label>
+    </div>
+    <div class="checks sub">
+      <label class="chk"><input type="checkbox" id="tl-adv"><span>進行期 III/IV・白血病型</span></label>
+      <label class="chk"><input type="checkbox" id="tl-bulky"><span>バルキー（≥10 cm）</span></label>
+      <label class="chk"><input type="checkbox" id="tl-flu"><span>フルダラビン/リツキシマブ（CLL）</span></label>
+      <label class="chk"><input type="checkbox" id="tl-sens"><span>化学療法高感受性の固形腫瘍</span></label>
+      <label class="chk"><input type="checkbox" id="tl-ren"><span>腎機能障害</span></label>
+      <label class="chk"><input type="checkbox" id="tl-reninv"><span>腎浸潤</span></label>
+    </div>
+    <h3>検査値・症状（治療3日前〜7日後）</h3>
+    <div class="grid">
+      <label class="f">尿酸 <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="tl-ua"></label>
+      <label class="f">K <span class="unit">mEq/L</span><input type="number" inputmode="decimal" id="tl-k"></label>
+      <label class="f">P <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="tl-p"></label>
+      <label class="f">補正Ca <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="tl-ca"></label>
+      <label class="f">Cr <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="tl-cr" data-sync="cr"></label>
+      <label class="f">Cr 基準上限 <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="tl-cruln" value="1.07"></label>
+    </div>
+    <div class="checks sub">
+      <label class="chk"><input type="checkbox" id="tl-arr"><span>不整脈・突然死</span></label>
+      <label class="chk"><input type="checkbox" id="tl-sz"><span>痙攣</span></label>
+    </div>
+    <h3>体格（輸液量・ラスブリカーゼ用）</h3>
+    <div class="grid">
+      <label class="f">身長 <span class="unit">cm</span><input type="number" inputmode="decimal" id="tl-ht" data-sync="ht"></label>
+      <label class="f">体重 <span class="unit">kg</span><input type="number" inputmode="decimal" id="tl-wt" data-sync="wt"></label>
+    </div>
+    <div class="results">
+      <div class="res" id="r-tld"></div>
+      <div class="res" id="r-tlr"></div>
+      <div class="res full txt" id="r-tlf"></div>
+      <div class="res full txt" id="r-tlu"></div>
+      <div class="res full txt" id="r-tlx"></div>
+      <div class="res full txt" id="r-tlm"></div>
+    </div>
+    <p class="note">Laboratory TLS（Cairo-Bishop）：尿酸 ≥8.0 mg/dL、K ≥6.0 mEq/L、P ≥4.5 mg/dL、補正Ca ≤7.0 mg/dL のうち2項目以上（または治療前から25%の変化）。Clinical TLS：LTLS＋Cr ≥1.5×基準上限・不整脈/突然死・痙攣のいずれか。Cr 基準上限は男性 1.07、女性 0.79（JCCLS）。<br>
+      リスク分類は Cairo MS, et al. Br J Haematol 2010 と日本臨床腫瘍学会 TLS 診療ガイダンスに準拠。中間リスクで腎機能障害・腎浸潤、または尿酸・K・P が基準上限超（尿酸 >7.0、K >5.0、P >4.5）なら高リスクへ。ベネトクラクスは添付文書の腫瘍量分類（低：全リンパ節 &lt;5 cm かつ ALC &lt;25,000、高：リンパ節 ≥10 cm または ALC ≥25,000 かつリンパ節 ≥5 cm、他は中）。<br>
+      輸液は 2,500–3,000 mL/m²/日、尿量 80–100 mL/m²/時を目標（心不全・腎不全では調整）。尿のアルカリ化はルーチンでは推奨されない。</p>
+    <button class="reset" type="button">入力をクリア</button>
+  </div>
+</section>
+
 </main>
 <footer>計算結果は目安です。最終判断は原典・臨床所見とあわせて行ってください。</footer>
 
@@ -319,16 +698,14 @@ const num = id => { const v = parseFloat($(id).value); return isNaN(v) ? null : 
 const has = (...xs) => xs.every(x => x !== null && x !== undefined && x !== '');
 const fmt = (x, d = 1) => x.toFixed(d);
 
-function box(id, key, val, desc) {
+function box(id, key, val, desc, cls = '') {
   const el = $(id);
-  if (val === null) {
-    el.className = el.className.replace(' empty', '') + ' empty';
-    el.innerHTML = `<div class="k">${key}</div><div class="v">—</div><div class="d">${desc || '入力待ち'}</div>`;
-  } else {
-    el.className = el.className.replace(' empty', '');
-    el.innerHTML = `<div class="k">${key}</div><div class="v">${val}</div><div class="d">${desc || ''}</div>`;
-  }
+  el.dataset.base ??= el.className;
+  el.className = el.dataset.base + (val === null ? ' empty' : '') + (cls ? ' ' + cls : '');
+  if (val === null) el.innerHTML = `<div class="k">${key}</div><div class="v">—</div><div class="d">${desc || '入力待ち'}</div>`;
+  else el.innerHTML = `<div class="k">${key}</div><div class="v">${val}</div><div class="d">${desc || ''}</div>`;
 }
+const chk = id => $(id).checked;
 
 /* ---------- ML ---------- */
 function calcML() {
@@ -395,15 +772,29 @@ const dubois = (ht, wt) => 0.007184 * Math.pow(wt, 0.425) * Math.pow(ht, 0.725);
 function gStage(g) {
   return g >= 90 ? 'G1' : g >= 60 ? 'G2' : g >= 45 ? 'G3a' : g >= 30 ? 'G3b' : g >= 15 ? 'G4' : 'G5';
 }
+/* 共通入力（各カードの同期項目は腎機能カードの欄にも入る）から腎機能をまとめて計算 */
+function renal() {
+  const sex = sexOf('kd-sex'), age = num('kd-age'), cr = num('kd-cr'), ht = num('kd-ht'), wt = num('kd-wt');
+  const f = sex === 'F', r = { bsa: has(ht, wt) ? dubois(ht, wt) : null, egfr: null, egfrInd: null, ccr: null, ccr02: null };
+  if (has(sex, age, cr) && cr > 0) {
+    r.egfr = 194 * Math.pow(cr, -1.094) * Math.pow(age, -0.287) * (f ? 0.739 : 1);
+    if (r.bsa) r.egfrInd = r.egfr * r.bsa / 1.73;
+  }
+  if (has(sex, age, cr, wt) && cr > 0) {
+    const cg = c => (140 - age) * wt / (72 * c) * (f ? 0.85 : 1);
+    r.ccr = cg(cr); r.ccr02 = cg(cr + 0.2);
+  }
+  return r;
+}
+
 function calcKD() {
-  const sex = sexOf('kd-sex'), age = num('kd-age'), cr = num('kd-cr'), ht = num('kd-ht'), wt = num('kd-wt'), cys = num('kd-cys');
+  const sex = sexOf('kd-sex'), age = num('kd-age'), cys = num('kd-cys');
   const f = sex === 'F';
-  const bsa = has(ht, wt) ? dubois(ht, wt) : null;
+  const { bsa, egfr: e, egfrInd, ccr, ccr02 } = renal();
   box('r-bsa', '体表面積（DuBois）', bsa ? `${fmt(bsa, 2)}<small> m²</small>` : null);
 
-  if (has(sex, age, cr) && cr > 0) {
-    const e = 194 * Math.pow(cr, -1.094) * Math.pow(age, -0.287) * (f ? 0.739 : 1);
-    if (bsa) box('r-egfr', '個別化 eGFRcr', `${fmt(e * bsa / 1.73)}<small> mL/min</small>`, `標準化 ${fmt(e)} mL/min/1.73m²（${gStage(e)}）`);
+  if (e !== null) {
+    if (bsa) box('r-egfr', '個別化 eGFRcr', `${fmt(egfrInd)}<small> mL/min</small>`, `標準化 ${fmt(e)} mL/min/1.73m²（${gStage(e)}）`);
     else box('r-egfr', '個別化 eGFRcr', null, `標準化 ${fmt(e)} mL/min/1.73m²（${gStage(e)}）／身長・体重で個別化`);
   } else box('r-egfr', '個別化 eGFRcr', null);
 
@@ -413,10 +804,8 @@ function calcKD() {
     else box('r-egfrcys', '個別化 eGFRcys', null, `標準化 ${fmt(e)} mL/min/1.73m²／身長・体重で個別化`);
   } else box('r-egfrcys', '個別化 eGFRcys', null, 'シスタチンC入力時に表示');
 
-  if (has(sex, age, cr, wt) && cr > 0) {
-    const cg = c => (140 - age) * wt / (72 * c) * (f ? 0.85 : 1);
-    box('r-ccr', 'eCCr（Cockcroft-Gault）', `${fmt(cg(cr))}<small> mL/min</small>`, `Cr+0.2 補正：${fmt(cg(cr + 0.2))} mL/min`);
-  } else box('r-ccr', 'eCCr（Cockcroft-Gault）', null);
+  if (ccr !== null) box('r-ccr', 'eCCr（Cockcroft-Gault）', `${fmt(ccr)}<small> mL/min</small>`, `Cr+0.2 補正：${fmt(ccr02)} mL/min`);
+  else box('r-ccr', 'eCCr（Cockcroft-Gault）', null);
 }
 
 /* ---------- 栄養 ---------- */
@@ -437,7 +826,362 @@ function calcNT() {
   } else { box('r-bee', 'BEE（Harris-Benedict原式）', null); box('r-tee', 'TEE', null); }
 }
 
-const calcAll = () => { calcML(); calcMM(); calcKD(); calcNT(); };
+/* ---------- MM 治療効果判定（IMWG 2016） ---------- */
+function calcMR() {
+  const row = p => [0, 1, 2].map(i => num(`mr-${p}${i}`));
+  const sm = row('sm'), um = row('um'), ifl = row('if'), ufl = row('uf');
+  const dflc = [0, 1, 2].map(i => has(ifl[i], ufl[i]) ? ifl[i] - ufl[i] : null);
+  const bm0 = num('mr-bm0'), bm = num('mr-bm');
+  const sife = $('mr-sife').value, uife = $('mr-uife').value, pc = $('mr-pc').value;
+  const ref = a => a[1] ?? a[0];                                  // 最良値（未入力なら治療前値）
+  const red = a => a[0] > 0 && a[2] !== null ? (a[0] - a[2]) / a[0] : null;
+  const pctTxt = x => x === null ? '—' : (x >= 0 ? `${Math.round(x * 100)}%減少` : `${Math.round(-x * 100)}%増加`);
+  const sMeas = sm[0] !== null && sm[0] >= 1, uMeas = um[0] !== null && um[0] >= 200;
+  const fMeas = !sMeas && !uMeas && ifl[0] !== null && ifl[0] >= 100;
+  const bMeas = !sMeas && !uMeas && !fMeas && bm0 !== null && bm0 >= 30;
+
+  // 進行（PD）
+  const pd = [];
+  const rise = (a, absMin) => { const r0 = ref(a), c = a[2]; return r0 !== null && c !== null && c - r0 >= absMin && c >= r0 * 1.25; };
+  if (rise(sm, ref(sm) >= 5 ? 1 : 0.5)) pd.push('血清M増加');
+  if (rise(um, 200)) pd.push('尿M増加');
+  if (!sMeas && !uMeas) {
+    const r0 = ref(dflc), c = dflc[2];
+    if (r0 !== null && c !== null && c - r0 > 100 && c >= r0 * 1.25) pd.push('dFLC増加');
+    if (bm0 !== null && bm !== null && bm - bm0 >= 10) pd.push('骨髄形質細胞 +10%以上');
+  }
+  if (pc === 'prog') pd.push('形質細胞腫の増大');
+  if (chk('mr-new')) pd.push('新規病変');
+  if (chk('mr-cpc')) pd.push('末梢血形質細胞増加');
+
+  const detail = [];
+  if (sm[0] !== null) detail.push(`血清M ${pctTxt(red(sm))}`);
+  if (um[0] !== null) detail.push(`尿M ${pctTxt(red(um))}${um[2] !== null ? `（${um[2]} mg/24h）` : ''}`);
+  if (dflc[0] !== null) detail.push(`dFLC ${pctTxt(red(dflc))}`);
+  if (bm0 !== null && bm !== null) detail.push(`骨髄PC ${bm0}% → ${bm}%`);
+  const meas = sMeas || uMeas ? [sMeas && '血清M', uMeas && '尿M'].filter(Boolean).join('・')
+             : fMeas ? 'FLC' : bMeas ? '骨髄形質細胞' : null;
+  box('r-mrx', '測定可能病変 ・ 変化率', meas ?? (pd.length ? '—' : null),
+      detail.join('<br>') || '治療前・現在の値を入力', 'txt');
+
+  if (pd.length) { box('r-mr', '効果判定', 'PD', pd.join('・') + '（最良値からの変化で判定）', 'alert'); return; }
+  if (!meas && !(sife === 'neg' && uife === 'neg')) { box('r-mr', '効果判定', null, '測定可能病変（血清M ≥1、尿M ≥200、iFLC ≥100）を入力'); return; }
+
+  const pcOK = pc !== 'lt50';                                     // 形質細胞腫が残る場合は ≥50% 縮小が必要
+  const sR = red(sm), uR = red(um), fR = red(dflc);
+  const need = [];
+  if (sMeas && sm[2] === null) need.push('血清M');
+  if (uMeas && um[2] === null) need.push('尿M');
+  if (fMeas && dflc[2] === null) need.push('FLC');
+  if (bMeas && bm === null) need.push('骨髄形質細胞');
+  if (need.length && !(sife === 'neg' && uife === 'neg')) { box('r-mr', '効果判定', null, `現在の${need.join('・')}を入力`); return; }
+
+  let g, why = '';
+  const ifeNeg = sife === 'neg' && uife === 'neg';
+  const uLow = c => um[2] === null ? !uMeas : um[2] < c;
+  if (ifeNeg && (pc === 'none' || pc === 'gone') && bm !== null && bm < 5) {
+    g = ($('mr-flcr').value === 'norm' && $('mr-clon').value === 'neg') ? 'sCR' : 'CR';
+    if (g === 'CR' && ($('mr-flcr').value === '' || $('mr-clon').value === '')) why = 'FLC比・骨髄クローナル細胞が正常なら sCR';
+    if ($('mr-mrd').value === 'neg') { g += '<small>（MRD陰性）</small>'; }
+  } else {
+    const vgpr = (sMeas ? (sR >= 0.9 || (sm[2] === 0 && sife === 'pos')) : true)
+              && (uMeas || um[2] !== null ? uLow(100) : true)
+              && (fMeas ? fR >= 0.9 : true) && (sMeas || uMeas || fMeas) && pcOK;
+    const pr = (sMeas ? sR >= 0.5 : true) && (uMeas ? (uR >= 0.9 || um[2] < 200) : true)
+            && (fMeas ? fR >= 0.5 : true) && (bMeas ? (bm0 - bm) / bm0 >= 0.5 : true) && pcOK;
+    const mr = (sMeas || uMeas) && (sMeas ? sR >= 0.25 : true) && (uMeas ? uR >= 0.5 : true);
+    if (!meas) { box('r-mr', '効果判定', null, 'IFE陰性：CR 判定には骨髄形質細胞 <5% の確認が必要'); return; }
+    g = vgpr ? 'VGPR' : pr ? 'PR' : mr ? 'MR' : 'SD';
+    if (ifeNeg) why = 'IFE陰性：骨髄形質細胞 <5%（形質細胞腫なし）で CR';
+    else if (g === 'VGPR' && sife === '') why = 'IFE 未検';
+    if (!pcOK && g !== 'SD') why = '形質細胞腫の縮小が50%未満のため PR 未満';
+    if (uMeas && um[2] === null) why = '尿M未測定';
+  }
+  box('r-mr', '効果判定', g, why || '2回連続の評価で確認');
+}
+
+/* ---------- 腎機能別 投与量 ---------- */
+const mgkg = (w, a, b) => {
+  const s = b ? `${a}–${b} mg/kg` : `${a} mg/kg`;
+  if (!w) return s;
+  const r = x => Math.round(w * x);
+  return `${s}（${b ? r(a) + '–' + r(b) : r(a)} mg）`;
+};
+const stTMP = (w, pct) => {
+  const a = 15 * pct, b = 20 * pct;
+  if (!w) return `TMP ${a}–${b} mg/kg/日 分3–4`;
+  return `TMP ${a}–${b} mg/kg/日 ＝ ${Math.round(w * a)}–${Math.round(w * b)} mg/日（≒ ${Math.round(w * a / 80)}–${Math.round(w * b / 80)} 錠/日）分3–4`;
+};
+const gcv = (w, i1, i2, m1, m2) => `初期：${mgkg(w, i1)} ${i2}<br>維持：${mgkg(w, m1)} ${m2}`;
+// t: [下限, 区分表示（">" で始まるものは下限を含まない）, 用量]
+const RX = [
+  { g: '抗菌薬', n: 'メロペネム', u: '1 g 8時間ごと（FN・重症感染症）',
+    t: [[50, '>50', '1 g 8時間ごと'], [26, '26–50', '1 g 12時間ごと'], [10, '10–25', '0.5 g 12時間ごと'], [0, '<10', '0.5 g 24時間ごと']],
+    hd: '0.5 g 24時間ごと（透析日は透析後）' },
+  { g: '抗菌薬', n: 'セフェピム', u: 'FN：本邦承認 2 g 12時間ごと／海外 2 g 8時間ごと',
+    t: [[60, '>60', '2 g 8〜12時間ごと'], [30, '30–60', '2 g 12〜24時間ごと'], [11, '11–29', '2 g 24時間ごと'], [0, '≤10', '1 g 24時間ごと']],
+    hd: '1 g 24時間ごと（透析日は透析後）', note: '腎機能低下時はセフェピム脳症（意識障害・ミオクローヌス・痙攣）に注意。' },
+  { g: '抗菌薬', n: 'タゾバクタム/ピペラシリン', u: '4.5 g 6時間ごと（FN・院内肺炎）',
+    t: [[40, '>40', '4.5 g 6時間ごと'], [20, '20–40', '4.5 g 8時間ごと'], [0, '<20', '4.5 g 12時間ごと']],
+    hd: '4.5 g 12時間ごと または 2.25 g 8時間ごと（透析日は透析後）' },
+  { g: '抗菌薬', n: 'バンコマイシン', u: w => `初回負荷 ${mgkg(w, 25, 30)}（実体重）→ 維持はTDMで調整`,
+    t: [[90, '≥90', w => `${mgkg(w, 15, 20)} 12時間ごと`], [50, '50–89', w => `${mgkg(w, 15)} 12時間ごと`],
+        [30, '30–49', w => `${mgkg(w, 15)} 24時間ごと`], [15, '15–29', w => `${mgkg(w, 15)} 48時間ごと`], [0, '<15', '負荷投与後は血中濃度をみて追加投与']],
+    hd: w => `負荷 ${mgkg(w, 25)} → 透析後 ${mgkg(w, 7.5, 10)}（TDMで調整）`,
+    note: '初期設計の目安。必ずTDM（AUC 400–600 μg·h/mL、トラフ 10–15 μg/mL 目安）で調整する。腎毒性薬との併用に注意。' },
+  { g: '抗菌薬', n: 'レボフロキサシン', u: '500 mg 1日1回',
+    t: [[50, '≥50', '500 mg 24時間ごと'], [20, '20–49', '初日 500 mg、以後 250 mg 24時間ごと'], [0, '<20', '初日 500 mg、以後 250 mg 48時間ごと']],
+    hd: '初日 500 mg、以後 250 mg 48時間ごと' },
+  { g: '抗菌薬', n: 'ST合剤（治療量）', u: w => stTMP(w, 1) + '（PCP 治療）',
+    t: [[30, '>30', w => stTMP(w, 1)], [15, '15–30', w => '50%：' + stTMP(w, 0.5)], [0, '<15', '原則推奨されない（やむを得ない場合は50%量＋K・Cr・血中濃度を監視）']],
+    note: '1錠＝TMP 80 mg。予防投与（1日1錠 または 2錠 週3回）は CCr ≥30 で調節不要。高K血症と、尿細管分泌阻害による見かけの Cr 上昇に注意。' },
+  { g: '抗菌薬', n: 'ダプトマイシン', u: w => `${mgkg(w, 6)} 24時間ごと（菌血症・心内膜炎は 8–10 mg/kg も）`,
+    t: [[30, '≥30', w => `${mgkg(w, 6)} 24時間ごと`], [0, '<30', w => `${mgkg(w, 6)} 48時間ごと`]],
+    hd: w => `${mgkg(w, 6)} 48時間ごと（透析日は透析後）`, note: 'CK を週1回以上モニタ。スタチン併用に注意。' },
+  { g: '抗菌薬', n: 'リネゾリド', u: '600 mg 12時間ごと',
+    t: [[0, '全範囲', '600 mg 12時間ごと（調節不要）']], hd: '600 mg 12時間ごと（透析日は透析後）',
+    note: '腎機能低下例ほど血小板減少が起こりやすい。2週間を超える投与では血球をこまめに確認。' },
+  { g: '抗真菌薬', n: 'フルコナゾール', u: '200–400 mg 1日1回（初日は倍量の負荷可）',
+    t: [[50, '>50', '通常量'], [0, '≤50', '通常量の 50%（初回負荷量は通常量）']], hd: '透析後に通常量（1回分）' },
+  { g: '抗真菌薬', n: 'ボリコナゾール', u: '注射：負荷 6 mg/kg 12時間ごと×2回 → 4 mg/kg 12時間ごと',
+    t: [[50, '≥50', '注射・経口とも調節不要'], [0, '<50', '注射剤は原則避けて経口へ（添加物 SBECD が蓄積）。経口は調節不要']],
+    note: 'TDM 推奨。肝機能障害時は減量。' },
+  { g: '抗ウイルス薬', n: 'アシクロビル（注射）', u: w => `${mgkg(w, 5, 10)} 8時間ごと`,
+    t: [[50, '>50', w => `${mgkg(w, 5, 10)} 8時間ごと`], [25, '25–50', w => `${mgkg(w, 5, 10)} 12時間ごと`],
+        [10, '10–24', w => `${mgkg(w, 5, 10)} 24時間ごと`], [0, '<10', w => `${mgkg(w, 2.5, 5)} 24時間ごと`]],
+    hd: w => `${mgkg(w, 2.5, 5)} 24時間ごと（透析日は透析後）`,
+    note: '肥満では理想体重で計算。結晶性腎障害・精神神経症状に注意し、十分に補液する。' },
+  { g: '抗ウイルス薬', n: 'バラシクロビル（帯状疱疹）', u: '1000 mg 1日3回',
+    t: [[50, '≥50', '1000 mg 8時間ごと'], [30, '30–49', '1000 mg 12時間ごと'], [10, '10–29', '1000 mg 24時間ごと'], [0, '<10', '500 mg 24時間ごと']],
+    note: '高齢者・腎機能低下例では精神神経症状（アシクロビル脳症）に注意。' },
+  { g: '抗ウイルス薬', n: 'バラシクロビル（単純疱疹・発症抑制）', u: '500 mg 1日2回',
+    t: [[30, '≥30', '500 mg 12時間ごと'], [10, '10–29', '500 mg 24時間ごと'], [0, '<10', '500 mg 24時間ごと']] },
+  { g: '抗ウイルス薬', n: 'ガンシクロビル（注射）', u: '初期 5 mg/kg 12時間ごと／維持 5 mg/kg 24時間ごと',
+    t: [[70, '≥70', w => gcv(w, 5, '12時間ごと', 5, '24時間ごと')], [50, '50–69', w => gcv(w, 2.5, '12時間ごと', 2.5, '24時間ごと')],
+        [25, '25–49', w => gcv(w, 2.5, '24時間ごと', 1.25, '24時間ごと')], [10, '10–24', w => gcv(w, 1.25, '24時間ごと', 0.625, '24時間ごと')],
+        [0, '<10', w => gcv(w, 1.25, '週3回（透析後）', 0.625, '週3回（透析後）')]],
+    note: '骨髄抑制（好中球・血小板減少）に注意。' },
+  { g: '抗ウイルス薬', n: 'バルガンシクロビル（バリキサ）', u: '初期 900 mg 1日2回／維持・予防 900 mg 1日1回',
+    t: [[60, '≥60', '初期：900 mg 1日2回<br>維持・予防：900 mg 1日1回'], [40, '40–59', '初期：450 mg 1日2回<br>維持・予防：450 mg 1日1回'],
+        [25, '25–39', '初期：450 mg 1日1回<br>維持・予防：450 mg 2日に1回'], [10, '10–24', '初期：450 mg 2日に1回<br>維持・予防：450 mg 週2回'],
+        [0, '<10', '推奨されない（ガンシクロビル注射を検討）']],
+    note: '食後投与。骨髄抑制に注意。錠剤は分割・粉砕しない。' },
+  { g: '抗ウイルス薬', n: 'オセルタミビル', u: '治療 75 mg 1日2回 5日間',
+    t: [[30, '>30', '75 mg 1日2回'], [10, '>10–30', '75 mg 1日1回'], [0, '≤10', '推奨用量は確立していない']],
+    note: '予防投与：CCr >30 で 75 mg 1日1回、10–30 で 75 mg 隔日。' },
+  { g: '抗ウイルス薬', n: 'エンテカビル', u: '0.5 mg 1日1回（空腹時）',
+    t: [[50, '≥50', '0.5 mg 24時間ごと'], [30, '30–49', '0.5 mg 48時間ごと'], [10, '10–29', '0.5 mg 72時間ごと'], [0, '<10', '0.5 mg 7日ごと']],
+    hd: '0.5 mg 7日ごと（透析日は透析後）', note: 'ラミブジン不応例は 1 mg を同じ間隔で。HBV 再活性化予防として化学療法終了後も継続期間を確認。' },
+  { g: '鎮痛補助薬', n: 'ミロガバリン（タリージェ）', u: '初期 5 mg 1日2回 → 1週以上あけて 5 mg ずつ増量 → 15 mg 1日2回',
+    t: [[60, '≥60', '初期：5 mg 1日2回<br>有効：10–15 mg 1日2回'], [30, '30–59', '初期：2.5 mg 1日2回<br>有効：5–7.5 mg 1日2回'],
+        [0, '<30', '初期：2.5 mg 1日1回<br>有効：5–7.5 mg 1日1回']],
+    hd: '初期：2.5 mg 1日1回<br>有効：5–7.5 mg 1日1回（重度腎機能障害に準じる）',
+    note: '増量は1週間以上あけて。めまい・傾眠・浮腫・体重増加に注意（転倒）。' },
+  { g: '鎮痛補助薬', n: 'プレガバリン（リリカ）', u: '初期 150 mg/日 分2 → 最大 600 mg/日（神経障害性疼痛）',
+    t: [[60, '≥60', '初期：150 mg/日 分2<br>最大：600 mg/日 分2'], [30, '30–59', '初期：75 mg/日 分1–2<br>最大：300 mg/日 分1–2'],
+        [15, '15–29', '初期：25–50 mg/日 分1–2<br>最大：150 mg/日 分1–2'], [0, '<15', '初期：25 mg/日 分1<br>最大：75 mg/日 分1']],
+    hd: '<15 の用量＋透析後に補充（25–150 mg、透析前の1日量に応じて）' },
+  { g: '血液内科', n: 'レナリドミド', u: '25 mg 1日1回 21日間（Rd 療法）',
+    t: [[60, '≥60', '25 mg 1日1回'], [30, '30–59', '10 mg 1日1回'], [0, '<30', '15 mg 48時間ごと（透析なし）']],
+    hd: '5 mg 1日1回（透析日は透析後）', note: '維持療法など他レジメンの用量は各プロトコルで確認。VTE 予防を併用。' },
+  { g: '血液内科', n: 'アロプリノール', u: '100–300 mg/日',
+    t: [[50, '>50', '100–300 mg/日'], [30, '>30–50', '100 mg/日'], [0, '≤30', '50 mg/日']],
+    hd: '透析終了時に 100 mg', note: '日本痛風・尿酸核酸学会ガイドラインの腎機能別用量。TLS 予防では腎機能に関係なくフェブキソスタット 60 mg/日も選択肢。' },
+  { g: 'その他', n: 'ファモチジン', u: '20 mg 1日2回',
+    t: [[60, '≥60', '20 mg 1日2回'], [30, '>30–59', '20 mg 1日1回 または 10 mg 1日2回'], [0, '≤30', '20 mg 2日に1回 または 10 mg 1日1回']],
+    hd: '透析後 20 mg、または 10 mg 1日1回', note: '高齢・腎機能低下例でせん妄・汎血球減少に注意。' },
+  { g: 'その他', n: 'エドキサバン', u: '60 mg 1日1回（体重 ≤60 kg は 30 mg）',
+    t: [[50, '≥50', w => w ? (w <= 60 ? '30 mg 1日1回（体重 ≤60 kg）' : '60 mg 1日1回') : '60 mg 1日1回（体重 ≤60 kg・P糖蛋白阻害薬併用は 30 mg）'],
+        [30, '30–49', '30 mg 1日1回'], [15, '15–29', '30 mg 1日1回（AF は慎重投与、VTE は禁忌）'], [0, '<15', '禁忌']],
+    hd: '禁忌' },
+];
+
+$('rx-drug').innerHTML = '<option value="">薬剤を選択</option>' + [...new Set(RX.map(d => d.g))].map(g =>
+  `<optgroup label="${g}">${RX.map((d, i) => d.g === g ? `<option value="${i}">${d.n}</option>` : '').join('')}</optgroup>`).join('');
+
+function calcRX() {
+  const r = renal(), basis = $('rx-basis').value, hd = chk('rx-hd'), wt = num('kd-wt');
+  $('rx-manwrap').style.visibility = basis === 'man' ? 'visible' : 'hidden';
+  const [c, lbl] = { cg: [r.ccr, 'eCCr（CG）'], cg2: [r.ccr02, 'eCCr（Cr+0.2）'], egfr: [r.egfrInd, '個別化 eGFRcr'], man: [num('rx-man'), 'CCr（手入力）'] }[basis];
+  if (hd) box('r-rxc', '腎機能', '血液透析', '透析患者の用量を表示');
+  else if (c !== null) box('r-rxc', lbl, `${fmt(c)}<small> mL/min</small>`,
+    basis === 'cg' && r.ccr02 !== null ? `Cr+0.2 補正 ${fmt(r.ccr02)} ／ 個別化eGFR ${r.egfrInd !== null ? fmt(r.egfrInd) : '—'} mL/min` : '');
+  else box('r-rxc', '腎機能', null, basis === 'man' ? 'CCr を入力' : basis === 'egfr' ? '性別・年齢・Cr・身長・体重を入力' : '性別・年齢・Cr・体重を入力');
+
+  const i = $('rx-drug').value;
+  if (i === '') { box('r-rx', '推奨用量', null, '薬剤を選択'); $('rx-tbl').innerHTML = ''; $('rx-note').textContent = ''; return; }
+  const d = RX[+i], ev = x => typeof x === 'function' ? x(wt) : x;
+  const hit = hd || c === null ? -1 : d.t.findIndex(([lo, lab]) => lab.startsWith('>') ? c > lo : c >= lo);
+  const last = d.t[d.t.length - 1];
+  const hdDose = d.hd ? ev(d.hd) : `「${last[1]}」に準じる：${ev(last[2])}`;
+  const val = hd ? hdDose : hit >= 0 ? ev(d.t[hit][2]) : null;
+  box('r-rx', d.n, val, `通常量：${ev(d.u)}`, 'txt');
+  $('rx-tbl').innerHTML = `<table class="tier"><tr><th>CCr</th><th>用量</th></tr>`
+    + d.t.map((t, k) => `<tr class="${k === hit ? 'hit' : ''}"><td>${t[1]}</td><td>${ev(t[2])}</td></tr>`).join('')
+    + `<tr class="${hd ? 'hit' : ''}"><td>透析</td><td>${hdDose}</td></tr></table>`;
+  $('rx-note').textContent = d.note || '';
+}
+
+/* ---------- ガンマ計算 ---------- */
+const GM = [
+  { n: 'カスタム（組成を手入力）' },
+  { n: 'ドパミン 0.3%シリンジ（150 mg/50 mL）', mg: 150, ml: 50, u: 'g', r: '1–5γ（低用量）、5–20γ（昇圧・強心）' },
+  { n: 'ドブタミン 0.3%シリンジ（150 mg/50 mL）', mg: 150, ml: 50, u: 'g', r: '1–20γ' },
+  { n: 'ノルアドレナリン（5 mg/50 mL）', mg: 5, ml: 50, u: 'g', r: '0.05–0.5γ 程度' },
+  { n: 'アドレナリン（5 mg/50 mL）', mg: 5, ml: 50, u: 'g', r: '0.01–0.5γ 程度' },
+  { n: 'ミルリノン（22.5 mg/150 mL）', mg: 22.5, ml: 150, u: 'g', r: '0.05–0.75γ（腎機能低下時は減量）' },
+  { n: 'ニカルジピン 原液（10 mg/10 mL）', mg: 10, ml: 10, u: 'g', r: '0.5–6γ' },
+  { n: 'ニトログリセリン 原液（50 mg/100 mL）', mg: 50, ml: 100, u: 'g', r: '0.5–5γ' },
+  { n: 'ジルチアゼム（50 mg/50 mL）', mg: 50, ml: 50, u: 'g', r: '1–15γ' },
+  { n: 'デクスメデトミジン（200 μg/50 mL）', mg: 0.2, ml: 50, u: 'kgh', r: '0.2–0.7 μg/kg/時' },
+  { n: 'ミダゾラム（50 mg/50 mL）', mg: 50, ml: 50, u: 'mgkgh', r: '0.03–0.18 mg/kg/時' },
+  { n: 'プロポフォール 1%（500 mg/50 mL）', mg: 500, ml: 50, u: 'mgkgh', r: '0.3–3 mg/kg/時' },
+];
+// 単位 → [表示, 体重が必要か, 1単位あたりの μg/min]
+const GU = {
+  g: ['γ', true, w => w], kgh: ['μg/kg/時', true, w => w / 60],
+  mgkgh: ['mg/kg/時', true, w => w * 1000 / 60], mgh: ['mg/時', false, () => 1000 / 60],
+};
+$('gm-drug').innerHTML = GM.map((d, i) => `<option value="${i}">${d.n}</option>`).join('');
+$('gm-drug').addEventListener('change', () => {
+  const d = GM[+$('gm-drug').value];
+  if (d.mg) { $('gm-mg').value = d.mg; $('gm-ml').value = d.ml; $('gm-unit').value = d.u; }
+});
+const mlh = x => fmt(x, x < 1 ? 2 : 1);
+const sig = x => x >= 10 ? fmt(x, 1) : x >= 1 ? fmt(x, 2) : x.toPrecision(2);
+function calcGM() {
+  const d = GM[+$('gm-drug').value], mg = num('gm-mg'), ml = num('gm-ml'), wt = num('gm-wt');
+  const [ul, needW, perU] = GU[$('gm-unit').value];
+  $('gm-ulbl').textContent = ul;
+  const conc = has(mg, ml) && ml > 0 && mg > 0 ? mg * 1000 / ml : null;     // μg/mL
+  box('r-gmc', '濃度', conc ? `${sig(conc)}<small> μg/mL</small>` : null,
+      conc ? `${sig(conc / 1000)} mg/mL${d.r ? '　｜目安 ' + d.r : ''}` : (d.r ? '目安 ' + d.r : '薬剤量・全量を入力'));
+  const ok = conc && (!needW || (wt && wt > 0));
+  const k = ok ? perU(wt) * 60 / conc : null;                             // 1単位あたりの mL/時
+  box('r-gm1', `1 ${ul} ＝`, ok ? `${mlh(k)}<small> mL/時</small>` : null, ok ? '' : needW && !wt ? '体重を入力' : '');
+  const dose = num('gm-dose'), rate = num('gm-rate');
+  box('r-gmr', dose !== null ? `${dose} ${ul} ＝` : '投与量 → 流量', ok && dose !== null ? `${mlh(dose * k)}<small> mL/時</small>` : null, ok ? '投与量を入力' : '');
+  box('r-gmd', rate !== null ? `${rate} mL/時 ＝` : '流量 → 投与量', ok && rate !== null ? `${sig(rate / k)}<small> ${ul}</small>` : null,
+      ok && rate !== null ? `${sig(rate * conc / 1000)} mg/時` : ok ? '流量を入力' : '');
+}
+
+/* ---------- CRS / ICANS（ASTCT 2019） ---------- */
+function calcCT() {
+  const wt = num('ct-wt'), fever = +$('ct-fever').value, bp = +$('ct-bp').value, o2 = +$('ct-o2').value;
+  let crs = 0, crsTxt;
+  if (fever) { crs = Math.max(1, bp, o2); crsTxt = crs === 1 ? '発熱のみ' : ['', '', '低血圧（昇圧薬不要）または低流量酸素', '昇圧薬1剤 または 高流量酸素', '昇圧薬複数 または 陽圧換気'][crs]; }
+  else crsTxt = bp || o2 ? '発熱がないため CRS とは判定しない（解熱治療で消失した場合はそれを選択）' : '所見なし';
+  box('r-crs', 'CRS', crs ? `Grade ${crs}` : 'なし', crsTxt, crs >= 3 ? 'alert' : '');
+
+  const unar = chk('ct-unar');
+  const ice = unar ? 0 : [...Array(10)].filter((_, i) => chk(`ct-i${i + 1}`)).length;
+  const iceG = unar ? 4 : ice === 10 ? 0 : ice >= 7 ? 1 : ice >= 3 ? 2 : 3;
+  const parts = [['ICE', iceG], ['意識', +$('ct-loc').value], ['痙攣', +$('ct-sz').value], ['運動', +$('ct-mot').value], ['脳浮腫', +$('ct-icp').value]];
+  const icans = Math.max(...parts.map(p => p[1]));
+  const by = parts.filter(p => p[1] === icans && icans > 0).map(p => p[0]).join('・');
+  box('r-icans', 'ICANS', icans ? `Grade ${icans}` : 'なし', `ICE ${ice}/10${by ? '（' + by + '）' : ''}`, icans >= 3 ? 'alert' : '');
+
+  const toci = wt ? `トシリズマブ ${wt >= 30 ? 8 : 12} mg/kg（${Math.min(Math.round(wt * (wt >= 30 ? 8 : 12)), 800)} mg${wt * 8 > 800 ? '・上限 800 mg' : ''}）`
+                  : 'トシリズマブ 8 mg/kg（最大 800 mg）';
+  const crsM = ['',
+    'CRS G1：解熱薬・補液などの支持療法。感染症を除外（培養・FN に準じた抗菌薬）。発熱が遷延する例・高リスク例ではトシリズマブを考慮',
+    `CRS G2：補液ボーラス＋${toci} を1時間で点滴。改善なければ8時間以上あけて反復（24時間で最大3回・計4回まで）。2回投与で不応ならデキサメタゾン 10 mg 6–12時間ごと`,
+    `CRS G3：${toci}＋デキサメタゾン 10 mg 6時間ごと。昇圧薬・高流量酸素、ICU 管理`,
+    `CRS G4：${toci}＋メチルプレドニゾロン 1,000 mg/日（3日間）。ICU 管理（複数昇圧薬・陽圧換気）`][crs];
+  const icM = ['',
+    'ICANS G1：支持療法・誤嚥予防・頻回の神経評価。頭部画像・脳波・眼底を考慮。レベチラセタム予防投与を考慮',
+    'ICANS G2：デキサメタゾン 10 mg 6–12時間ごと。CRS を伴わない ICANS 単独にトシリズマブは推奨されない',
+    'ICANS G3：デキサメタゾン 10 mg 6時間ごと（不応ならメチルプレドニゾロン 1,000 mg/日）。ICU 管理。痙攣にはレベチラセタム・ベンゾジアゼピン',
+    'ICANS G4：メチルプレドニゾロン 1,000 mg/日（3日間）。ICU 管理・気道確保。脳浮腫には高浸透圧療法・頭部挙上など'][icans];
+  const m = [crsM, icM].filter(Boolean);
+  box('r-ctm', '対応の目安', m.length ? m.join('<br><br>') : '経過観察', m.length ? 'CRS と ICANS が併存する場合、ICANS には CRS 改善後もステロイドを継続・漸減' : '発熱・バイタル・ICE を定期評価（目安 1日2回以上）', 'txt');
+}
+
+/* ---------- TLS ---------- */
+const RISK = ['', '低リスク（LRD）', '中間リスク（IRD）', '高リスク（HRD）'];
+function calcTL() {
+  const dz = $('tl-dz').value, wbc = num('tl-wbc'), ldh = num('tl-ldh'), uln = num('tl-uln');
+  $('tl-ven').style.display = dz === 'cllv' ? '' : 'none';
+  const lr = has(ldh, uln) && uln > 0 ? ldh / uln : null;
+  const adv = chk('tl-adv'), bulky = chk('tl-bulky');
+  const ua = num('tl-ua'), k = num('tl-k'), p = num('tl-p'), ca = num('tl-ca'), cr = num('tl-cr'), crU = num('tl-cruln');
+
+  // 診断（Cairo-Bishop）
+  const labs = [[ua !== null && ua >= 8, '尿酸'], [k !== null && k >= 6, 'K'], [p !== null && p >= 4.5, 'P'], [ca !== null && ca <= 7, 'Ca']];
+  const ab = labs.filter(l => l[0]).map(l => l[1]);
+  const ltls = ab.length >= 2;
+  const cl = [[has(cr, crU) && cr >= 1.5 * crU, 'Cr ≥1.5×ULN'], [chk('tl-arr'), '不整脈'], [chk('tl-sz'), '痙攣']].filter(c => c[0]).map(c => c[1]);
+  const ctls = ltls && cl.length > 0;
+  if ([ua, k, p, ca].some(x => x !== null))
+    box('r-tld', 'TLS 診断', ctls ? 'Clinical TLS' : ltls ? 'Laboratory TLS' : '該当なし',
+        (ab.length ? `異常：${ab.join('・')}` : '検査異常なし') + (ctls ? `／${cl.join('・')}` : '') + (k !== null && k >= 6 ? '<br><b>K ≥6.0：心電図・緊急補正</b>' : ''), ltls ? 'alert' : '');
+  else box('r-tld', 'TLS 診断', null, '尿酸・K・P・Ca を入力');
+
+  // リスク分類（Cairo 2010）
+  let risk = null, why = '', need = '';
+  const w = wbc, ldh2 = lr !== null && lr >= 2;
+  switch (dz) {
+    case 'aml':
+      if (w === null || lr === null) need = 'WBC・LDH';
+      else { risk = w >= 100000 ? 3 : (w >= 25000 || ldh2) ? 2 : 1; why = `WBC ${w.toLocaleString()}、LDH ${fmt(lr, 1)}×ULN`; } break;
+    case 'all':
+      if (w === null || lr === null) need = 'WBC・LDH';
+      else { risk = (w >= 100000 || ldh2) ? 3 : 2; why = `WBC ${w.toLocaleString()}、LDH ${fmt(lr, 1)}×ULN`; } break;
+    case 'bl': case 'lbl':
+      if (lr === null) need = 'LDH';
+      else { risk = (adv || ldh2) ? 3 : 2; why = `${adv ? '進行期' : '限局期'}、LDH ${fmt(lr, 1)}×ULN`; } break;
+    case 'agg':
+      if (lr === null) need = 'LDH';
+      else { risk = lr <= 1 ? 1 : bulky ? 3 : 2; why = `LDH ${fmt(lr, 1)}×ULN${lr > 1 ? (bulky ? '・バルキー' : '・非バルキー') : ''}`; } break;
+    case 'cll':
+      if (w === null) need = 'WBC';
+      else { risk = (w >= 50000 || chk('tl-flu')) ? 2 : 1; why = `WBC ${w.toLocaleString()}${chk('tl-flu') ? '・Flu/R' : ''}`; } break;
+    case 'cllv': {
+      const ln = num('tl-ln'), alc = num('tl-alc');
+      if (ln === null || alc === null) need = '最大リンパ節径・リンパ球数';
+      else { risk = (ln >= 10 || (alc >= 25000 && ln >= 5)) ? 3 : (ln >= 5 || alc >= 25000) ? 2 : 1; why = `ベネトクラクス腫瘍量分類：リンパ節 ${ln} cm、ALC ${alc.toLocaleString()}`; } break;
+    }
+    case 'ind': case 'cml': case 'mm': risk = 1; why = '疾患による分類'; break;
+    case 'st': risk = (chk('tl-sens') || bulky) ? 2 : 1; why = risk === 2 ? '化学療法高感受性・バルキー' : '一般的な固形腫瘍'; break;
+  }
+  if (risk === 2 && dz !== 'cllv') {
+    if (chk('tl-ren') || chk('tl-reninv')) { risk = 3; why += '＋腎機能障害/腎浸潤'; }
+    else if ((ua !== null && ua > 7) || (k !== null && k > 5) || (p !== null && p > 4.5)) { risk = 3; why += '＋尿酸・K・P 高値'; }
+  }
+  const lvl = ltls ? 4 : risk;                                   // 4 = TLS 発症
+  if (ltls) box('r-tlr', 'リスク', 'TLS 発症', risk ? `治療前分類：${RISK[risk]}` : '治療・腎臓内科へ相談', 'alert');
+  else if (risk) box('r-tlr', 'リスク', RISK[risk].replace('リスク', ''), why, risk === 3 ? 'alert' : '');
+  else box('r-tlr', 'リスク', null, dz ? `${need}を入力` : '疾患を選択');
+
+  // 推奨対応
+  const { bsa, ccr } = renal(), wt = num('kd-wt');
+  const hyd = bsa ? `${Math.round(2500 * bsa).toLocaleString()}–${Math.round(3000 * bsa).toLocaleString()} mL/日（${Math.round(2500 * bsa / 24)}–${Math.round(3000 * bsa / 24)} mL/時）` : null;
+  const uo = bsa ? `${Math.round(80 * bsa)}–${Math.round(100 * bsa)}<small> mL/時</small>` : '80–100<small> mL/m²/時</small>';
+  const bsaTxt = bsa ? `BSA ${fmt(bsa, 2)} m²` : '身長・体重で輸液量を計算';
+  if (!lvl) box('r-tlf', '輸液', null, bsaTxt);
+  else if (dz === 'cllv' && !ltls) box('r-tlf', '輸液（ベネトクラクス）',
+      risk === 3 ? '経口 1.5–2 L/日＋点滴 150–200 mL/時' : risk === 2 ? '経口 1.5–2 L/日（＋点滴を考慮）' : '経口 1.5–2 L/日',
+      '投与開始2日前から。高リスク・CCr <80 の中リスクは入院管理を考慮', 'txt');
+  else if (lvl === 1) box('r-tlf', '輸液', '通常の輸液・飲水', `大量補液は必須ではない。${bsaTxt}`, 'txt');
+  else box('r-tlf', '輸液（2,500–3,000 mL/m²/日）', hyd ?? '2,500–3,000 mL/m²/日', `${bsaTxt}。K・P を含まない輸液から開始。心不全・腎不全では調整し、尿量不足には利尿薬（フロセミド）を考慮`, 'txt');
+  box('r-tlu', '尿量目標', lvl && lvl >= 2 ? uo : lvl === 1 ? '尿量・体重を観察' : null,
+      lvl ? `${lvl >= 2 ? '80–100 mL/m²/時。' : ''}尿のアルカリ化（重曹）はルーチンでは推奨されない` : '', 'txt');
+
+  const allo = `アロプリノール ${ccr === null ? '300' : ccr > 50 ? '300' : ccr > 30 ? '100' : '50'} mg/日`;
+  const alloD = ccr === null ? '腎機能で減量（腎機能カード参照）' : `eCCr ${fmt(ccr)} mL/min に応じた用量`;
+  const rasb = `ラスブリカーゼ ${wt ? fmt(wt * 0.2, 1) + ' mg' : '0.2 mg/kg'}`;
+  const rasbD = `${wt ? '0.2 mg/kg、' : ''}1日1回 30分以上で点滴、最大7日間。G6PD 欠損症には禁忌。投与後の尿酸測定検体は採血後すぐ氷冷`;
+  const uaM = ['', ['経過観察', `必要に応じ ${allo}（${alloD}）`],
+    [allo, `${alloD}。または フェブキソスタット 60 mg/日。治療前から尿酸高値ならラスブリカーゼを考慮`],
+    [rasb, rasbD],
+    [rasb, `${rasbD}。電解質補正（高K・高P）、乏尿・高K・溢水が改善しなければ透析を検討`]];
+  box('r-tlx', '尿酸対策', lvl ? uaM[lvl][0] : null, lvl ? uaM[lvl][1] : '', 'txt');
+  const mon = ['', ['1日1回', ''], ['8–12時間ごと', '治療開始後 24–48時間は特に注意'], ['6–8時間ごと', '心電図モニタ、ICU 管理を考慮'], ['4–6時間ごと', '心電図モニタ、腎臓内科・ICU と連携']];
+  box('r-tlm', 'モニタリング（尿酸・K・P・Ca・Cr・尿量）', lvl ? mon[lvl][0] : null,
+      lvl ? [mon[lvl][1], '化学療法開始後 3–7日間は継続'].filter(Boolean).join('。') : '', 'txt');
+}
+
+const calcAll = () => { calcML(); calcMM(); calcMR(); calcKD(); calcRX(); calcNT(); calcGM(); calcCT(); calcTL(); };
 
 /* ---------- 共通項目の同期（年齢・身長・体重・Cr・性別など） ---------- */
 document.addEventListener('input', e => {
@@ -460,7 +1204,7 @@ document.querySelectorAll('.card > .head').forEach(h => h.addEventListener('clic
 document.querySelectorAll('.reset').forEach(b => b.addEventListener('click', () => {
   const body = b.closest('.body');
   body.querySelectorAll('input').forEach(i => {
-    if (i.type === 'checkbox' || i.type === 'radio') i.checked = false;
+    if (i.type === 'checkbox' || i.type === 'radio') i.checked = i.defaultChecked;
     else i.value = i.defaultValue;
   });
   body.querySelectorAll('select').forEach(s => { s.selectedIndex = [...s.options].findIndex(o => o.defaultSelected); if (s.selectedIndex < 0) s.selectedIndex = 0; });
