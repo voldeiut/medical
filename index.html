@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="MediCal">
+<meta name="theme-color" content="#FFF8F3">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="manifest" href="manifest.json">
+<title>MediCal</title>
+<style>
+  :root {
+    --bg: #FFF8F3;
+    --ink: #4A4458;
+    --sub: #8A8398;
+    --line: #EDE6EF;
+    --ml: #E9E1FA;   --ml-d: #8E7CC3;
+    --mm: #FCE3EA;   --mm-d: #D17A96;
+    --kd: #DDF3EA;   --kd-d: #5FA889;
+    --nt: #FFEBD6;   --nt-d: #E09A57;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", sans-serif;
+    font-size: 16px; line-height: 1.5;
+    padding: env(safe-area-inset-top) 0 calc(env(safe-area-inset-bottom) + 24px);
+  }
+  header { padding: 20px 20px 8px; }
+  header h1 { margin: 0; font-size: 28px; letter-spacing: .02em; }
+  header h1 span { color: var(--mm-d); }
+  header p { margin: 2px 0 0; color: var(--sub); font-size: 13px; }
+  main { padding: 8px 14px; max-width: 640px; margin: 0 auto; }
+
+  .card { background: #fff; border-radius: 22px; margin: 12px 0; overflow: hidden;
+          box-shadow: 0 2px 10px rgba(120, 100, 140, .08); }
+  .card > button.head {
+    all: unset; display: flex; align-items: center; gap: 14px; width: 100%;
+    padding: 14px 16px; cursor: pointer; box-sizing: border-box;
+  }
+  .card .ico { width: 64px; height: 64px; border-radius: 18px; flex: none;
+               display: grid; place-items: center; }
+  .card .ico svg { width: 50px; height: 50px; }
+  .card .ttl { flex: 1; }
+  .card .ttl b { display: block; font-size: 18px; }
+  .card .ttl small { display: block; color: var(--sub); font-size: 12px; line-height: 1.4; margin-top: 2px; }
+  .card .chev { width: 22px; height: 22px; transition: transform .25s; color: var(--sub); }
+  .card.open .chev { transform: rotate(180deg); }
+  .card .body { display: none; padding: 4px 16px 18px; border-top: 1px solid var(--line); }
+  .card.open .body { display: block; }
+
+  .ml .ico { background: var(--ml); }  .ml { --acc: var(--ml-d); --tint: var(--ml); }
+  .mm .ico { background: var(--mm); }  .mm { --acc: var(--mm-d); --tint: var(--mm); }
+  .kd .ico { background: var(--kd); }  .kd { --acc: var(--kd-d); --tint: var(--kd); }
+  .nt .ico { background: var(--nt); }  .nt { --acc: var(--nt-d); --tint: var(--nt); }
+
+  h3 { font-size: 13px; color: var(--acc); margin: 16px 0 6px; letter-spacing: .05em; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 10px; }
+  .grid .full { grid-column: 1 / -1; }
+  label.f { display: block; font-size: 12px; color: var(--sub); }
+  label.f input, label.f select {
+    margin-top: 3px; font-size: 17px; padding: 9px 10px; border-radius: 12px;
+    border: 1.5px solid var(--line); background: #FCFBFD; color: var(--ink);
+    width: 100%; display: block; -webkit-appearance: none; appearance: none;
+  }
+  label.f input:focus, label.f select:focus { outline: none; border-color: var(--acc); background: #fff; }
+  .unit { color: var(--sub); font-size: 11px; }
+  .checks { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chk { position: relative; }
+  .chk input { position: absolute; opacity: 0; }
+  .chk span { display: inline-block; padding: 7px 12px; border-radius: 999px; font-size: 14px;
+              border: 1.5px solid var(--line); background: #FCFBFD; }
+  .chk input:checked + span { background: var(--tint); border-color: var(--acc); color: var(--ink); font-weight: 600; }
+  .seg { display: flex; background: #F4F0F6; border-radius: 12px; padding: 3px; margin-top: 3px; }
+  .seg label { flex: 1; text-align: center; }
+  .seg input { display: none; }
+  .seg span { display: block; padding: 7px 0; border-radius: 9px; font-size: 15px; color: var(--sub); }
+  .seg input:checked + span { background: #fff; color: var(--ink); font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+
+  .results { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
+  .res { background: var(--tint); border-radius: 16px; padding: 10px 12px; }
+  .res.full { grid-column: 1 / -1; }
+  .res .k { font-size: 12px; color: var(--sub); }
+  .res .v { font-size: 24px; font-weight: 700; line-height: 1.2; }
+  .res .v small { font-size: 13px; font-weight: 500; }
+  .res .d { font-size: 12px; margin-top: 2px; }
+  .res.empty .v { color: #C8C0CF; }
+  .note { font-size: 11px; color: var(--sub); margin-top: 12px; line-height: 1.6; }
+  .reset { all: unset; font-size: 13px; color: var(--acc); margin-top: 12px; cursor: pointer; display: inline-block; }
+  footer { text-align: center; font-size: 11px; color: var(--sub); padding: 12px 20px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Medi<span>Cal</span></h1>
+  <p>診療で使う計算をまとめて</p>
+</header>
+
+<main>
+
+<!-- ================= 悪性リンパ腫 ================= -->
+<section class="card ml" id="ml">
+  <button class="head" type="button">
+    <div class="ico">
+      <!-- リンパ球 -->
+      <svg viewBox="0 0 64 64">
+        <circle cx="32" cy="32" r="26" fill="#F7F3FF" stroke="#8E7CC3" stroke-width="2.5"/>
+        <circle cx="32" cy="32" r="19" fill="#B7A6E6"/>
+        <circle cx="26" cy="27" r="3" fill="#9A87D4"/><circle cx="37" cy="36" r="4" fill="#9A87D4"/>
+        <circle cx="35" cy="24" r="2" fill="#9A87D4"/><circle cx="25" cy="38" r="2.2" fill="#9A87D4"/>
+        <ellipse cx="22" cy="22" rx="4" ry="2.5" fill="#fff" opacity=".6" transform="rotate(-35 22 22)"/>
+      </svg>
+    </div>
+    <div class="ttl"><b>MLリスク分類</b><small>IPI ・ NCCN-IPI ・ CNS-IPI</small></div>
+    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
+  <div class="body">
+    <h3>患者情報</h3>
+    <div class="grid">
+      <label class="f">年齢<input type="number" inputmode="numeric" id="ml-age" data-sync="age" placeholder="歳"></label>
+      <label class="f">ECOG PS
+        <select id="ml-ps"><option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option></select>
+      </label>
+      <label class="f">LDH <span class="unit">U/L</span><input type="number" inputmode="decimal" id="ml-ldh" data-sync="ldh"></label>
+      <label class="f">LDH 基準上限 <span class="unit">U/L</span><input type="number" inputmode="decimal" id="ml-uln" data-sync="uln" value="222"></label>
+      <label class="f">Ann Arbor 病期
+        <select id="ml-stage"><option value="">—</option><option value="1">I</option><option value="2">II</option><option value="3">III</option><option value="4">IV</option></select>
+      </label>
+      <label class="f">節外病変の部位数<input type="number" inputmode="numeric" id="ml-en" placeholder="0"></label>
+    </div>
+    <h3>節外病変の部位</h3>
+    <div class="checks">
+      <label class="chk"><input type="checkbox" id="ml-bm"><span>骨髄</span></label>
+      <label class="chk"><input type="checkbox" id="ml-cns"><span>CNS</span></label>
+      <label class="chk"><input type="checkbox" id="ml-liver"><span>肝・消化管</span></label>
+      <label class="chk"><input type="checkbox" id="ml-lung"><span>肺</span></label>
+      <label class="chk"><input type="checkbox" id="ml-kid"><span>腎・副腎</span></label>
+    </div>
+    <div class="results">
+      <div class="res full" id="r-ipi"></div>
+      <div class="res full" id="r-nccn"></div>
+      <div class="res full" id="r-cns"></div>
+    </div>
+    <p class="note">IPI：年齢&gt;60、LDH&gt;基準上限、PS≥2、病期III/IV、節外病変&gt;1部位。<br>
+      NCCN-IPI：年齢 41–60/61–75/&gt;75 → 1/2/3点、LDH比 &gt;1–3/&gt;3 → 1/2点、病期III/IV・主要節外病変（骨髄・CNS・肝/消化管・肺）・PS≥2 各1点。<br>
+      CNS-IPI：IPI 5因子＋腎・副腎浸潤（0–1 低、2–3 中、4–6 高）。</p>
+    <button class="reset" type="button">入力をクリア</button>
+  </div>
+</section>
+
+<!-- ================= 多発性骨髄腫 ================= -->
+<section class="card mm" id="mm">
+  <button class="head" type="button">
+    <div class="ico">
+      <!-- 形質細胞（偏在核＋核周明庭） -->
+      <svg viewBox="0 0 64 64">
+        <ellipse cx="32" cy="33" rx="27" ry="22" fill="#FDF3F6" stroke="#D17A96" stroke-width="2.5"/>
+        <ellipse cx="34" cy="33" rx="22" ry="17" fill="#F2B7C8"/>
+        <circle cx="21" cy="31" r="12" fill="#FFF6F8"/>
+        <circle cx="20" cy="31" r="9.5" fill="#B9618A"/>
+        <circle cx="17" cy="28" r="1.8" fill="#8F4569"/><circle cx="23" cy="33" r="2" fill="#8F4569"/>
+        <circle cx="18" cy="35" r="1.4" fill="#8F4569"/><circle cx="23" cy="27" r="1.4" fill="#8F4569"/>
+      </svg>
+    </div>
+    <div class="ttl"><b>MMリスク分類</b><small>ISS ・ R-ISS ・ R2-ISS ・ Durie &amp; Salmon</small></div>
+    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
+  <div class="body">
+    <h3>血液検査</h3>
+    <div class="grid">
+      <label class="f">β2MG <span class="unit">mg/L</span><input type="number" inputmode="decimal" id="mm-b2m"></label>
+      <label class="f">Alb <span class="unit">g/dL</span><input type="number" inputmode="decimal" id="mm-alb"></label>
+      <label class="f">LDH <span class="unit">U/L</span><input type="number" inputmode="decimal" id="mm-ldh" data-sync="ldh"></label>
+      <label class="f">LDH 基準上限 <span class="unit">U/L</span><input type="number" inputmode="decimal" id="mm-uln" data-sync="uln" value="222"></label>
+    </div>
+    <h3>FISH（該当を選択）</h3>
+    <div class="checks">
+      <label class="chk"><input type="checkbox" id="mm-17p"><span>del(17p)</span></label>
+      <label class="chk"><input type="checkbox" id="mm-414"><span>t(4;14)</span></label>
+      <label class="chk"><input type="checkbox" id="mm-1416"><span>t(14;16)</span></label>
+      <label class="chk"><input type="checkbox" id="mm-1q"><span>1q gain/amp</span></label>
+      <label class="chk"><input type="checkbox" id="mm-nofish"><span>FISH未検査</span></label>
+    </div>
+    <h3>Durie &amp; Salmon</h3>
+    <div class="grid">
+      <label class="f">Hb <span class="unit">g/dL</span><input type="number" inputmode="decimal" id="mm-hb"></label>
+      <label class="f">補正Ca <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="mm-ca"></label>
+      <label class="f">Cr <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="mm-cr" data-sync="cr"></label>
+      <label class="f">骨病変
+        <select id="mm-bone"><option value="">—</option><option value="0">正常／孤立性</option><option value="1">溶骨性病変あり</option><option value="2">進行した多発溶骨病変</option></select>
+      </label>
+      <label class="f">M蛋白の種類
+        <select id="mm-mtype"><option value="">—</option><option value="G">IgG</option><option value="A">IgA</option><option value="O">その他／BJのみ</option></select>
+      </label>
+      <label class="f">M蛋白量 <span class="unit">g/dL</span><input type="number" inputmode="decimal" id="mm-mval"></label>
+      <label class="f full">尿中BJ蛋白 <span class="unit">g/日（不明なら空欄）</span><input type="number" inputmode="decimal" id="mm-bj"></label>
+    </div>
+    <div class="results">
+      <div class="res" id="r-iss"></div>
+      <div class="res" id="r-riss"></div>
+      <div class="res" id="r-r2iss"></div>
+      <div class="res" id="r-ds"></div>
+    </div>
+    <p class="note">ISS：β2MG&lt;3.5 かつ Alb≥3.5 → I、β2MG≥5.5 → III、他 II。<br>
+      R-ISS：高リスク染色体異常＝del(17p)・t(4;14)・t(14;16)。<br>
+      R2-ISS：ISS II 1点、ISS III 1.5点、del(17p) 1点、LDH高値 1点、t(4;14) 1点、1q+ 0.5点（0 I、0.5–1 II、1.5–2.5 III、3–5 IV）。<br>
+      D&amp;S：I＝Hb&gt;10・Ca≤12・骨正常/孤立性・低M蛋白（IgG&lt;5、IgA&lt;3、BJ&lt;4）をすべて満たす。III＝Hb&lt;8.5・Ca&gt;12・進行した溶骨病変・高M蛋白（IgG&gt;7、IgA&gt;5、BJ&gt;12）のいずれか。A：Cr&lt;2.0、B：Cr≥2.0。FISHは未選択の項目を「陰性」として計算するため、未検査なら「FISH未検査」を選ぶ。</p>
+    <button class="reset" type="button">入力をクリア</button>
+  </div>
+</section>
+
+<!-- ================= 腎機能 ================= -->
+<section class="card kd" id="kd">
+  <button class="head" type="button">
+    <div class="ico">
+      <!-- 腎臓 -->
+      <svg viewBox="0 0 64 64">
+        <path d="M24 8c-10 0-16 10-16 23s5 25 15 25c7 0 9-6 6-11-2-4-2-9 1-13 3-4 2-9-1-12 3-6 1-12-5-12z" fill="#A9DCC6" stroke="#5FA889" stroke-width="2.2"/>
+        <path d="M40 8c10 0 16 10 16 23s-5 25-15 25c-7 0-9-6-6-11 2-4 2-9-1-13-3-4-2-9 1-12-3-6-1-12 5-12z" fill="#A9DCC6" stroke="#5FA889" stroke-width="2.2"/>
+        <path d="M27 32c2-1 4-1 5 1v24M37 32c-2-1-4-1-5 1" fill="none" stroke="#F2A7B5" stroke-width="2.4" stroke-linecap="round"/>
+        <ellipse cx="17" cy="20" rx="3.5" ry="2" fill="#fff" opacity=".7" transform="rotate(-50 17 20)"/>
+        <ellipse cx="47" cy="20" rx="3.5" ry="2" fill="#fff" opacity=".7" transform="rotate(50 47 20)"/>
+      </svg>
+    </div>
+    <div class="ttl"><b>腎機能</b><small>個別化 eGFR ・ 個別化 eCCr</small></div>
+    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
+  <div class="body">
+    <h3>患者情報</h3>
+    <div class="grid">
+      <div class="f full" style="font-size:12px;color:var(--sub)">性別
+        <div class="seg">
+          <label><input type="radio" name="kd-sex" value="M" data-sync="sex"><span>男性</span></label>
+          <label><input type="radio" name="kd-sex" value="F" data-sync="sex"><span>女性</span></label>
+        </div>
+      </div>
+      <label class="f">年齢<input type="number" inputmode="numeric" id="kd-age" data-sync="age" placeholder="歳"></label>
+      <label class="f">Cr <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="kd-cr" data-sync="cr"></label>
+      <label class="f">身長 <span class="unit">cm</span><input type="number" inputmode="decimal" id="kd-ht" data-sync="ht"></label>
+      <label class="f">体重 <span class="unit">kg</span><input type="number" inputmode="decimal" id="kd-wt" data-sync="wt"></label>
+      <label class="f full">シスタチンC <span class="unit">mg/L（任意）</span><input type="number" inputmode="decimal" id="kd-cys"></label>
+    </div>
+    <div class="results">
+      <div class="res full" id="r-egfr"></div>
+      <div class="res full" id="r-egfrcys"></div>
+      <div class="res full" id="r-ccr"></div>
+      <div class="res full" id="r-bsa"></div>
+    </div>
+    <p class="note">eGFRcr＝194×Cr<sup>−1.094</sup>×年齢<sup>−0.287</sup>（女性×0.739）。eGFRcys＝104×Cys<sup>−1.019</sup>×0.996<sup>年齢</sup>（女性×0.929）−8。<br>
+      個別化＝標準化eGFR×BSA/1.73（BSAはDuBois式）。<br>
+      eCCr＝Cockcroft-Gault（(140−年齢)×体重/(72×Cr)、女性×0.85）。日本の酵素法Crは Jaffe 法より約0.2 mg/dL低いため、Cr+0.2 で計算した値も併記。</p>
+    <button class="reset" type="button">入力をクリア</button>
+  </div>
+</section>
+
+<!-- ================= 栄養 ================= -->
+<section class="card nt" id="nt">
+  <button class="head" type="button">
+    <div class="ico">
+      <!-- りんご＋お茶碗 -->
+      <svg viewBox="0 0 64 64">
+        <path d="M32 18c-4-4-14-4-17 4-4 10 2 30 11 32 3 1 4-1 6-1s3 2 6 1c9-2 15-22 11-32-3-8-13-8-17-4z" fill="#FFB8A1" stroke="#E07F63" stroke-width="2.2"/>
+        <path d="M32 18c0-5 1-9 4-12" fill="none" stroke="#9B6B4A" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M34 12c4-5 10-5 13-3-3 4-8 6-13 3z" fill="#9ED3A6" stroke="#5FA889" stroke-width="1.6"/>
+        <ellipse cx="22" cy="28" rx="3.5" ry="5" fill="#fff" opacity=".6" transform="rotate(20 22 28)"/>
+      </svg>
+    </div>
+    <div class="ttl"><b>栄養</b><small>標準体重 ・ 必要エネルギー ・ Harris-Benedict</small></div>
+    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
+  <div class="body">
+    <h3>患者情報</h3>
+    <div class="grid">
+      <div class="f full" style="font-size:12px;color:var(--sub)">性別
+        <div class="seg">
+          <label><input type="radio" name="nt-sex" value="M" data-sync="sex"><span>男性</span></label>
+          <label><input type="radio" name="nt-sex" value="F" data-sync="sex"><span>女性</span></label>
+        </div>
+      </div>
+      <label class="f">年齢<input type="number" inputmode="numeric" id="nt-age" data-sync="age" placeholder="歳"></label>
+      <label class="f">身長 <span class="unit">cm</span><input type="number" inputmode="decimal" id="nt-ht" data-sync="ht"></label>
+      <label class="f">体重 <span class="unit">kg</span><input type="number" inputmode="decimal" id="nt-wt" data-sync="wt"></label>
+      <label class="f">活動係数
+        <select id="nt-af">
+          <option value="1.0">1.0 寝たきり</option><option value="1.2" selected>1.2 ベッド上安静</option>
+          <option value="1.3">1.3 ベッド外活動</option><option value="1.5">1.5 軽労働</option>
+        </select>
+      </label>
+      <label class="f full">ストレス係数
+        <select id="nt-sf">
+          <option value="1.0" selected>1.0 ストレスなし</option><option value="1.1">1.1 軽度（小手術・軽度感染）</option>
+          <option value="1.2">1.2 中等度（癌・中等度感染）</option><option value="1.3">1.3 高度（大手術・重症感染）</option>
+          <option value="1.5">1.5 重度（敗血症・多臓器不全）</option>
+        </select>
+      </label>
+    </div>
+    <div class="results">
+      <div class="res" id="r-ibw"></div>
+      <div class="res" id="r-bmi"></div>
+      <div class="res full" id="r-kcal"></div>
+      <div class="res" id="r-bee"></div>
+      <div class="res" id="r-tee"></div>
+    </div>
+    <p class="note">標準体重＝22×身長(m)²。必要エネルギー＝標準体重×25〜30 kcal。<br>
+      Harris-Benedict：男性 66.47+13.75W+5.0H−6.76A、女性 655.1+9.56W+1.85H−4.68A（W kg、H cm、A 歳）。TEE＝BEE×活動係数×ストレス係数。</p>
+    <button class="reset" type="button">入力をクリア</button>
+  </div>
+</section>
+
+</main>
+<footer>計算結果は目安です。最終判断は原典・臨床所見とあわせて行ってください。</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const num = id => { const v = parseFloat($(id).value); return isNaN(v) ? null : v; };
+const has = (...xs) => xs.every(x => x !== null && x !== undefined && x !== '');
+const fmt = (x, d = 1) => x.toFixed(d);
+
+function box(id, key, val, desc) {
+  const el = $(id);
+  if (val === null) {
+    el.className = el.className.replace(' empty', '') + ' empty';
+    el.innerHTML = `<div class="k">${key}</div><div class="v">—</div><div class="d">${desc || '入力待ち'}</div>`;
+  } else {
+    el.className = el.className.replace(' empty', '');
+    el.innerHTML = `<div class="k">${key}</div><div class="v">${val}</div><div class="d">${desc || ''}</div>`;
+  }
+}
+
+/* ---------- ML ---------- */
+function calcML() {
+  const age = num('ml-age'), ldh = num('ml-ldh'), uln = num('ml-uln'), en = num('ml-en') ?? 0;
+  const ps = $('ml-ps').value, st = $('ml-stage').value;
+  const ok = has(age, ldh, uln, ps, st) && uln > 0;
+  if (!ok) { ['r-ipi', 'r-nccn', 'r-cns'].forEach((r, i) => box(r, ['IPI', 'NCCN-IPI', 'CNS-IPI'][i], null)); return; }
+  const fAge = age > 60, fLdh = ldh > uln, fPs = +ps >= 2, fSt = +st >= 3, fEn = en > 1;
+  const ipi = [fAge, fLdh, fPs, fSt, fEn].filter(Boolean).length;
+  const ipiRisk = ipi <= 1 ? 'Low' : ipi === 2 ? 'Low-intermediate' : ipi === 3 ? 'High-intermediate' : 'High';
+  box('r-ipi', 'IPI', `${ipi}<small> / 5点</small>`, ipiRisk);
+
+  const ratio = ldh / uln;
+  const major = $('ml-bm').checked || $('ml-cns').checked || $('ml-liver').checked || $('ml-lung').checked;
+  const n = (age > 75 ? 3 : age > 60 ? 2 : age > 40 ? 1 : 0) + (ratio > 3 ? 2 : ratio > 1 ? 1 : 0)
+          + (fSt ? 1 : 0) + (major ? 1 : 0) + (fPs ? 1 : 0);
+  const nRisk = n <= 1 ? 'Low' : n <= 3 ? 'Low-intermediate' : n <= 5 ? 'High-intermediate' : 'High';
+  box('r-nccn', 'NCCN-IPI', `${n}<small> / 8点</small>`, `${nRisk}（LDH比 ${fmt(ratio, 2)}）`);
+
+  const c = ipi + ($('ml-kid').checked ? 1 : 0);
+  const cRisk = c <= 1 ? 'Low' : c <= 3 ? 'Intermediate' : 'High';
+  box('r-cns', 'CNS-IPI', `${c}<small> / 6点</small>`, cRisk);
+}
+
+/* ---------- MM ---------- */
+function calcMM() {
+  const b2m = num('mm-b2m'), alb = num('mm-alb'), ldh = num('mm-ldh'), uln = num('mm-uln');
+  let iss = null;
+  if (has(b2m, alb)) iss = b2m >= 5.5 ? 3 : (b2m < 3.5 && alb >= 3.5) ? 1 : 2;
+  const roman = ['', 'I', 'II', 'III', 'IV'];
+  box('r-iss', 'ISS', iss ? roman[iss] : null);
+
+  const d17 = $('mm-17p').checked, t414 = $('mm-414').checked, t1416 = $('mm-1416').checked, q1 = $('mm-1q').checked;
+  if ($('mm-nofish').checked) {
+    box('r-riss', 'R-ISS', null, 'FISH結果が必要'); box('r-r2iss', 'R2-ISS', null, 'FISH結果が必要');
+  } else if (iss && has(ldh, uln)) {
+    const hiLdh = ldh > uln, hiCa = d17 || t414 || t1416;
+    const r = (iss === 1 && !hiCa && !hiLdh) ? 1 : (iss === 3 && (hiCa || hiLdh)) ? 3 : 2;
+    box('r-riss', 'R-ISS', roman[r], hiCa ? '高リスクCAあり' : '高リスクCAなし');
+    const s = (iss === 2 ? 1 : iss === 3 ? 1.5 : 0) + (d17 ? 1 : 0) + (hiLdh ? 1 : 0) + (t414 ? 1 : 0) + (q1 ? 0.5 : 0);
+    const r2 = s === 0 ? 1 : s <= 1 ? 2 : s <= 2.5 ? 3 : 4;
+    box('r-r2iss', 'R2-ISS', roman[r2], `${s}点`);
+  } else {
+    box('r-riss', 'R-ISS', null); box('r-r2iss', 'R2-ISS', null);
+  }
+
+  const hb = num('mm-hb'), ca = num('mm-ca'), cr = num('mm-cr'), bj = num('mm-bj'), mval = num('mm-mval');
+  const bone = $('mm-bone').value, mt = $('mm-mtype').value;
+  if (has(hb, ca, cr, bone, mt)) {
+    const mLow = mt === 'G' ? (mval !== null && mval < 5) : mt === 'A' ? (mval !== null && mval < 3) : true;
+    const mHigh = mt === 'G' ? (mval !== null && mval > 7) : mt === 'A' ? (mval !== null && mval > 5) : false;
+    const bjLow = bj === null || bj < 4, bjHigh = bj !== null && bj > 12;
+    let st;
+    if (hb < 8.5 || ca > 12 || bone === '2' || mHigh || bjHigh) st = 3;
+    else if (hb > 10 && ca <= 12 && bone === '0' && mLow && bjLow) st = 1;
+    else st = 2;
+    box('r-ds', 'Durie &amp; Salmon', roman[st] + (cr >= 2 ? 'B' : 'A'), cr >= 2 ? 'Cr≥2.0' : 'Cr<2.0');
+  } else box('r-ds', 'Durie &amp; Salmon', null);
+}
+
+/* ---------- 腎機能 ---------- */
+const sexOf = name => (document.querySelector(`input[name="${name}"]:checked`) || {}).value;
+const dubois = (ht, wt) => 0.007184 * Math.pow(wt, 0.425) * Math.pow(ht, 0.725);
+function gStage(g) {
+  return g >= 90 ? 'G1' : g >= 60 ? 'G2' : g >= 45 ? 'G3a' : g >= 30 ? 'G3b' : g >= 15 ? 'G4' : 'G5';
+}
+function calcKD() {
+  const sex = sexOf('kd-sex'), age = num('kd-age'), cr = num('kd-cr'), ht = num('kd-ht'), wt = num('kd-wt'), cys = num('kd-cys');
+  const f = sex === 'F';
+  const bsa = has(ht, wt) ? dubois(ht, wt) : null;
+  box('r-bsa', '体表面積（DuBois）', bsa ? `${fmt(bsa, 2)}<small> m²</small>` : null);
+
+  if (has(sex, age, cr) && cr > 0) {
+    const e = 194 * Math.pow(cr, -1.094) * Math.pow(age, -0.287) * (f ? 0.739 : 1);
+    if (bsa) box('r-egfr', '個別化 eGFRcr', `${fmt(e * bsa / 1.73)}<small> mL/min</small>`, `標準化 ${fmt(e)} mL/min/1.73m²（${gStage(e)}）`);
+    else box('r-egfr', '個別化 eGFRcr', null, `標準化 ${fmt(e)} mL/min/1.73m²（${gStage(e)}）／身長・体重で個別化`);
+  } else box('r-egfr', '個別化 eGFRcr', null);
+
+  if (has(sex, age, cys) && cys > 0) {
+    const e = 104 * Math.pow(cys, -1.019) * Math.pow(0.996, age) * (f ? 0.929 : 1) - 8;
+    if (bsa) box('r-egfrcys', '個別化 eGFRcys', `${fmt(e * bsa / 1.73)}<small> mL/min</small>`, `標準化 ${fmt(e)} mL/min/1.73m²`);
+    else box('r-egfrcys', '個別化 eGFRcys', null, `標準化 ${fmt(e)} mL/min/1.73m²／身長・体重で個別化`);
+  } else box('r-egfrcys', '個別化 eGFRcys', null, 'シスタチンC入力時に表示');
+
+  if (has(sex, age, cr, wt) && cr > 0) {
+    const cg = c => (140 - age) * wt / (72 * c) * (f ? 0.85 : 1);
+    box('r-ccr', 'eCCr（Cockcroft-Gault）', `${fmt(cg(cr))}<small> mL/min</small>`, `Cr+0.2 補正：${fmt(cg(cr + 0.2))} mL/min`);
+  } else box('r-ccr', 'eCCr（Cockcroft-Gault）', null);
+}
+
+/* ---------- 栄養 ---------- */
+function calcNT() {
+  const sex = sexOf('nt-sex'), age = num('nt-age'), ht = num('nt-ht'), wt = num('nt-wt');
+  const af = parseFloat($('nt-af').value), sf = parseFloat($('nt-sf').value);
+  if (has(ht)) {
+    const ibw = 22 * Math.pow(ht / 100, 2);
+    box('r-ibw', '標準体重', `${fmt(ibw)}<small> kg</small>`);
+    box('r-kcal', '必要エネルギー（標準体重×25〜30）', `${Math.round(ibw * 25)}〜${Math.round(ibw * 30)}<small> kcal/日</small>`);
+    box('r-bmi', 'BMI', has(wt) ? fmt(wt / Math.pow(ht / 100, 2)) : null, has(wt) ? `標準体重比 ${Math.round(wt / ibw * 100)}%` : '');
+  } else { box('r-ibw', '標準体重', null); box('r-kcal', '必要エネルギー（標準体重×25〜30）', null); box('r-bmi', 'BMI', null); }
+
+  if (has(sex, age, ht, wt)) {
+    const bee = sex === 'M' ? 66.47 + 13.75 * wt + 5.0 * ht - 6.76 * age : 655.1 + 9.56 * wt + 1.85 * ht - 4.68 * age;
+    box('r-bee', 'BEE（Harris-Benedict原式）', `${Math.round(bee)}<small> kcal</small>`);
+    box('r-tee', 'TEE', `${Math.round(bee * af * sf)}<small> kcal</small>`, `×${af}×${sf}`);
+  } else { box('r-bee', 'BEE（Harris-Benedict原式）', null); box('r-tee', 'TEE', null); }
+}
+
+const calcAll = () => { calcML(); calcMM(); calcKD(); calcNT(); };
+
+/* ---------- 共通項目の同期（年齢・身長・体重・Cr・性別など） ---------- */
+document.addEventListener('input', e => {
+  const k = e.target.dataset.sync;
+  if (k) document.querySelectorAll(`[data-sync="${k}"]`).forEach(el => {
+    if (el === e.target) return;
+    if (el.type === 'radio') el.checked = el.value === e.target.value;
+    else el.value = e.target.value;
+  });
+  calcAll();
+});
+document.addEventListener('change', calcAll);
+
+/* ---------- 開閉 ---------- */
+document.querySelectorAll('.card > .head').forEach(h => h.addEventListener('click', () => {
+  const card = h.parentElement;
+  card.classList.toggle('open');
+  if (card.classList.contains('open')) setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+}));
+document.querySelectorAll('.reset').forEach(b => b.addEventListener('click', () => {
+  const body = b.closest('.body');
+  body.querySelectorAll('input').forEach(i => {
+    if (i.type === 'checkbox' || i.type === 'radio') i.checked = false;
+    else i.value = i.defaultValue;
+  });
+  body.querySelectorAll('select').forEach(s => { s.selectedIndex = [...s.options].findIndex(o => o.defaultSelected); if (s.selectedIndex < 0) s.selectedIndex = 0; });
+  calcAll();
+}));
+
+calcAll();
+
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
+</body>
+</html>

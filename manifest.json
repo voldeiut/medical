@@ -1,0 +1,9 @@
+{
+  "name": "MediCal",
+  "short_name": "MediCal",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#FFF8F3",
+  "theme_color": "#FFF8F3",
+  "icons": [{ "src": "icon.png", "sizes": "512x512", "type": "image/png" }]
+}
