@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#FFF8F3">
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="manifest" href="manifest.json">
-<title>MediCal</title>
+<title>MediCal for Hematologist</title>
 <style>
   :root {
     --bg: #FFF8F3;
@@ -26,6 +26,10 @@
     --mr: #F4E2F6;   --mr-d: #A866B0;
     --ct: #D9F1F4;   --ct-d: #3E9AA8;
     --tl: #FFE3DD;   --tl-d: #D9695F;
+    --fl: #E3F2DA;   --fl-d: #6FA35A;
+    --cl: #E1E6FA;   --cl-d: #6276C2;
+    --mt: #FBE7D8;   --mt-d: #C47E52;
+    --vc: #EEF5D6;   --vc-d: #879B37;
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
@@ -37,6 +41,23 @@
   header { padding: 20px 20px 8px; }
   header h1 { margin: 0; font-size: 28px; letter-spacing: .02em; }
   header h1 span { color: var(--mm-d); }
+  header h1 em { font-style: normal; font-size: 15px; font-weight: 600; color: var(--sub); margin-left: 4px; letter-spacing: .01em; }
+  .hrow { display: flex; align-items: center; gap: 10px; }
+  .hrow h1 { flex: 1; }
+  .hbtn { all: unset; font-size: 13px; color: var(--ink); background: #fff; border-radius: 999px; padding: 7px 14px;
+          box-shadow: 0 1px 6px rgba(120, 100, 140, .12); cursor: pointer; white-space: nowrap; }
+  body.sorting .hbtn { background: var(--ink); color: #fff; }
+  #sortreset { display: none; margin: 4px 20px 0; }
+  body.sorting #sortreset { display: inline-block; }
+  .card { position: relative; }
+  .mv { display: none; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); gap: 6px; }
+  .mv button { all: unset; width: 38px; height: 38px; border-radius: 12px; background: #F4F0F6; display: grid; place-items: center;
+               font-size: 16px; color: var(--ink); cursor: pointer; }
+  .mv button:active { background: var(--line); }
+  body.sorting .mv { display: flex; }
+  body.sorting .card .chev, body.sorting .card .body { display: none; }
+  body.sorting .card > button.head { cursor: default; padding-right: 110px; }
+  body.sorting .card { margin: 8px 0; }
   header p { margin: 2px 0 0; color: var(--sub); font-size: 13px; }
   main { padding: 8px 14px; max-width: 640px; margin: 0 auto; }
 
@@ -101,6 +122,17 @@
   .mr .ico { background: var(--mr); }  .mr { --acc: var(--mr-d); --tint: var(--mr); }
   .ct .ico { background: var(--ct); }  .ct { --acc: var(--ct-d); --tint: var(--ct); }
   .tl .ico { background: var(--tl); }  .tl { --acc: var(--tl-d); --tint: var(--tl); }
+  .fl .ico { background: var(--fl); }  .fl { --acc: var(--fl-d); --tint: var(--fl); }
+  .cl .ico { background: var(--cl); }  .cl { --acc: var(--cl-d); --tint: var(--cl); }
+  .mt .ico { background: var(--mt); }  .mt { --acc: var(--mt-d); --tint: var(--mt); }
+  .vc .ico { background: var(--vc); }  .vc { --acc: var(--vc-d); --tint: var(--vc); }
+
+  .chk.warn span { background: #F1F2F5; border: 1.5px dashed #9AA0AC; color: #5C6270; }
+  .chk.warn input:checked + span { background: #FDE2E0; border: 1.5px solid #C0473B; color: #A3352B; font-weight: 600; }
+  .ice-items { transition: opacity .2s; }
+  .ice-items.off { opacity: .35; pointer-events: none; }
+  .res ul { margin: 4px 0 0; padding-left: 1.2em; }
+  .res li { margin: 1px 0; }
 
   .res.txt .v { font-size: 17px; }
   .res.alert { background: #FFE1DE; }
@@ -129,8 +161,12 @@
 </head>
 <body>
 <header>
-  <h1>Medi<span>Cal</span></h1>
+  <div class="hrow">
+    <h1>Medi<span>Cal</span><em>for Hematologist</em></h1>
+    <button class="hbtn" id="sortbtn" type="button">並べ替え</button>
+  </div>
   <p>診療で使う計算をまとめて</p>
+  <button class="reset" id="sortreset" type="button">初期の並び順に戻す</button>
 </header>
 
 <main>
@@ -148,7 +184,7 @@
         <ellipse cx="22" cy="22" rx="4" ry="2.5" fill="#fff" opacity=".6" transform="rotate(-35 22 22)"/>
       </svg>
     </div>
-    <div class="ttl"><b>MLリスク分類</b><small>IPI ・ NCCN-IPI ・ CNS-IPI</small></div>
+    <div class="ttl"><b>MLリスク分類</b><small>IPI ・ NCCN-IPI ・ CNS-IPI ・ FLIPI ・ FLIPI2 ・ MIPI ・ MIPI-c</small></div>
     <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
   </button>
   <div class="body">
@@ -178,9 +214,147 @@
       <div class="res full" id="r-nccn"></div>
       <div class="res full" id="r-cns"></div>
     </div>
+    <h3>FL：FLIPI ・ FLIPI2（上の年齢・LDH・病期・骨髄も使用）</h3>
+    <div class="grid">
+      <label class="f">Hb <span class="unit">g/dL</span><input type="number" inputmode="decimal" id="ml-hb" data-sync="hb"></label>
+      <label class="f">リンパ節領域数 <span class="unit">FLIPI 領域</span><input type="number" inputmode="numeric" id="ml-nodes"></label>
+      <label class="f">最大リンパ節の長径 <span class="unit">cm</span><input type="number" inputmode="decimal" id="ml-lnmax"></label>
+      <div class="f" style="align-self:end"><label class="chk"><input type="checkbox" id="ml-b2m"><span>β2MG &gt;基準上限</span></label></div>
+    </div>
+    <div class="results">
+      <div class="res" id="r-flipi"></div>
+      <div class="res" id="r-flipi2"></div>
+    </div>
+    <h3>MCL：MIPI ・ MIPI-c（上の年齢・PS・LDH も使用）</h3>
+    <div class="grid">
+      <label class="f">WBC <span class="unit">/μL</span><input type="number" inputmode="numeric" id="ml-wbc" data-sync="wbc"></label>
+      <label class="f">Ki-67 <span class="unit">%</span><input type="number" inputmode="decimal" id="ml-ki67"></label>
+    </div>
+    <div class="results">
+      <div class="res" id="r-mipi"></div>
+      <div class="res" id="r-mipic"></div>
+    </div>
     <p class="note">IPI：年齢&gt;60、LDH&gt;基準上限、PS≥2、病期III/IV、節外病変&gt;1部位。<br>
       NCCN-IPI：年齢 41–60/61–75/&gt;75 → 1/2/3点、LDH比 &gt;1–3/&gt;3 → 1/2点、病期III/IV・主要節外病変（骨髄・CNS・肝/消化管・肺）・PS≥2 各1点。<br>
-      CNS-IPI：IPI 5因子＋腎・副腎浸潤（0–1 低、2–3 中、4–6 高）。</p>
+      CNS-IPI：IPI 5因子＋腎・副腎浸潤（0–1 低、2–3 中、4–6 高）。<br>
+      FLIPI：年齢 &gt;60、病期III/IV、Hb &lt;12、LDH &gt;基準上限、リンパ節領域 &gt;4（FLIPI 独自の領域図で数える。Ann Arbor の領域とは異なる）。0–1 低、2 中、≥3 高（Solal-Céligny P, et al. Blood 2004）。<br>
+      FLIPI2：年齢 &gt;60、β2MG &gt;基準上限、Hb &lt;12、骨髄浸潤、最大の罹患リンパ節の長径 &gt;6 cm。0 低、1–2 中、3–5 高（Federico M, et al. J Clin Oncol 2009）。<br>
+      MIPI＝0.03535×年齢＋0.6978（PS &gt;1）＋1.367×log<sub>10</sub>(LDH/基準上限)＋0.9393×log<sub>10</sub>(WBC /μL)。&lt;5.7 低、5.7–6.2 未満 中、≥6.2 高（Hoster E, et al. Blood 2008）。<br>
+      MIPI-c：MIPI 区分と Ki-67（≥30% を高値）の組み合わせ。低＋Ki-67低 → 低、低＋高 または 中＋低 → 低中、中＋高 または 高＋低 → 高中、高＋高 → 高（Hoster E, et al. J Clin Oncol 2016）。</p>
+    <button class="reset" type="button">入力をクリア</button>
+  </div>
+</section>
+
+<!-- ================= FL 治療開始規準 ================= -->
+<section class="card fl" id="fl">
+  <button class="head" type="button">
+    <div class="ico">
+      <!-- 濾胞（胚中心を囲むマントル帯） -->
+      <svg viewBox="0 0 64 64">
+        <circle cx="32" cy="32" r="26" fill="#F4FBEF" stroke="#6FA35A" stroke-width="2.5"/>
+        <circle cx="24" cy="26" r="10" fill="#BFE0AE"/><circle cx="24" cy="26" r="5.5" fill="#E9F6E1"/>
+        <circle cx="41" cy="24" r="8" fill="#BFE0AE"/><circle cx="41" cy="24" r="4.2" fill="#E9F6E1"/>
+        <circle cx="34" cy="43" r="10" fill="#BFE0AE"/><circle cx="34" cy="43" r="5.5" fill="#E9F6E1"/>
+        <circle cx="20" cy="44" r="2" fill="#8DBF78"/><circle cx="47" cy="38" r="2" fill="#8DBF78"/><circle cx="31" cy="14" r="1.8" fill="#8DBF78"/>
+      </svg>
+    </div>
+    <div class="ttl"><b>FL治療開始規準</b><small>GELF 規準 ・ BNLI 規準</small></div>
+    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
+  <div class="body">
+    <h3>腫瘍量・血液検査</h3>
+    <div class="grid">
+      <label class="f">最大腫瘤径 <span class="unit">cm（節性・節外）</span><input type="number" inputmode="decimal" id="fl-mass"></label>
+      <label class="f">長径 ≥3 cm の節性病変 <span class="unit">領域数</span><input type="number" inputmode="numeric" id="fl-n3"></label>
+      <label class="f">Hb <span class="unit">g/dL</span><input type="number" inputmode="decimal" id="fl-hb" data-sync="hb"></label>
+      <label class="f">Plt <span class="unit">/μL</span><input type="number" inputmode="numeric" id="fl-plt" data-sync="plt" placeholder="例 150000"></label>
+      <label class="f">WBC <span class="unit">/μL</span><input type="number" inputmode="numeric" id="fl-wbc" data-sync="wbc"></label>
+      <label class="f">好中球 <span class="unit">/μL</span><input type="number" inputmode="numeric" id="fl-neu"></label>
+      <label class="f full">末梢血のリンパ腫細胞 <span class="unit">/μL（白血化）</span><input type="number" inputmode="numeric" id="fl-circ"></label>
+    </div>
+    <h3>臨床所見</h3>
+    <div class="checks">
+      <label class="chk"><input type="checkbox" id="fl-b"><span>B症状</span></label>
+      <label class="chk"><input type="checkbox" id="fl-itch"><span>掻痒</span></label>
+      <label class="chk"><input type="checkbox" id="fl-spl"><span>脾腫</span></label>
+      <label class="chk"><input type="checkbox" id="fl-eff"><span>胸水・腹水</span></label>
+      <label class="chk"><input type="checkbox" id="fl-comp"><span>臓器圧迫（尿管・眼窩・消化管など）</span></label>
+      <label class="chk"><input type="checkbox" id="fl-rapid"><span>3か月以内の急速な進行</span></label>
+      <label class="chk"><input type="checkbox" id="fl-life"><span>生命を脅かす臓器浸潤</span></label>
+      <label class="chk"><input type="checkbox" id="fl-rl"><span>腎・肝浸潤</span></label>
+      <label class="chk"><input type="checkbox" id="fl-bone"><span>骨病変</span></label>
+      <label class="chk"><input type="checkbox" id="fl-bmi"><span>血球減少は骨髄浸潤による</span></label>
+    </div>
+    <div class="results">
+      <div class="res full" id="r-flsum"></div>
+      <div class="res full txt" id="r-gelf"></div>
+      <div class="res full txt" id="r-bnli"></div>
+    </div>
+    <p class="note">GELF（高腫瘍量）：最大腫瘤 ≥7 cm、長径 ≥3 cm の節性病変が3領域以上、B症状、脾腫、胸水・腹水、臓器圧迫（またはそのおそれ）、血球減少（好中球または白血球 &lt;1,000/μL、または血小板 &lt;10万/μL）、白血化（腫瘍細胞 &gt;5,000/μL）のいずれか（NCCN の記載に準拠。原著 Brice P, et al. J Clin Oncol 1997 では「&gt;7 cm」「&gt;3 cm」と記載）。血球減少・白血化はリンパ腫によるものに限る。<br>
+      BNLI：3か月以内の急速な全身性進行、生命を脅かす臓器浸潤、腎・肝浸潤、骨病変、全身症状または掻痒、骨髄浸潤による血球減少（Hb &lt;10 g/dL、WBC &lt;3,000/μL、または血小板 &lt;10万/μL）のいずれか（Ardeshna KM, et al. Lancet 2003）。<br>
+      いずれも満たさなければ低腫瘍量として無治療経過観察（watch and wait）が選択肢になる。</p>
+    <button class="reset" type="button">入力をクリア</button>
+  </div>
+</section>
+
+<!-- ================= CLL 治療開始規準 ================= -->
+<section class="card cl" id="cl">
+  <button class="head" type="button">
+    <div class="ico">
+      <!-- 小型リンパ球の集簇＋smudge 細胞 -->
+      <svg viewBox="0 0 64 64">
+        <circle cx="21" cy="22" r="11" fill="#F3F5FD" stroke="#6276C2" stroke-width="2.2"/><circle cx="21" cy="22" r="8.5" fill="#A8B4E8"/>
+        <circle cx="43" cy="22" r="11" fill="#F3F5FD" stroke="#6276C2" stroke-width="2.2"/><circle cx="43" cy="22" r="8.5" fill="#A8B4E8"/>
+        <circle cx="25" cy="44" r="11" fill="#F3F5FD" stroke="#6276C2" stroke-width="2.2"/><circle cx="25" cy="44" r="8.5" fill="#A8B4E8"/>
+        <path d="M41 37c5-2 11 1 12 6s-2 9-6 10c-3 1-5-1-8 0-4 1-6-3-4-6 1-2-1-4 0-6 1-2 3-3 6-4z" fill="#C9D1F1" stroke="#8C9AD8" stroke-width="1.6" stroke-dasharray="3 2"/>
+        <circle cx="18" cy="19" r="1.6" fill="#8291D6"/><circle cx="45" cy="24" r="1.6" fill="#8291D6"/><circle cx="27" cy="42" r="1.6" fill="#8291D6"/>
+      </svg>
+    </div>
+    <div class="ttl"><b>CLL治療開始規準</b><small>改訂 Rai 分類 ・ Binet 分類 ・ iwCLL 治療開始規準</small></div>
+    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
+  <div class="body">
+    <h3>血液検査</h3>
+    <div class="grid">
+      <label class="f">Hb <span class="unit">g/dL</span><input type="number" inputmode="decimal" id="cl-hb" data-sync="hb"></label>
+      <label class="f">Plt <span class="unit">/μL</span><input type="number" inputmode="numeric" id="cl-plt" data-sync="plt" placeholder="例 150000"></label>
+      <label class="f">リンパ球数 現在 <span class="unit">/μL</span><input type="number" inputmode="numeric" id="cl-alc"></label>
+      <label class="f">リンパ球数 以前 <span class="unit">/μL</span><input type="number" inputmode="numeric" id="cl-alc0"></label>
+      <label class="f full">以前の値は何か月前 <span class="unit">か月（倍加時間の計算用）</span><input type="number" inputmode="decimal" id="cl-mo"></label>
+    </div>
+    <h3>腫大部位（Rai・Binet）</h3>
+    <div class="checks">
+      <label class="chk"><input type="checkbox" id="cl-cer"><span>頸部リンパ節</span></label>
+      <label class="chk"><input type="checkbox" id="cl-axi"><span>腋窩リンパ節</span></label>
+      <label class="chk"><input type="checkbox" id="cl-ing"><span>鼠径リンパ節</span></label>
+      <label class="chk"><input type="checkbox" id="cl-oln"><span>その他のリンパ節</span></label>
+      <label class="chk"><input type="checkbox" id="cl-spl"><span>脾腫</span></label>
+      <label class="chk"><input type="checkbox" id="cl-liv"><span>肝腫大</span></label>
+    </div>
+    <h3>iwCLL 治療開始規準</h3>
+    <div class="grid">
+      <label class="f">脾臓 左肋骨弓下 <span class="unit">cm</span><input type="number" inputmode="decimal" id="cl-splcm"></label>
+      <label class="f">最大リンパ節の長径 <span class="unit">cm</span><input type="number" inputmode="decimal" id="cl-ln"></label>
+    </div>
+    <div class="checks sub">
+      <label class="chk"><input type="checkbox" id="cl-cyto"><span>貧血・血小板減少が出現／悪化</span></label>
+      <label class="chk"><input type="checkbox" id="cl-psp"><span>脾腫が進行性・症候性</span></label>
+      <label class="chk"><input type="checkbox" id="cl-pln"><span>リンパ節腫大が進行性・症候性</span></label>
+      <label class="chk"><input type="checkbox" id="cl-ai"><span>ステロイド反応不良の AIHA・ITP</span></label>
+      <label class="chk"><input type="checkbox" id="cl-en"><span>症候性・機能障害のある節外病変</span></label>
+      <label class="chk"><input type="checkbox" id="cl-wl"><span>6か月以内に体重 ≥10% 減少</span></label>
+      <label class="chk"><input type="checkbox" id="cl-fat"><span>強い倦怠感（PS ≥2）</span></label>
+      <label class="chk"><input type="checkbox" id="cl-fev"><span>感染なく 38℃以上が2週以上</span></label>
+      <label class="chk"><input type="checkbox" id="cl-ns"><span>感染なく盗汗が1か月以上</span></label>
+    </div>
+    <div class="results">
+      <div class="res" id="r-rai"></div>
+      <div class="res" id="r-binet"></div>
+      <div class="res full txt" id="r-iwcll"></div>
+    </div>
+    <p class="note">改訂 Rai：0＝リンパ球増多のみ（低リスク）、I＝リンパ節腫大、II＝脾腫・肝腫大（I–II 中間リスク）、III＝Hb &lt;11 g/dL、IV＝血小板 &lt;10万/μL（III–IV 高リスク）。<br>
+      Binet：5領域（頸部・腋窩・鼠径の各リンパ節〔片側・両側を問わず1領域〕、脾、肝）。A＝Hb ≥10・血小板 ≥10万・2領域以下、B＝3領域以上、C＝Hb &lt;10 または血小板 &lt;10万。Rai・Binet とも自己免疫性の貧血・血小板減少は病期判定に用いない。<br>
+      iwCLL 2018（Hallek M, et al. Blood 2018）：①進行性の骨髄不全（Hb &lt;10 g/dL・血小板 &lt;10万/μL が目安。ただし血小板減少が長期安定なら必須ではない）、②巨大（左肋骨弓下 ≥6 cm）・進行性・症候性の脾腫、③巨大（長径 ≥10 cm）・進行性・症候性のリンパ節腫大、④進行性リンパ球増多（2か月で ≥50% 増加、または倍加時間 &lt;6か月。初回リンパ球数 &lt;3万/μL では倍加時間だけで判断しない）、⑤ステロイド反応不良の自己免疫性血球減少、⑥症候性・機能障害のある節外病変、⑦病勢による症状（体重減少・倦怠感・発熱・盗汗）。いずれか1つで治療適応。早期・無症状なら経過観察。</p>
     <button class="reset" type="button">入力をクリア</button>
   </div>
 </section>
@@ -242,6 +416,67 @@
       R-ISS：高リスク染色体異常＝del(17p)・t(4;14)・t(14;16)。<br>
       R2-ISS：ISS II 1点、ISS III 1.5点、del(17p) 1点、LDH高値 1点、t(4;14) 1点、1q+ 0.5点（0 I、0.5–1 II、1.5–2.5 III、3–5 IV）。<br>
       D&amp;S：I＝Hb&gt;10・Ca≤12・骨正常/孤立性・低M蛋白（IgG&lt;5、IgA&lt;3、BJ&lt;4）をすべて満たす。III＝Hb&lt;8.5・Ca&gt;12・進行した溶骨病変・高M蛋白（IgG&gt;7、IgA&gt;5、BJ&gt;12）のいずれか。A：Cr&lt;2.0、B：Cr≥2.0。FISHは未選択の項目を「陰性」として計算するため、未検査なら「FISH未検査」を選ぶ。</p>
+    <button class="reset" type="button">入力をクリア</button>
+  </div>
+</section>
+
+<!-- ================= MM 治療開始規準 ================= -->
+<section class="card mt" id="mt">
+  <button class="head" type="button">
+    <div class="ico">
+      <!-- 骨（溶骨性病変） -->
+      <svg viewBox="0 0 64 64">
+        <g transform="rotate(-35 32 32)">
+          <path d="M14 26a6 6 0 1 1 6-8h24a6 6 0 1 1 6 8 6 6 0 1 1-6 8H20a6 6 0 1 1-6-8z" transform="translate(0 6)" fill="#FFF7EF" stroke="#C47E52" stroke-width="2.4" stroke-linejoin="round"/>
+          <ellipse cx="29" cy="32" rx="3.2" ry="2.4" fill="#F1BFA0"/><ellipse cx="37" cy="31" rx="2.2" ry="1.7" fill="#F1BFA0"/>
+        </g>
+      </svg>
+    </div>
+    <div class="ttl"><b>MM治療開始規準</b><small>SLiM-CRAB ・ Mayo 2/20/20 ・ ダラツムマブ単剤の対象となる高リスク SMM</small></div>
+    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
+  <div class="body">
+    <h3>クローン性形質細胞・M蛋白</h3>
+    <div class="grid">
+      <label class="f">骨髄クローナル形質細胞 <span class="unit">%</span><input type="number" inputmode="decimal" id="mt-bmpc"></label>
+      <label class="f">M蛋白の型
+        <select id="mt-type"><option value="">—</option><option value="G">IgG</option><option value="A">IgA</option><option value="L">軽鎖型・その他</option></select>
+      </label>
+      <label class="f">血清M蛋白 <span class="unit">g/dL</span><input type="number" inputmode="decimal" id="mt-sm"></label>
+      <label class="f">尿M蛋白 <span class="unit">mg/24h</span><input type="number" inputmode="decimal" id="mt-um"></label>
+      <label class="f">病的 FLC <span class="unit">mg/L</span><input type="number" inputmode="decimal" id="mt-ifl"></label>
+      <label class="f">非病的 FLC <span class="unit">mg/L</span><input type="number" inputmode="decimal" id="mt-ufl"></label>
+    </div>
+    <div class="checks sub">
+      <label class="chk"><input type="checkbox" id="mt-pct"><span>生検で形質細胞腫を確認</span></label>
+      <label class="chk"><input type="checkbox" id="mt-ip"><span>非病変 Ig が2種以上低下</span></label>
+      <label class="chk"><input type="checkbox" id="mt-5y"><span>SMM 診断から5年超</span></label>
+    </div>
+    <h3>SLiM-CRAB</h3>
+    <div class="grid">
+      <label class="f">MRI 局所病変（≥5 mm） <span class="unit">個</span><input type="number" inputmode="numeric" id="mt-mri"></label>
+      <label class="f">補正Ca <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="mt-ca"></label>
+      <label class="f">Ca 基準上限 <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="mt-caU" value="10.1"></label>
+      <label class="f">Cr <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="mt-cr" data-sync="cr"></label>
+      <label class="f">Hb <span class="unit">g/dL</span><input type="number" inputmode="decimal" id="mt-hb" data-sync="hb"></label>
+      <label class="f">Hb 基準下限 <span class="unit">g/dL（任意）</span><input type="number" inputmode="decimal" id="mt-hbL"></label>
+    </div>
+    <div class="checks sub">
+      <label class="chk"><input type="checkbox" id="mt-bone"><span>溶骨性病変 ≥1（CT・PET-CT・X線）</span></label>
+    </div>
+    <div class="results">
+      <div class="res full" id="r-mtdx"></div>
+      <div class="res full txt" id="r-slim"></div>
+      <div class="res" id="r-mayo"></div>
+      <div class="res" id="r-flcr"></div>
+      <div class="res full txt" id="r-aquila"></div>
+    </div>
+    <p class="note">MDE（myeloma-defining events）：骨髄クローナル形質細胞 ≥10% または生検で確認した形質細胞腫があり、かつ以下のいずれか（Rajkumar SV, et al. Lancet Oncol 2014）。<br>
+      <b>S</b>：骨髄クローナル形質細胞 ≥60%。<b>Li</b>：病的/非病的 FLC 比 ≥100（病的 FLC ≥100 mg/L）。<b>M</b>：MRI で 5 mm 以上の局所病変が2個以上。<br>
+      <b>C</b>：補正Ca &gt;11 mg/dL または基準上限 +1 mg/dL 超。<b>R</b>：CCr &lt;40 mL/min または Cr &gt;2 mg/dL。<b>A</b>：Hb &lt;10 g/dL または基準下限 −2 g/dL 超。<b>B</b>：溶骨性病変 ≥1（PET の集積のみ・骨粗鬆症は含めない。骨髄形質細胞 &lt;10% なら孤立性形質細胞腫と区別するため2か所以上）。CRAB は形質細胞腫瘍によるものに限る。CCr は腎機能カードの eCCr（CG）を使用（未入力なら Cr のみで判定）。<br>
+      SMM：血清M ≥3 g/dL（IgG・IgA）または尿M ≥500 mg/24h、かつ／または骨髄クローナル形質細胞 10–59%、かつ MDE・アミロイドーシスなし。<br>
+      Mayo 2/20/20（Lakshman A, et al. Blood Cancer J 2018）：血清M &gt;2 g/dL、FLC 比 &gt;20、骨髄形質細胞 &gt;20%。0 低、1 中、≥2 高リスク。<br>
+      ダラツムマブ単剤（ダラキューロ配合皮下注、本邦 2025年11月承認）の対象＝AQUILA 試験の高リスク SMM：骨髄クローナル形質細胞 ≥10% かつ、①血清M ≥3 g/dL、②IgA 型、③非病変 Ig のうち2種以上の低下（免疫不全）、④FLC 比 ≥8 かつ &lt;100、⑤骨髄クローナル形質細胞 &gt;50% かつ &lt;60%（測定可能病変あり）のうち1つ以上。試験の対象は SMM 診断から5年以内で、測定可能病変を有すること（Dimopoulos MA, et al. N Engl J Med 2025）。最新の添付文書・最適使用推進ガイドラインで確認する。</p>
     <button class="reset" type="button">入力をクリア</button>
   </div>
 </section>
@@ -364,7 +599,7 @@
   </div>
 </section>
 
-<!-- ================= 腎機能別 投与量 ================= -->
+<!-- ================= 腎機能別薬剤投与量 ================= -->
 <section class="card rx" id="rx">
   <button class="head" type="button">
     <div class="ico">
@@ -380,7 +615,7 @@
         <path d="M39 47h14" stroke="#9CC2EE" stroke-width="2.5" stroke-linecap="round"/>
       </svg>
     </div>
-    <div class="ttl"><b>腎機能別 投与量</b><small>抗菌薬 ・ 抗ウイルス薬 ・ タリージェ ・ バリキサ ・ レナリドミド など</small></div>
+    <div class="ttl"><b>腎機能別薬剤投与量</b><small>抗菌薬 ・ 抗ウイルス薬 ・ タリージェ ・ バリキサ ・ レナリドミド など</small></div>
     <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
   </button>
   <div class="body">
@@ -420,6 +655,71 @@
   </div>
 </section>
 
+<!-- ================= バンコマイシン TDM ================= -->
+<section class="card vc" id="vc">
+  <button class="head" type="button">
+    <div class="ico">
+      <!-- バイアル＋採血管 -->
+      <svg viewBox="0 0 64 64">
+        <rect x="10" y="20" width="24" height="34" rx="6" fill="#FBFDF3" stroke="#879B37" stroke-width="2.4"/>
+        <rect x="13" y="12" width="18" height="9" rx="2.5" fill="#C9D98A" stroke="#879B37" stroke-width="2"/>
+        <path d="M12 38h20v10a4 4 0 0 1-4 4H16a4 4 0 0 1-4-4z" fill="#DCE8A8"/>
+        <path d="M17 30h10" stroke="#C9D98A" stroke-width="2.2" stroke-linecap="round"/>
+        <rect x="40" y="10" width="13" height="44" rx="6.5" fill="#fff" stroke="#879B37" stroke-width="2.4"/>
+        <rect x="40" y="10" width="13" height="9" rx="4" fill="#F2A7B5" stroke="#879B37" stroke-width="2"/>
+        <path d="M42.5 34h8v14a4 4 0 0 1-8 0z" fill="#F2A7B5"/>
+      </svg>
+    </div>
+    <div class="ttl"><b>バンコマイシンTDM</b><small>初期投与設計 ・ 予測濃度と AUC/MIC ・ 採血のタイミング</small></div>
+    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
+  <div class="body">
+    <h3>患者情報（他のカードと共通）</h3>
+    <div class="grid">
+      <div class="f full" style="font-size:12px;color:var(--sub)">性別
+        <div class="seg">
+          <label><input type="radio" name="vc-sex" value="M" data-sync="sex"><span>男性</span></label>
+          <label><input type="radio" name="vc-sex" value="F" data-sync="sex"><span>女性</span></label>
+        </div>
+      </div>
+      <label class="f">年齢<input type="number" inputmode="numeric" id="vc-age" data-sync="age" placeholder="歳"></label>
+      <label class="f">Cr <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="vc-cr" data-sync="cr"></label>
+      <label class="f">身長 <span class="unit">cm</span><input type="number" inputmode="decimal" id="vc-ht" data-sync="ht"></label>
+      <label class="f">体重 <span class="unit">kg（実体重）</span><input type="number" inputmode="decimal" id="vc-wt" data-sync="wt"></label>
+      <label class="f">腎機能に使う値
+        <select id="vc-basis"><option value="cg" selected>eCCr（CG）</option><option value="cg2">eCCr（Cr+0.2）</option><option value="man">手入力</option></select>
+      </label>
+      <label class="f" id="vc-manwrap">CCr 手入力 <span class="unit">mL/min</span><input type="number" inputmode="decimal" id="vc-man"></label>
+    </div>
+    <h3>投与設計</h3>
+    <div class="grid">
+      <label class="f">MIC <span class="unit">μg/mL</span>
+        <select id="vc-mic"><option value="0.5">0.5</option><option value="1" selected>1（不明時）</option><option value="2">2</option></select>
+      </label>
+      <label class="f">目標 AUC <span class="unit">μg·h/mL</span><input type="number" inputmode="numeric" id="vc-auc" value="500"></label>
+      <label class="f">投与間隔
+        <select id="vc-tau"><option value="" selected>自動</option><option value="8">8時間ごと</option><option value="12">12時間ごと</option><option value="24">24時間ごと</option><option value="48">48時間ごと</option></select>
+      </label>
+      <label class="f">維持量 <span class="unit">mg/回（空欄で自動）</span><input type="number" inputmode="numeric" id="vc-dose"></label>
+      <label class="f">初回投与の時刻<input type="time" id="vc-t0" value="10:00"></label>
+      <div class="f" style="align-self:end"><label class="chk"><input type="checkbox" id="vc-load" checked><span>初回負荷投与</span></label></div>
+    </div>
+    <div class="results">
+      <div class="res full" id="r-vctg"></div>
+      <div class="res full" id="r-vcpk"></div>
+      <div class="res" id="r-vcld"></div>
+      <div class="res" id="r-vcmt"></div>
+      <div class="res" id="r-vccc"></div>
+      <div class="res" id="r-vcauc"></div>
+      <div class="res full txt" id="r-vctdm"></div>
+    </div>
+    <p class="note">目標は 抗菌薬TDM臨床実践ガイドライン2022（日本化学療法学会・日本TDM学会）に準拠：AUC<sub>24</sub> 400–600 μg·h/mL（MIC 1 を前提）。AUC &gt;600 で腎障害リスクが上がる。トラフ値のみで管理する場合の目安は 10–15 μg/mL（トラフ &gt;20 は腎障害リスク）。重症例・腎機能が変動する例は AUC での管理が望ましい。AUC をベイズ推定で求める場合は定常状態を待たずに投与開始2日目に評価でき、トラフのみで管理する場合は定常状態（目安 3日目以降）で測る。<br>
+      予測は Matzke/Bauer の1-コンパートメント母集団モデル（消失速度定数 k＝0.00083×CCr＋0.0044 /時、分布容積 V＝0.7 L/kg 実体重）による初期設計の目安で、実測濃度にもとづくベイズ推定（PAT・Practical AUC-guided TDM など）とは一致しない。負荷投与は 25–30 mg/kg（実体重、上限の目安 3 g）。点滴は 1 g あたり 60 分以上かけて投与。<br>
+      肥満（BMI ≥30）・浮腫・低栄養高齢者（Cr 低値）では CCr の推定誤差が大きい。血液透析・CRRT 中の患者には使わない。必ず実測濃度で再設計する。</p>
+    <button class="reset" type="button">入力をクリア</button>
+  </div>
+</section>
+
 <!-- ================= 栄養 ================= -->
 <section class="card nt" id="nt">
   <button class="head" type="button">
@@ -432,7 +732,7 @@
         <ellipse cx="22" cy="28" rx="3.5" ry="5" fill="#fff" opacity=".6" transform="rotate(20 22 28)"/>
       </svg>
     </div>
-    <div class="ttl"><b>栄養</b><small>標準体重 ・ 必要エネルギー ・ Harris-Benedict</small></div>
+    <div class="ttl"><b>栄養</b><small>標準体重 ・ 必要エネルギー ・ Harris-Benedict ・ タンパク質 ・ 脂質</small></div>
     <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
   </button>
   <div class="body">
@@ -460,6 +760,15 @@
           <option value="1.5">1.5 重度（敗血症・多臓器不全）</option>
         </select>
       </label>
+      <label class="f full">タンパク質の基準となる病態
+        <select id="nt-pro">
+          <option value="1.0-1.2" selected>一般・維持（1.0–1.2 g/kg）</option>
+          <option value="1.2-1.5">がん・軽〜中等度侵襲・高齢者（1.2–1.5 g/kg）</option>
+          <option value="1.2-2.0">重症・高度侵襲（1.2–2.0 g/kg）</option>
+          <option value="0.6-0.8">保存期 CKD G3b–G5（0.6–0.8 g/kg 標準体重）</option>
+          <option value="0.9-1.2">透析（0.9–1.2 g/kg 標準体重）</option>
+        </select>
+      </label>
     </div>
     <div class="results">
       <div class="res" id="r-ibw"></div>
@@ -467,9 +776,13 @@
       <div class="res full" id="r-kcal"></div>
       <div class="res" id="r-bee"></div>
       <div class="res" id="r-tee"></div>
+      <div class="res full" id="r-pro"></div>
+      <div class="res full" id="r-fat"></div>
     </div>
     <p class="note">標準体重＝22×身長(m)²。必要エネルギー＝標準体重×25〜30 kcal。<br>
-      Harris-Benedict：男性 66.47+13.75W+5.0H−6.76A、女性 655.1+9.56W+1.85H−4.68A（W kg、H cm、A 歳）。TEE＝BEE×活動係数×ストレス係数。</p>
+      Harris-Benedict：男性 66.47+13.75W+5.0H−6.76A、女性 655.1+9.56W+1.85H−4.68A（W kg、H cm、A 歳）。TEE＝BEE×活動係数×ストレス係数。<br>
+      タンパク質（静脈栄養ではアミノ酸量としてほぼ同量）：実体重で計算。BMI ≥25 と CKD・透析では標準体重で計算（肥満の体重の扱いは指針により標準体重・調整体重などで異なる）。一般 1.0–1.2、がん・侵襲・高齢者 1.2–1.5（ESPEN がんガイドライン 1.0–1.5）、重症 1.2–2.0 g/kg/日。CKD は日本腎臓学会の食事療法基準（G3b 以降 0.6–0.8、透析 0.9–1.2 g/kg 標準体重。KDIGO 2024 は 0.8）。低栄養・サルコペニア・急性期の異化亢進では制限を自動的に当てはめない。重症例は病期に応じて段階的に増やす。<br>
+      脂質：総エネルギーの 20–30%（日本人の食事摂取基準）、1 g＝9 kcal。静脈栄養の脂肪乳剤は 1.0 g/kg/日以下、投与速度 0.1 g/kg/時以下が保守的な目安（製剤・病態で異なる。プロポフォール由来の脂質も合算する）。</p>
     <button class="reset" type="button">入力をクリア</button>
   </div>
 </section>
@@ -558,8 +871,12 @@
       </label>
       <label class="f">体重 <span class="unit">kg（トシリズマブ用）</span><input type="number" inputmode="decimal" id="ct-wt" data-sync="wt"></label>
     </div>
-    <h3>ICANS ・ ICE スコア（できた項目）</h3>
-    <div class="sublbl">見当識（年・月・市町村・病院）</div>
+    <h3>ICANS ・ ICE スコア</h3>
+    <div class="checks">
+      <label class="chk warn"><input type="checkbox" id="ct-unar"><span>覚醒せず ICE 評価不能（→ ICANS Grade 4）</span></label>
+    </div>
+    <div class="ice-items" id="ct-ice">
+    <div class="sublbl">見当識（年・月・市町村・病院）：できた項目にチェック</div>
     <div class="checks">
       <label class="chk"><input type="checkbox" id="ct-i1" checked><span>年</span></label>
       <label class="chk"><input type="checkbox" id="ct-i2" checked><span>月</span></label>
@@ -578,8 +895,6 @@
       <label class="chk"><input type="checkbox" id="ct-i9" checked><span>定型文を書く</span></label>
       <label class="chk"><input type="checkbox" id="ct-i10" checked><span>100から10ずつ逆唱</span></label>
     </div>
-    <div class="checks sub">
-      <label class="chk"><input type="checkbox" id="ct-unar"><span>覚醒せず ICE 評価不能</span></label>
     </div>
     <div class="grid" style="margin-top:10px">
       <label class="f full">意識レベル低下
@@ -640,7 +955,7 @@
           <option value="cml">CML</option><option value="mm">多発性骨髄腫</option><option value="st">固形腫瘍</option>
         </select>
       </label>
-      <label class="f">WBC <span class="unit">/μL</span><input type="number" inputmode="numeric" id="tl-wbc" placeholder="例 25000"></label>
+      <label class="f">WBC <span class="unit">/μL</span><input type="number" inputmode="numeric" id="tl-wbc" data-sync="wbc" placeholder="例 25000"></label>
       <label class="f">LDH <span class="unit">U/L</span><input type="number" inputmode="decimal" id="tl-ldh" data-sync="ldh"></label>
       <label class="f">LDH 基準上限 <span class="unit">U/L</span><input type="number" inputmode="decimal" id="tl-uln" data-sync="uln" value="222"></label>
     </div>
@@ -708,26 +1023,129 @@ function box(id, key, val, desc, cls = '') {
 const chk = id => $(id).checked;
 
 /* ---------- ML ---------- */
+const RISK4 = ['Low', 'Low-intermediate', 'High-intermediate', 'High'];
 function calcML() {
   const age = num('ml-age'), ldh = num('ml-ldh'), uln = num('ml-uln'), en = num('ml-en') ?? 0;
   const ps = $('ml-ps').value, st = $('ml-stage').value;
-  const ok = has(age, ldh, uln, ps, st) && uln > 0;
-  if (!ok) { ['r-ipi', 'r-nccn', 'r-cns'].forEach((r, i) => box(r, ['IPI', 'NCCN-IPI', 'CNS-IPI'][i], null)); return; }
-  const fAge = age > 60, fLdh = ldh > uln, fPs = +ps >= 2, fSt = +st >= 3, fEn = en > 1;
-  const ipi = [fAge, fLdh, fPs, fSt, fEn].filter(Boolean).length;
-  const ipiRisk = ipi <= 1 ? 'Low' : ipi === 2 ? 'Low-intermediate' : ipi === 3 ? 'High-intermediate' : 'High';
-  box('r-ipi', 'IPI', `${ipi}<small> / 5点</small>`, ipiRisk);
+  const lr = has(ldh, uln) && uln > 0 ? ldh / uln : null;
 
-  const ratio = ldh / uln;
-  const major = $('ml-bm').checked || $('ml-cns').checked || $('ml-liver').checked || $('ml-lung').checked;
-  const n = (age > 75 ? 3 : age > 60 ? 2 : age > 40 ? 1 : 0) + (ratio > 3 ? 2 : ratio > 1 ? 1 : 0)
-          + (fSt ? 1 : 0) + (major ? 1 : 0) + (fPs ? 1 : 0);
-  const nRisk = n <= 1 ? 'Low' : n <= 3 ? 'Low-intermediate' : n <= 5 ? 'High-intermediate' : 'High';
-  box('r-nccn', 'NCCN-IPI', `${n}<small> / 8点</small>`, `${nRisk}（LDH比 ${fmt(ratio, 2)}）`);
+  if (has(age, lr, ps, st)) {
+    const fAge = age > 60, fLdh = lr > 1, fPs = +ps >= 2, fSt = +st >= 3, fEn = en > 1;
+    const ipi = [fAge, fLdh, fPs, fSt, fEn].filter(Boolean).length;
+    box('r-ipi', 'IPI', `${ipi}<small> / 5点</small>`, RISK4[ipi <= 1 ? 0 : Math.min(ipi - 1, 3)]);
 
-  const c = ipi + ($('ml-kid').checked ? 1 : 0);
-  const cRisk = c <= 1 ? 'Low' : c <= 3 ? 'Intermediate' : 'High';
-  box('r-cns', 'CNS-IPI', `${c}<small> / 6点</small>`, cRisk);
+    const major = chk('ml-bm') || chk('ml-cns') || chk('ml-liver') || chk('ml-lung');
+    const n = (age > 75 ? 3 : age > 60 ? 2 : age > 40 ? 1 : 0) + (lr > 3 ? 2 : lr > 1 ? 1 : 0)
+            + (fSt ? 1 : 0) + (major ? 1 : 0) + (fPs ? 1 : 0);
+    box('r-nccn', 'NCCN-IPI', `${n}<small> / 8点</small>`, `${RISK4[n <= 1 ? 0 : n <= 3 ? 1 : n <= 5 ? 2 : 3]}（LDH比 ${fmt(lr, 2)}）`);
+
+    const c = ipi + (chk('ml-kid') ? 1 : 0);
+    box('r-cns', 'CNS-IPI', `${c}<small> / 6点</small>`, c <= 1 ? 'Low' : c <= 3 ? 'Intermediate' : 'High');
+  } else ['r-ipi', 'r-nccn', 'r-cns'].forEach((r, i) => box(r, ['IPI', 'NCCN-IPI', 'CNS-IPI'][i], null));
+
+  // FLIPI・FLIPI2
+  const hb = num('ml-hb'), nodes = num('ml-nodes'), lnmax = num('ml-lnmax');
+  if (has(age, st, hb, lr, nodes)) {
+    const f = [age > 60, +st >= 3, hb < 12, lr > 1, nodes > 4].filter(Boolean).length;
+    box('r-flipi', 'FLIPI', `${f}<small> / 5点</small>`, f <= 1 ? 'Low' : f === 2 ? 'Intermediate' : 'High');
+  } else box('r-flipi', 'FLIPI', null, '年齢・病期・LDH・Hb・領域数');
+  if (has(age, hb, lnmax)) {
+    const f = [age > 60, chk('ml-b2m'), hb < 12, chk('ml-bm'), lnmax > 6].filter(Boolean).length;
+    box('r-flipi2', 'FLIPI2', `${f}<small> / 5点</small>`, f === 0 ? 'Low' : f <= 2 ? 'Intermediate' : 'High');
+  } else box('r-flipi2', 'FLIPI2', null, '年齢・Hb・最大径（β2MG・骨髄はチェック）');
+
+  // MIPI・MIPI-c
+  const wbc = num('ml-wbc'), ki = num('ml-ki67');
+  let mg = null;
+  if (has(age, ps, lr, wbc) && wbc > 0) {
+    const m = 0.03535 * age + (+ps > 1 ? 0.6978 : 0) + 1.367 * Math.log10(lr) + 0.9393 * Math.log10(wbc);
+    mg = m < 5.7 ? 0 : m < 6.2 ? 1 : 2;
+    box('r-mipi', 'MIPI', fmt(m, 2), ['Low', 'Intermediate', 'High'][mg]);
+  } else box('r-mipi', 'MIPI', null, '年齢・PS・LDH・WBC');
+  if (mg !== null && ki !== null) {
+    const c = mg + (ki >= 30 ? 1 : 0);
+    box('r-mipic', 'MIPI-c', RISK4[c], `MIPI ${['低', '中', '高'][mg]}＋Ki-67 ${ki >= 30 ? '≥30%' : '<30%'}`);
+  } else box('r-mipic', 'MIPI-c', null, mg === null ? 'MIPI＋Ki-67' : 'Ki-67 を入力');
+}
+
+/* ---------- FL 治療開始規準（GELF・BNLI） ---------- */
+const listBox = (id, key, hits, yes, no, emptyMsg, anyInput) => {
+  if (!anyInput) return box(id, key, null, emptyMsg);
+  box(id, key, hits.length ? yes : no, hits.length ? '<ul>' + hits.map(h => `<li>${h}</li>`).join('') + '</ul>' : '該当項目なし', hits.length ? '' : '');
+};
+function calcFL() {
+  const v = k => num('fl-' + k);
+  const mass = v('mass'), n3 = v('n3'), hb = v('hb'), plt = v('plt'), wbc = v('wbc'), neu = v('neu'), circ = v('circ');
+  const c = k => chk('fl-' + k);
+  const any = [mass, n3, hb, plt, wbc, neu, circ].some(x => x !== null) || [...document.querySelectorAll('#fl input[type=checkbox]')].some(x => x.checked);
+
+  const g = [];
+  if (mass !== null && mass >= 7) g.push(`最大腫瘤 ${mass} cm（≥7 cm）`);
+  if (n3 !== null && n3 >= 3) g.push(`長径 ≥3 cm の節性病変 ${n3} 領域（≥3）`);
+  if (c('b')) g.push('B症状');
+  if (c('spl')) g.push('脾腫');
+  if (c('eff')) g.push('胸水・腹水');
+  if (c('comp')) g.push('臓器圧迫（またはそのおそれ）');
+  const gc = [neu !== null && neu < 1000 && `好中球 ${neu}`, wbc !== null && wbc < 1000 && `白血球 ${wbc}`, plt !== null && plt < 100000 && `血小板 ${plt.toLocaleString()}`].filter(Boolean);
+  if (gc.length) g.push(`血球減少（${gc.join('・')}）`);
+  if (circ !== null && circ > 5000) g.push(`白血化（腫瘍細胞 ${circ.toLocaleString()}/μL）`);
+
+  const b = [];
+  if (c('rapid')) b.push('3か月以内の急速な全身性進行');
+  if (c('life')) b.push('生命を脅かす臓器浸潤');
+  if (c('rl')) b.push('腎・肝浸潤');
+  if (c('bone')) b.push('骨病変');
+  if (c('b') || c('itch')) b.push([c('b') && '全身症状', c('itch') && '掻痒'].filter(Boolean).join('・'));
+  const bc = [hb !== null && hb < 10 && `Hb ${hb}`, wbc !== null && wbc < 3000 && `WBC ${wbc}`, plt !== null && plt < 100000 && `血小板 ${plt.toLocaleString()}`].filter(Boolean);
+  let bNote = '';
+  if (bc.length) { if (c('bmi')) b.push(`骨髄浸潤による血球減少（${bc.join('・')}）`); else bNote = `血球減少（${bc.join('・')}）が骨髄浸潤によるものなら該当`; }
+
+  listBox('r-gelf', 'GELF 規準', g, `該当 ${g.length} 項目`, '該当なし', '所見を入力', any);
+  listBox('r-bnli', 'BNLI 規準', b, `該当 ${b.length} 項目`, '該当なし', '所見を入力', any);
+  if (bNote && any) $('r-bnli').querySelector('.d').innerHTML += `<br>${bNote}`;
+  if (!any) box('r-flsum', '判定', null, '腫瘍量・所見を入力');
+  else if (g.length || b.length) box('r-flsum', '判定', '治療開始を検討', `高腫瘍量（${[g.length && 'GELF', b.length && 'BNLI'].filter(Boolean).join('・')} 該当）`, 'alert');
+  else box('r-flsum', '判定', '経過観察を考慮', '低腫瘍量（GELF・BNLI とも非該当）。症状・増大があれば再評価');
+}
+
+/* ---------- CLL（改訂 Rai・Binet・iwCLL 2018） ---------- */
+function calcCL() {
+  const hb = num('cl-hb'), plt = num('cl-plt'), alc = num('cl-alc'), alc0 = num('cl-alc0'), mo = num('cl-mo');
+  const ln = chk('cl-cer') || chk('cl-axi') || chk('cl-ing') || chk('cl-oln'), so = chk('cl-spl') || chk('cl-liv');
+  if (has(hb, plt)) {
+    const rai = plt < 100000 ? 4 : hb < 11 ? 3 : so ? 2 : ln ? 1 : 0;
+    box('r-rai', '改訂 Rai 分類', ['0', 'I', 'II', 'III', 'IV'][rai], ['低リスク', '中間リスク', '中間リスク', '高リスク', '高リスク'][rai]);
+    const areas = ['cer', 'axi', 'ing', 'spl', 'liv'].filter(k => chk('cl-' + k)).length;
+    const bi = (hb < 10 || plt < 100000) ? 'C' : areas >= 3 ? 'B' : 'A';
+    box('r-binet', 'Binet 分類', bi, `${areas} 領域${bi === 'C' ? '・血球減少' : ''}`);
+  } else { box('r-rai', '改訂 Rai 分類', null, 'Hb・Plt と腫大部位'); box('r-binet', 'Binet 分類', null, 'Hb・Plt と腫大部位'); }
+
+  const h = [];
+  if ((hb !== null && hb < 10) || (plt !== null && plt < 100000) || chk('cl-cyto')) {
+    const v = [hb !== null && hb < 10 && `Hb ${hb}`, plt !== null && plt < 100000 && `血小板 ${plt.toLocaleString()}`].filter(Boolean).join('・');
+    h.push(`骨髄不全${v ? `（${v}）` : ''}${chk('cl-cyto') ? '：出現・悪化あり' : '：進行性か確認（長期安定した血小板減少のみなら必須ではない）'}`);
+  }
+  const spc = num('cl-splcm'), lnc = num('cl-ln');
+  if ((spc !== null && spc >= 6) || chk('cl-psp')) h.push(spc !== null && spc >= 6 ? `巨大脾腫（肋骨弓下 ${spc} cm）` : '進行性・症候性の脾腫');
+  if ((lnc !== null && lnc >= 10) || chk('cl-pln')) h.push(lnc !== null && lnc >= 10 ? `巨大リンパ節（${lnc} cm）` : '進行性・症候性のリンパ節腫大');
+  let ldtTxt = '';
+  if (has(alc, alc0, mo) && alc0 > 0 && mo > 0) {
+    const inc = alc / alc0 - 1;
+    const ldt = alc > alc0 ? mo * Math.LN2 / Math.log(alc / alc0) : null;
+    ldtTxt = `リンパ球 ${Math.round(inc * 100)}% ${inc >= 0 ? '増加' : '減少'}／${mo}か月${ldt ? `、倍加時間 ${fmt(ldt)} か月` : ''}`;
+    if ((mo <= 2 && inc >= 0.5) || (ldt !== null && ldt < 6 && alc0 >= 30000)) h.push(`進行性リンパ球増多（${ldtTxt}）`);
+    else if (ldt !== null && ldt < 6) ldtTxt += '（初回 <3万/μL のため倍加時間のみでは適応としない）';
+  }
+  if (chk('cl-ai')) h.push('ステロイド反応不良の自己免疫性血球減少');
+  if (chk('cl-en')) h.push('症候性・機能障害のある節外病変');
+  const sx = [chk('cl-wl') && '体重減少', chk('cl-fat') && '倦怠感', chk('cl-fev') && '発熱', chk('cl-ns') && '盗汗'].filter(Boolean);
+  if (sx.length) h.push(`病勢による症状（${sx.join('・')}）`);
+
+  const any = has(hb) || has(plt) || [...document.querySelectorAll('#cl input[type=checkbox]')].some(x => x.checked) || spc !== null || lnc !== null;
+  if (!any) box('r-iwcll', 'iwCLL 治療開始規準', null, '所見を入力');
+  else box('r-iwcll', 'iwCLL 治療開始規準', h.length ? '治療適応あり' : '経過観察',
+    (h.length ? '<ul>' + h.map(x => `<li>${x}</li>`).join('') + '</ul>' : '活動性病変の規準に該当なし') + (ldtTxt && !h.some(x => x.startsWith('進行性リンパ球')) ? `<br>${ldtTxt}` : ''),
+    h.length ? 'alert' : '');
 }
 
 /* ---------- MM ---------- */
@@ -819,11 +1237,28 @@ function calcNT() {
     box('r-bmi', 'BMI', has(wt) ? fmt(wt / Math.pow(ht / 100, 2)) : null, has(wt) ? `標準体重比 ${Math.round(wt / ibw * 100)}%` : '');
   } else { box('r-ibw', '標準体重', null); box('r-kcal', '必要エネルギー（標準体重×25〜30）', null); box('r-bmi', 'BMI', null); }
 
+  let tee = null;
   if (has(sex, age, ht, wt)) {
     const bee = sex === 'M' ? 66.47 + 13.75 * wt + 5.0 * ht - 6.76 * age : 655.1 + 9.56 * wt + 1.85 * ht - 4.68 * age;
+    tee = bee * af * sf;
     box('r-bee', 'BEE（Harris-Benedict原式）', `${Math.round(bee)}<small> kcal</small>`);
-    box('r-tee', 'TEE', `${Math.round(bee * af * sf)}<small> kcal</small>`, `×${af}×${sf}`);
+    box('r-tee', 'TEE', `${Math.round(tee)}<small> kcal</small>`, `×${af}×${sf}`);
   } else { box('r-bee', 'BEE（Harris-Benedict原式）', null); box('r-tee', 'TEE', null); }
+
+  // タンパク質（アミノ酸）・脂質
+  if (has(ht)) {
+    const ibw = 22 * Math.pow(ht / 100, 2), bmi = has(wt) ? wt / Math.pow(ht / 100, 2) : null;
+    const pv = $('nt-pro').value, [lo, hi] = pv.split('-').map(Number);
+    const ckd = pv === '0.6-0.8' || pv === '0.9-1.2';
+    const useIbw = ckd || bmi === null || bmi >= 25, bw = useIbw ? ibw : wt;
+    const why = ckd ? '標準体重' : bmi === null ? '標準体重（体重未入力）' : bmi >= 25 ? '標準体重（BMI ≥25）' : '実体重';
+    box('r-pro', 'タンパク質（アミノ酸）', `${Math.round(bw * lo)}–${Math.round(bw * hi)}<small> g/日</small>`,
+        `${lo}–${hi} g/kg × ${why} ${fmt(bw)} kg`);
+    const g = e => Math.round(e / 9);
+    box('r-fat', '脂質（総エネルギーの 20–30%）', `${g(ibw * 25 * 0.2)}–${g(ibw * 30 * 0.3)}<small> g/日</small>`,
+        `標準体重×25–30 kcal の 20–30%${tee ? `／TEE ${Math.round(tee)} kcal なら ${g(tee * 0.2)}–${g(tee * 0.3)} g` : ''}`
+        + `<br>静脈栄養の脂肪乳剤：${has(wt) ? `${Math.round(wt)} g/日以下、${fmt(wt * 0.1)} g/時以下` : '1.0 g/kg/日以下、0.1 g/kg/時以下'}`);
+  } else { box('r-pro', 'タンパク質（アミノ酸）', null, '身長・体重を入力'); box('r-fat', '脂質（総エネルギーの 20–30%）', null, '身長を入力'); }
 }
 
 /* ---------- MM 治療効果判定（IMWG 2016） ---------- */
@@ -924,11 +1359,6 @@ const RX = [
   { g: '抗菌薬', n: 'タゾバクタム/ピペラシリン', u: '4.5 g 6時間ごと（FN・院内肺炎）',
     t: [[40, '>40', '4.5 g 6時間ごと'], [20, '20–40', '4.5 g 8時間ごと'], [0, '<20', '4.5 g 12時間ごと']],
     hd: '4.5 g 12時間ごと または 2.25 g 8時間ごと（透析日は透析後）' },
-  { g: '抗菌薬', n: 'バンコマイシン', u: w => `初回負荷 ${mgkg(w, 25, 30)}（実体重）→ 維持はTDMで調整`,
-    t: [[90, '≥90', w => `${mgkg(w, 15, 20)} 12時間ごと`], [50, '50–89', w => `${mgkg(w, 15)} 12時間ごと`],
-        [30, '30–49', w => `${mgkg(w, 15)} 24時間ごと`], [15, '15–29', w => `${mgkg(w, 15)} 48時間ごと`], [0, '<15', '負荷投与後は血中濃度をみて追加投与']],
-    hd: w => `負荷 ${mgkg(w, 25)} → 透析後 ${mgkg(w, 7.5, 10)}（TDMで調整）`,
-    note: '初期設計の目安。必ずTDM（AUC 400–600 μg·h/mL、トラフ 10–15 μg/mL 目安）で調整する。腎毒性薬との併用に注意。' },
   { g: '抗菌薬', n: 'レボフロキサシン', u: '500 mg 1日1回',
     t: [[50, '≥50', '500 mg 24時間ごと'], [20, '20–49', '初日 500 mg、以後 250 mg 24時間ごと'], [0, '<20', '初日 500 mg、以後 250 mg 48時間ごと']],
     hd: '初日 500 mg、以後 250 mg 48時間ごと' },
@@ -1022,6 +1452,142 @@ function calcRX() {
   $('rx-note').textContent = d.note || '';
 }
 
+/* ---------- MM 治療開始規準（SLiM-CRAB・Mayo 2/20/20・AQUILA） ---------- */
+function calcMT() {
+  const v = k => num('mt-' + k);
+  const bmpc = v('bmpc'), sm = v('sm'), um = v('um'), ifl = v('ifl'), ufl = v('ufl'), mri = v('mri');
+  const ca = v('ca'), caU = v('caU'), cr = v('cr'), hb = v('hb'), hbL = v('hbL'), type = $('mt-type').value;
+  const ratio = has(ifl, ufl) && ufl > 0 ? ifl / ufl : null;
+  const clonal = (bmpc !== null && bmpc >= 10) || chk('mt-pct');
+  const { ccr } = renal();
+
+  const mde = [];
+  if (bmpc !== null && bmpc >= 60) mde.push(`S：骨髄形質細胞 ${bmpc}%`);
+  if (ratio !== null && ratio >= 100 && ifl >= 100) mde.push(`Li：FLC 比 ${fmt(ratio)}（病的 FLC ${ifl} mg/L）`);
+  if (mri !== null && mri >= 2) mde.push(`M：MRI 局所病変 ${mri} 個`);
+  if (ca !== null && (ca > 11 || (caU !== null && ca > caU + 1))) mde.push(`C：補正Ca ${ca} mg/dL`);
+  const rC = ccr !== null && ccr < 40, rS = cr !== null && cr > 2;
+  if (rC || rS) mde.push(`R：${[rC && `eCCr ${fmt(ccr)} mL/min`, rS && `Cr ${cr} mg/dL`].filter(Boolean).join('・')}`);
+  if (hb !== null && (hb < 10 || (hbL !== null && hb < hbL - 2))) mde.push(`A：Hb ${hb} g/dL`);
+  if (chk('mt-bone')) mde.push('B：溶骨性病変');
+
+  const any = [bmpc, sm, um, ifl, mri, ca, hb].some(x => x !== null) || chk('mt-pct') || chk('mt-bone');
+  box('r-flcr', 'FLC 比（病的/非病的）', ratio !== null ? fmt(ratio, ratio < 10 ? 2 : 1) : null, ratio !== null ? '' : 'FLC を入力');
+  if (!any) box('r-slim', 'SLiM-CRAB', null, '検査値を入力');
+  else box('r-slim', 'SLiM-CRAB', mde.length ? `該当 ${mde.length} 項目` : '該当なし',
+    mde.length ? '<ul>' + mde.map(x => `<li>${x}</li>`).join('') + '</ul>CRAB は形質細胞腫瘍によるものに限る（他の原因を除外）' : 'MDE なし', mde.length ? 'alert' : '');
+
+  const smm = (bmpc !== null && bmpc >= 10 && bmpc < 60) || ((type === 'G' || type === 'A') && sm !== null && sm >= 3) || (um !== null && um >= 500);
+  const mm = mde.length > 0 && clonal;
+  let state = null;
+  if (!any) box('r-mtdx', '判定', null, '骨髄形質細胞・M蛋白・CRAB を入力');
+  else if (mm) { state = 'mm'; box('r-mtdx', '判定', '多発性骨髄腫：治療適応', 'MDE あり（骨髄クローナル形質細胞 ≥10% または形質細胞腫）', 'alert'); }
+  else if (mde.length) box('r-mtdx', '判定', 'MDE あり・診断未確定', '骨髄クローナル形質細胞 ≥10% または生検で形質細胞腫の確認が必要');
+  else if (smm) { state = 'smm'; box('r-mtdx', '判定', 'くすぶり型（SMM）', 'MDE なし。原則は経過観察。AL アミロイドーシスを除外'); }
+  else if (bmpc !== null) box('r-mtdx', '判定', 'SMM の基準を満たさない', 'MGUS などを検討');
+  else box('r-mtdx', '判定', null, '骨髄クローナル形質細胞 % を入力');
+
+  // Mayo 2/20/20
+  if (state === 'mm') box('r-mayo', 'Mayo 2/20/20', '—', 'MM のため対象外');
+  else if (has(bmpc, sm, ratio)) {
+    const n = [sm > 2, ratio > 20, bmpc > 20].filter(Boolean).length;
+    box('r-mayo', 'Mayo 2/20/20', ['低', '中', '高', '高'][n] + '<small> リスク</small>', `${n} / 3 因子`, n >= 2 ? 'alert' : '');
+  } else box('r-mayo', 'Mayo 2/20/20', null, '骨髄形質細胞・血清M・FLC');
+
+  // ダラツムマブ単剤（AQUILA の高リスク SMM）
+  const rf = [];
+  if (sm !== null && sm >= 3) rf.push(`血清M ${sm} g/dL（≥3）`);
+  if (type === 'A') rf.push('IgA 型');
+  if (chk('mt-ip')) rf.push('非病変 Ig 2種以上の低下（免疫不全）');
+  if (ratio !== null && ratio >= 8 && ratio < 100) rf.push(`FLC 比 ${fmt(ratio)}（≥8 かつ <100）`);
+  if (bmpc !== null && bmpc > 50 && bmpc < 60) rf.push(`骨髄形質細胞 ${bmpc}%（>50% かつ <60%、測定可能病変が必要）`);
+  const key = 'ダラツムマブ単剤の対象（高リスク SMM・AQUILA）';
+  if (state === 'mm') box('r-aquila', key, '対象外', 'MM として治療', 'txt');
+  else if (state !== 'smm') box('r-aquila', key, null, 'SMM と判定されたときに評価', 'txt');
+  else if (bmpc === null || bmpc < 10) box('r-aquila', key, '対象外', '骨髄クローナル形質細胞 ≥10% が必要', 'txt');
+  else if (chk('mt-5y')) box('r-aquila', key, '対象外', 'AQUILA の対象は SMM 診断から5年以内', 'txt');
+  else if (rf.length) box('r-aquila', key, '対象', '<ul>' + rf.map(x => `<li>${x}</li>`).join('') + '</ul>骨髄クローナル形質細胞 ≥10%＋上記のリスク因子。添付文書・最適使用推進ガイドラインで最終確認', 'txt');
+  else box('r-aquila', key, '対象外', 'リスク因子（血清M ≥3、IgA 型、免疫不全、FLC 比 8–100、骨髄形質細胞 50–60%）なし', 'txt');
+}
+
+/* ---------- バンコマイシン TDM ---------- */
+const r250 = x => Math.max(250, Math.round(x / 250) * 250);
+const clock = (t0, h) => {                                        // 開始時刻（時）から h 時間後 → [日目, HH:MM]
+  const t = t0 + h, d = Math.floor(t / 24) + 1, m = Math.round((t % 24) * 60);
+  return [d, `${String(Math.floor(m / 60) % 24).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`];
+};
+function calcVC() {
+  const r = renal(), basis = $('vc-basis').value, wt = num('kd-wt');
+  $('vc-manwrap').style.visibility = basis === 'man' ? 'visible' : 'hidden';
+  const crcl = { cg: r.ccr, cg2: r.ccr02, man: num('vc-man') }[basis];
+  const mic = +$('vc-mic').value, tAUC = num('vc-auc') ?? 500;
+
+  box('r-vctg', '目標', `AUC<sub>24</sub> 400–600<small> μg·h/mL</small>`,
+    `MIC ${mic} で AUC/MIC ${400 / mic}–${600 / mic}。トラフのみで管理する場合は 10–15 μg/mL（&gt;20 は腎障害リスク）`
+    + (mic >= 2 ? '<br><b>MIC 2 では安全に目標を達成しにくい → ダプトマイシン・リネゾリドなど代替薬を検討</b>' : mic < 1 ? '<br>MIC 0.5 でも目標 AUC は 400–600 のまま' : ''),
+    mic >= 2 ? 'alert' : '');
+
+  const ids = ['r-vcpk', 'r-vcld', 'r-vcmt', 'r-vccc', 'r-vcauc', 'r-vctdm'];
+  const keys = ['推定薬物動態', '初回負荷', '維持量', '予測濃度（定常状態）', '予測 AUC', '次回の採血'];
+  if (!has(crcl, wt) || crcl <= 0 || wt <= 0) {
+    ids.forEach((id, i) => box(id, keys[i], null, i ? '' : basis === 'man' ? 'CCr・体重を入力' : '性別・年齢・Cr・体重を入力'));
+    return;
+  }
+  const k = 0.00083 * crcl + 0.0044, V = 0.7 * wt, CL = k * V, th = Math.LN2 / k;
+  box('r-vcpk', keys[0], `CL ${fmt(CL, 2)}<small> L/時</small>`,
+    `CCr ${fmt(crcl)} mL/min → k ${fmt(k, 3)} /時、t½ ${fmt(th)} 時間、V ${fmt(V)} L`);
+
+  const tauIn = $('vc-tau').value, tau = tauIn ? +tauIn : th <= 14 ? 12 : th <= 30 ? 24 : 48;
+  const dIn = num('vc-dose'), dose = dIn && dIn > 0 ? dIn : r250(tAUC * CL * tau / 24);
+  const useLoad = chk('vc-load'), load = useLoad ? r250(Math.min(25 * wt, 3000)) : 0;
+  const tinf = d => Math.max(1, d / 1000);
+  const hr = h => h >= 1 && h % 1 === 0 ? `${h}時間` : `${Math.round(h * 60)}分`;
+
+  box('r-vcld', keys[1], useLoad ? `${load.toLocaleString()}<small> mg</small>` : 'なし',
+    useLoad ? `25–30 mg/kg＝${Math.round(25 * wt).toLocaleString()}–${Math.round(30 * wt).toLocaleString()} mg（上限 3 g）を ${hr(tinf(load))}以上で` : '負荷投与なしで設計');
+  box('r-vcmt', `維持量（${tau}時間ごと）`, `${dose.toLocaleString()}<small> mg</small>`,
+    `${hr(tinf(dose))}以上で点滴。${useLoad ? `負荷の ${tau} 時間後から` : '初回から'}${dIn ? '（手入力）' : `（目標 AUC ${tAUC}）`}`);
+
+  // 投与スケジュールと濃度（1-コンパートメント、点滴の重ね合わせ）
+  const doses = [];
+  if (useLoad) doses.push([0, load]);
+  for (let t = useLoad ? tau : 0; t < 24 * 14; t += tau) doses.push([t, dose]);
+  const conc = t => doses.reduce((c, [t0, d]) => {
+    const s = t - t0, ti = tinf(d), R = d / ti;
+    if (s <= 0) return c;
+    return c + (s <= ti ? R / CL * (1 - Math.exp(-k * s)) : R / CL * (1 - Math.exp(-k * ti)) * Math.exp(-k * (s - ti)));
+  }, 0);
+  const auc = (a, b) => { let s = 0; const dt = 0.02; for (let t = a; t < b; t += dt) s += (conc(t) + conc(t + dt)) / 2 * dt; return s; };
+
+  const ti = tinf(dose), R = dose / ti;
+  const cmax = R / CL * (1 - Math.exp(-k * ti)) / (1 - Math.exp(-k * tau)), cmin = cmax * Math.exp(-k * (tau - ti));
+  const aucSS = dose * 24 / tau / CL, a1 = auc(0, 24), a2 = auc(24, 48);
+  const badC = cmin > 20;
+  const cNote = badC ? '<br><b>トラフ &gt;20：腎障害リスク。減量・間隔延長を検討</b>'
+              : cmin > 15 && aucSS >= 400 && aucSS <= 600 ? '<br>AUC で管理する場合、AUC が目標内ならトラフ 15–20 は許容' : '';
+  box('r-vccc', '予測トラフ（定常状態）', `${fmt(cmin)}<small> μg/mL</small>`, `ピーク（点滴終了時）${fmt(cmax)} μg/mL${cNote}`, badC ? 'alert' : '');
+  const out = aucSS < 400 || aucSS > 600;
+  box('r-vcauc', keys[4], `${Math.round(aucSS)}<small> μg·h/mL</small>`,
+    `AUC/MIC ${Math.round(aucSS / mic)}（定常状態）<br>1日目 ${Math.round(a1)}、2日目 ${Math.round(a2)}${out ? '<br><b>目標範囲外：投与量・間隔を調整</b>' : ''}`, out ? 'alert' : '');
+
+  // 採血タイミング：定常状態（t½ の約4倍）以降、かつ2回目の投与間隔以降。腎機能低下でも 72 時間を目安に一度測る
+  const [hh, mm] = ($('vc-t0').value || '10:00').split(':').map(Number), t0 = hh + mm / 60;
+  const follow = '以後は腎機能が安定していれば週1回、腎機能の変動・腎毒性薬の併用・重症例では週2回以上';
+  if (th > 48) {
+    const [d, c] = clock(t0, 24);
+    box('r-vctdm', keys[5], `${d}日目 ${c} ごろ`, `腎機能が高度に低下（t½ ${fmt(th)} 時間）しており定期投与の設計は不確実。負荷投与の 24–48 時間後に濃度を測り、追加投与の時期を決める。${follow}`, 'txt');
+    return;
+  }
+  const at = tReq => { const i = doses.findIndex(([t]) => t > 0 && t >= tReq); return [i, doses[i][0]]; };
+  const [iA, tA] = at(24), tPA = tA + tinf(doses[iA][1]) + 1;                        // AUC（ベイズ推定）：2日目
+  const [iT, tT] = at(Math.min(Math.max(4 * th, 2 * tau), 72));                         // トラフのみ：定常状態
+  const [dA, cA] = clock(t0, tA), [dP, cP] = clock(t0, tPA), [dT, cT] = clock(t0, tT);
+  box('r-vctdm', keys[5], `${dA}日目 ${cA}<small>（AUC 評価）</small>`,
+    `<b>AUC をベイズ推定で評価（推奨）</b>：${iA + 1}回目の投与直前にトラフ（予測 ${fmt(conc(tA - 0.01))} μg/mL）、同じ回の点滴終了1–2時間後（${dP}日目 ${cP} ごろ、予測 ${fmt(conc(tPA))} μg/mL）にピークの2点を採血`
+    + `<br><b>トラフのみで管理する場合</b>：定常状態の ${dT}日目 ${cT}（${iT + 1}回目の投与直前、予測 ${fmt(conc(tT - 0.01))} μg/mL）`
+    + `<br>実際の投与・点滴終了・採血の時刻を記録して解析する。${follow}`, 'txt');
+}
+
 /* ---------- ガンマ計算 ---------- */
 const GM = [
   { n: 'カスタム（組成を手入力）' },
@@ -1074,6 +1640,7 @@ function calcCT() {
   box('r-crs', 'CRS', crs ? `Grade ${crs}` : 'なし', crsTxt, crs >= 3 ? 'alert' : '');
 
   const unar = chk('ct-unar');
+  $('ct-ice').classList.toggle('off', unar);
   const ice = unar ? 0 : [...Array(10)].filter((_, i) => chk(`ct-i${i + 1}`)).length;
   const iceG = unar ? 4 : ice === 10 ? 0 : ice >= 7 ? 1 : ice >= 3 ? 2 : 3;
   const parts = [['ICE', iceG], ['意識', +$('ct-loc').value], ['痙攣', +$('ct-sz').value], ['運動', +$('ct-mot').value], ['脳浮腫', +$('ct-icp').value]];
@@ -1181,7 +1748,7 @@ function calcTL() {
       lvl ? [mon[lvl][1], '化学療法開始後 3–7日間は継続'].filter(Boolean).join('。') : '', 'txt');
 }
 
-const calcAll = () => { calcML(); calcMM(); calcMR(); calcKD(); calcRX(); calcNT(); calcGM(); calcCT(); calcTL(); };
+const calcAll = () => { calcML(); calcFL(); calcCL(); calcMM(); calcMT(); calcMR(); calcKD(); calcRX(); calcVC(); calcNT(); calcGM(); calcCT(); calcTL(); };
 
 /* ---------- 共通項目の同期（年齢・身長・体重・Cr・性別など） ---------- */
 document.addEventListener('input', e => {
@@ -1197,6 +1764,7 @@ document.addEventListener('change', calcAll);
 
 /* ---------- 開閉 ---------- */
 document.querySelectorAll('.card > .head').forEach(h => h.addEventListener('click', () => {
+  if (document.body.classList.contains('sorting')) return;
   const card = h.parentElement;
   card.classList.toggle('open');
   if (card.classList.contains('open')) setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
@@ -1210,6 +1778,30 @@ document.querySelectorAll('.reset').forEach(b => b.addEventListener('click', () 
   body.querySelectorAll('select').forEach(s => { s.selectedIndex = [...s.options].findIndex(o => o.defaultSelected); if (s.selectedIndex < 0) s.selectedIndex = 0; });
   calcAll();
 }));
+
+/* ---------- 並べ替え（端末内に保存） ---------- */
+const ORDER_KEY = 'medical-order', main = document.querySelector('main');
+const cards = () => [...main.querySelectorAll(':scope > .card')];
+const DEFAULT_ORDER = cards().map(c => c.id);
+const setOrder = ids => ids.forEach(id => { const c = $(id); if (c) main.appendChild(c); });
+const saveOrder = () => { try { localStorage.setItem(ORDER_KEY, JSON.stringify(cards().map(c => c.id))); } catch (e) {} };
+try {
+  const o = JSON.parse(localStorage.getItem(ORDER_KEY) || 'null');
+  if (Array.isArray(o)) setOrder([...o, ...DEFAULT_ORDER.filter(id => !o.includes(id))]);   // 新しく増えた項目は末尾に
+} catch (e) {}
+cards().forEach(c => {
+  const mv = document.createElement('div');
+  mv.className = 'mv';
+  mv.innerHTML = '<button type="button" aria-label="上へ">▲</button><button type="button" aria-label="下へ">▼</button>';
+  mv.children[0].addEventListener('click', () => { const p = c.previousElementSibling; if (p) { main.insertBefore(c, p); saveOrder(); } });
+  mv.children[1].addEventListener('click', () => { const n = c.nextElementSibling; if (n) { main.insertBefore(n, c); saveOrder(); } });
+  c.appendChild(mv);
+});
+$('sortbtn').addEventListener('click', () => {
+  const on = document.body.classList.toggle('sorting');
+  $('sortbtn').textContent = on ? '完了' : '並べ替え';
+});
+$('sortreset').addEventListener('click', () => { setOrder(DEFAULT_ORDER); saveOrder(); });
 
 calcAll();
 

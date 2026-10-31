@@ -1,5 +1,5 @@
 // ネット優先：つながれば最新版を取得して保存、圏外なら保存版を表示する
-const CACHE = 'medical-v2';
+const CACHE = 'medical-v3';
 const FILES = ['./', './index.html', './manifest.json', './icon.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)));
