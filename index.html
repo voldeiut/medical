@@ -41,7 +41,7 @@
   header { padding: 20px 20px 8px; }
   header h1 { margin: 0; font-size: 28px; letter-spacing: .02em; }
   header h1 span { color: var(--mm-d); }
-  header h1 em { font-style: normal; font-size: 15px; font-weight: 600; color: var(--sub); margin-left: 4px; letter-spacing: .01em; }
+  header h1 em { display: block; font-style: normal; font-size: 14px; font-weight: 600; color: var(--sub); margin-top: -2px; letter-spacing: .03em; }
   .hrow { display: flex; align-items: center; gap: 10px; }
   .hrow h1 { flex: 1; }
   .hbtn { all: unset; font-size: 13px; color: var(--ink); background: #fff; border-radius: 999px; padding: 7px 14px;
@@ -156,6 +156,26 @@
     border: 1.5px solid var(--line); background: #FCFBFD; color: var(--ink); -webkit-appearance: none; appearance: none;
   }
   .tbl3 input:focus { outline: none; border-color: var(--acc); background: #fff; }
+
+  /* 電卓 */
+  .icbtn { all: unset; width: 38px; height: 38px; border-radius: 50%; background: #fff; display: grid; place-items: center;
+           box-shadow: 0 1px 6px rgba(120, 100, 140, .12); cursor: pointer; flex: none; }
+  .icbtn svg { width: 20px; height: 20px; }
+  .calc { position: fixed; inset: 0; z-index: 50; background: rgba(74, 68, 88, .35); display: flex; align-items: flex-end; justify-content: center; }
+  .calc[hidden] { display: none; }
+  .calc-panel { background: #FFFDFB; width: 100%; max-width: 420px; border-radius: 26px 26px 0 0; padding: 14px 16px calc(env(safe-area-inset-bottom) + 16px);
+                box-shadow: 0 -4px 20px rgba(74, 68, 88, .15); }
+  .calc-top { display: flex; justify-content: space-between; align-items: center; color: var(--sub); font-size: 13px; }
+  .calc-top button { all: unset; font-size: 14px; color: var(--mm-d); padding: 4px 6px; cursor: pointer; }
+  .calc-expr { min-height: 22px; text-align: right; color: var(--sub); font-size: 17px; margin-top: 8px; word-break: break-all; }
+  .calc-out { text-align: right; font-size: 44px; font-weight: 600; line-height: 1.15; margin: 2px 0 12px; word-break: break-all; }
+  .calc-keys { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .calc-keys button { all: unset; height: 58px; border-radius: 18px; background: #F4F0F6; text-align: center; font-size: 24px; cursor: pointer; }
+  .calc-keys button:active { filter: brightness(.94); }
+  .calc-keys .op { background: var(--ml); color: #5E4D99; }
+  .calc-keys .fn { background: #EFEDF2; color: var(--sub); font-size: 20px; }
+  .calc-keys .eq { background: var(--mm-d); color: #fff; }
+  .calc-keys .w2 { grid-column: span 2; }
   footer { text-align: center; font-size: 11px; color: var(--sub); padding: 12px 20px; }
 </style>
 </head>
@@ -163,6 +183,13 @@
 <header>
   <div class="hrow">
     <h1>Medi<span>Cal</span><em>for Hematologist</em></h1>
+    <button class="icbtn" id="calcbtn" type="button" aria-label="電卓">
+      <svg viewBox="0 0 24 24"><rect x="4.5" y="2.5" width="15" height="19" rx="3" fill="#FCE3EA" stroke="#D17A96" stroke-width="1.6"/>
+        <rect x="7" y="5" width="10" height="4" rx="1" fill="#fff" stroke="#D17A96" stroke-width="1.2"/>
+        <g fill="#D17A96"><circle cx="8.5" cy="12.5" r="1.1"/><circle cx="12" cy="12.5" r="1.1"/><circle cx="15.5" cy="12.5" r="1.1"/>
+        <circle cx="8.5" cy="16" r="1.1"/><circle cx="12" cy="16" r="1.1"/><circle cx="15.5" cy="16" r="1.1"/>
+        <circle cx="8.5" cy="19" r="1.1"/><circle cx="12" cy="19" r="1.1"/><circle cx="15.5" cy="19" r="1.1"/></g></svg>
+    </button>
     <button class="hbtn" id="sortbtn" type="button">並べ替え</button>
   </div>
   <p>診療で使う計算をまとめて</p>
@@ -218,7 +245,7 @@
     <div class="grid">
       <label class="f">Hb <span class="unit">g/dL</span><input type="number" inputmode="decimal" id="ml-hb" data-sync="hb"></label>
       <label class="f">リンパ節領域数 <span class="unit">FLIPI 領域</span><input type="number" inputmode="numeric" id="ml-nodes"></label>
-      <label class="f">最大リンパ節の長径 <span class="unit">cm</span><input type="number" inputmode="decimal" id="ml-lnmax"></label>
+      <label class="f">最大リンパ節の長径 <span class="unit">cm</span><input type="number" inputmode="decimal" id="ml-lnmax" data-sync="lnmax"></label>
       <div class="f" style="align-self:end"><label class="chk"><input type="checkbox" id="ml-b2m"><span>β2MG &gt;基準上限</span></label></div>
     </div>
     <div class="results">
@@ -318,23 +345,23 @@
     <div class="grid">
       <label class="f">Hb <span class="unit">g/dL</span><input type="number" inputmode="decimal" id="cl-hb" data-sync="hb"></label>
       <label class="f">Plt <span class="unit">/μL</span><input type="number" inputmode="numeric" id="cl-plt" data-sync="plt" placeholder="例 150000"></label>
-      <label class="f">リンパ球数 現在 <span class="unit">/μL</span><input type="number" inputmode="numeric" id="cl-alc"></label>
+      <label class="f">リンパ球数 現在 <span class="unit">/μL</span><input type="number" inputmode="numeric" id="cl-alc" data-sync="alc"></label>
       <label class="f">リンパ球数 以前 <span class="unit">/μL</span><input type="number" inputmode="numeric" id="cl-alc0"></label>
       <label class="f full">以前の値は何か月前 <span class="unit">か月（倍加時間の計算用）</span><input type="number" inputmode="decimal" id="cl-mo"></label>
     </div>
     <h3>腫大部位（Rai・Binet）</h3>
-    <div class="checks">
-      <label class="chk"><input type="checkbox" id="cl-cer"><span>頸部リンパ節</span></label>
-      <label class="chk"><input type="checkbox" id="cl-axi"><span>腋窩リンパ節</span></label>
-      <label class="chk"><input type="checkbox" id="cl-ing"><span>鼠径リンパ節</span></label>
-      <label class="chk"><input type="checkbox" id="cl-oln"><span>その他のリンパ節</span></label>
-      <label class="chk"><input type="checkbox" id="cl-spl"><span>脾腫</span></label>
-      <label class="chk"><input type="checkbox" id="cl-liv"><span>肝腫大</span></label>
+    <div class="grid">
+      <label class="f full">リンパ節腫大のある領域数 <span class="unit">頸部・腋窩・鼠径のうち（0–3、左右で1領域）</span><input type="number" inputmode="numeric" id="cl-lnn" placeholder="0"></label>
+    </div>
+    <div class="checks sub">
+      <label class="chk"><input type="checkbox" id="cl-spl"><span>脾腫（触知）</span></label>
+      <label class="chk"><input type="checkbox" id="cl-liv"><span>肝腫大（触知）</span></label>
+      <label class="chk"><input type="checkbox" id="cl-oln"><span>上記3領域以外のリンパ節腫大あり</span></label>
     </div>
     <h3>iwCLL 治療開始規準</h3>
     <div class="grid">
       <label class="f">脾臓 左肋骨弓下 <span class="unit">cm</span><input type="number" inputmode="decimal" id="cl-splcm"></label>
-      <label class="f">最大リンパ節の長径 <span class="unit">cm</span><input type="number" inputmode="decimal" id="cl-ln"></label>
+      <label class="f">最大リンパ節の長径 <span class="unit">cm</span><input type="number" inputmode="decimal" id="cl-ln" data-sync="lnmax"></label>
     </div>
     <div class="checks sub">
       <label class="chk"><input type="checkbox" id="cl-cyto"><span>貧血・血小板減少が出現／悪化</span></label>
@@ -353,7 +380,7 @@
       <div class="res full txt" id="r-iwcll"></div>
     </div>
     <p class="note">改訂 Rai：0＝リンパ球増多のみ（低リスク）、I＝リンパ節腫大、II＝脾腫・肝腫大（I–II 中間リスク）、III＝Hb &lt;11 g/dL、IV＝血小板 &lt;10万/μL（III–IV 高リスク）。<br>
-      Binet：5領域（頸部・腋窩・鼠径の各リンパ節〔片側・両側を問わず1領域〕、脾、肝）。A＝Hb ≥10・血小板 ≥10万・2領域以下、B＝3領域以上、C＝Hb &lt;10 または血小板 &lt;10万。Rai・Binet とも自己免疫性の貧血・血小板減少は病期判定に用いない。<br>
+      Binet の領域は5つ：頸部・腋窩・鼠径のリンパ節（それぞれ片側でも両側でも1領域。右腋窩と左腋窩は合わせて1領域）、脾、肝。リンパ節の個数ではなく領域で数え、身体診察（触診）で判定する（Binet JL, et al. Cancer 1981）。Rai の I はこれ以外の部位を含め、触知するリンパ節腫大があれば該当。A＝Hb ≥10・血小板 ≥10万・2領域以下、B＝3領域以上、C＝Hb &lt;10 または血小板 &lt;10万。Rai・Binet とも自己免疫性の貧血・血小板減少は病期判定に用いない。<br>
       iwCLL 2018（Hallek M, et al. Blood 2018）：①進行性の骨髄不全（Hb &lt;10 g/dL・血小板 &lt;10万/μL が目安。ただし血小板減少が長期安定なら必須ではない）、②巨大（左肋骨弓下 ≥6 cm）・進行性・症候性の脾腫、③巨大（長径 ≥10 cm）・進行性・症候性のリンパ節腫大、④進行性リンパ球増多（2か月で ≥50% 増加、または倍加時間 &lt;6か月。初回リンパ球数 &lt;3万/μL では倍加時間だけで判断しない）、⑤ステロイド反応不良の自己免疫性血球減少、⑥症候性・機能障害のある節外病変、⑦病勢による症状（体重減少・倦怠感・発熱・盗汗）。いずれか1つで治療適応。早期・無症状なら経過観察。</p>
     <button class="reset" type="button">入力をクリア</button>
   </div>
@@ -394,16 +421,16 @@
     </div>
     <h3>Durie &amp; Salmon</h3>
     <div class="grid">
-      <label class="f">Hb <span class="unit">g/dL</span><input type="number" inputmode="decimal" id="mm-hb"></label>
-      <label class="f">補正Ca <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="mm-ca"></label>
+      <label class="f">Hb <span class="unit">g/dL</span><input type="number" inputmode="decimal" id="mm-hb" data-sync="hb"></label>
+      <label class="f">補正Ca <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="mm-ca" data-sync="ca"></label>
       <label class="f">Cr <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="mm-cr" data-sync="cr"></label>
       <label class="f">骨病変
         <select id="mm-bone"><option value="">—</option><option value="0">正常／孤立性</option><option value="1">溶骨性病変あり</option><option value="2">進行した多発溶骨病変</option></select>
       </label>
       <label class="f">M蛋白の種類
-        <select id="mm-mtype"><option value="">—</option><option value="G">IgG</option><option value="A">IgA</option><option value="O">その他／BJのみ</option></select>
+        <select id="mm-mtype" data-sync="mtype"><option value="">—</option><option value="G">IgG</option><option value="A">IgA</option><option value="O">その他／BJのみ</option></select>
       </label>
-      <label class="f">M蛋白量 <span class="unit">g/dL</span><input type="number" inputmode="decimal" id="mm-mval"></label>
+      <label class="f">M蛋白量 <span class="unit">g/dL</span><input type="number" inputmode="decimal" id="mm-mval" data-sync="sm"></label>
       <label class="f full">尿中BJ蛋白 <span class="unit">g/日（不明なら空欄）</span><input type="number" inputmode="decimal" id="mm-bj"></label>
     </div>
     <div class="results">
@@ -440,9 +467,9 @@
     <div class="grid">
       <label class="f">骨髄クローナル形質細胞 <span class="unit">%</span><input type="number" inputmode="decimal" id="mt-bmpc"></label>
       <label class="f">M蛋白の型
-        <select id="mt-type"><option value="">—</option><option value="G">IgG</option><option value="A">IgA</option><option value="L">軽鎖型・その他</option></select>
+        <select id="mt-type" data-sync="mtype"><option value="">—</option><option value="G">IgG</option><option value="A">IgA</option><option value="O">その他／BJのみ</option></select>
       </label>
-      <label class="f">血清M蛋白 <span class="unit">g/dL</span><input type="number" inputmode="decimal" id="mt-sm"></label>
+      <label class="f">血清M蛋白 <span class="unit">g/dL</span><input type="number" inputmode="decimal" id="mt-sm" data-sync="sm"></label>
       <label class="f">尿M蛋白 <span class="unit">mg/24h</span><input type="number" inputmode="decimal" id="mt-um"></label>
       <label class="f">病的 FLC <span class="unit">mg/L</span><input type="number" inputmode="decimal" id="mt-ifl"></label>
       <label class="f">非病的 FLC <span class="unit">mg/L</span><input type="number" inputmode="decimal" id="mt-ufl"></label>
@@ -455,7 +482,7 @@
     <h3>SLiM-CRAB</h3>
     <div class="grid">
       <label class="f">MRI 局所病変（≥5 mm） <span class="unit">個</span><input type="number" inputmode="numeric" id="mt-mri"></label>
-      <label class="f">補正Ca <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="mt-ca"></label>
+      <label class="f">補正Ca <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="mt-ca" data-sync="ca"></label>
       <label class="f">Ca 基準上限 <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="mt-caU" value="10.1"></label>
       <label class="f">Cr <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="mt-cr" data-sync="cr"></label>
       <label class="f">Hb <span class="unit">g/dL</span><input type="number" inputmode="decimal" id="mt-hb" data-sync="hb"></label>
@@ -960,34 +987,40 @@
       <label class="f">LDH 基準上限 <span class="unit">U/L</span><input type="number" inputmode="decimal" id="tl-uln" data-sync="uln" value="222"></label>
     </div>
     <div id="tl-ven" class="grid" style="margin-top:8px">
-      <label class="f">最大リンパ節径 <span class="unit">cm</span><input type="number" inputmode="decimal" id="tl-ln"></label>
-      <label class="f">リンパ球数 <span class="unit">/μL</span><input type="number" inputmode="numeric" id="tl-alc"></label>
+      <label class="f">最大リンパ節径 <span class="unit">cm</span><input type="number" inputmode="decimal" id="tl-ln" data-sync="lnmax"></label>
+      <label class="f">リンパ球数 <span class="unit">/μL</span><input type="number" inputmode="numeric" id="tl-alc" data-sync="alc"></label>
     </div>
     <div class="checks sub">
-      <label class="chk"><input type="checkbox" id="tl-adv"><span>進行期 III/IV・白血病型</span></label>
-      <label class="chk"><input type="checkbox" id="tl-bulky"><span>バルキー（≥10 cm）</span></label>
-      <label class="chk"><input type="checkbox" id="tl-flu"><span>フルダラビン/リツキシマブ（CLL）</span></label>
-      <label class="chk"><input type="checkbox" id="tl-sens"><span>化学療法高感受性の固形腫瘍</span></label>
-      <label class="chk"><input type="checkbox" id="tl-ren"><span>腎機能障害</span></label>
+      <label class="chk" data-dz="bl lbl"><input type="checkbox" id="tl-adv"><span>進行期（III/IV）または白血病型</span></label>
+      <label class="chk" data-dz="agg st"><input type="checkbox" id="tl-bulky"><span>バルキー（≥10 cm）</span></label>
+      <label class="chk" data-dz="cll"><input type="checkbox" id="tl-flu"><span>フルダラビン・リツキシマブを含む治療</span></label>
+      <label class="chk" data-dz="st"><input type="checkbox" id="tl-sens"><span>化学療法高感受性の固形腫瘍</span></label>
       <label class="chk"><input type="checkbox" id="tl-reninv"><span>腎浸潤</span></label>
+    </div>
+    <h3>体格・腎機能（輸液量・ラスブリカーゼ・リスク調整）</h3>
+    <div class="grid">
+      <div class="f full" style="font-size:12px;color:var(--sub)">性別
+        <div class="seg">
+          <label><input type="radio" name="tl-sex" value="M" data-sync="sex"><span>男性</span></label>
+          <label><input type="radio" name="tl-sex" value="F" data-sync="sex"><span>女性</span></label>
+        </div>
+      </div>
+      <label class="f">身長 <span class="unit">cm</span><input type="number" inputmode="decimal" id="tl-ht" data-sync="ht"></label>
+      <label class="f">体重 <span class="unit">kg</span><input type="number" inputmode="decimal" id="tl-wt" data-sync="wt"></label>
+      <label class="f">年齢<input type="number" inputmode="numeric" id="tl-age" data-sync="age" placeholder="歳"></label>
+      <label class="f">Cr <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="tl-cr" data-sync="cr"></label>
+      <label class="f full">Cr 基準上限 <span class="unit">mg/dL（性別で自動：男性 1.07、女性 0.79）</span><input type="number" inputmode="decimal" id="tl-cruln" value="1.07"></label>
     </div>
     <h3>検査値・症状（治療3日前〜7日後）</h3>
     <div class="grid">
       <label class="f">尿酸 <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="tl-ua"></label>
       <label class="f">K <span class="unit">mEq/L</span><input type="number" inputmode="decimal" id="tl-k"></label>
       <label class="f">P <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="tl-p"></label>
-      <label class="f">補正Ca <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="tl-ca"></label>
-      <label class="f">Cr <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="tl-cr" data-sync="cr"></label>
-      <label class="f">Cr 基準上限 <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="tl-cruln" value="1.07"></label>
+      <label class="f">補正Ca <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="tl-ca" data-sync="ca"></label>
     </div>
     <div class="checks sub">
       <label class="chk"><input type="checkbox" id="tl-arr"><span>不整脈・突然死</span></label>
       <label class="chk"><input type="checkbox" id="tl-sz"><span>痙攣</span></label>
-    </div>
-    <h3>体格（輸液量・ラスブリカーゼ用）</h3>
-    <div class="grid">
-      <label class="f">身長 <span class="unit">cm</span><input type="number" inputmode="decimal" id="tl-ht" data-sync="ht"></label>
-      <label class="f">体重 <span class="unit">kg</span><input type="number" inputmode="decimal" id="tl-wt" data-sync="wt"></label>
     </div>
     <div class="results">
       <div class="res" id="r-tld"></div>
@@ -998,13 +1031,29 @@
       <div class="res full txt" id="r-tlm"></div>
     </div>
     <p class="note">Laboratory TLS（Cairo-Bishop）：尿酸 ≥8.0 mg/dL、K ≥6.0 mEq/L、P ≥4.5 mg/dL、補正Ca ≤7.0 mg/dL のうち2項目以上（または治療前から25%の変化）。Clinical TLS：LTLS＋Cr ≥1.5×基準上限・不整脈/突然死・痙攣のいずれか。Cr 基準上限は男性 1.07、女性 0.79（JCCLS）。<br>
-      リスク分類は Cairo MS, et al. Br J Haematol 2010 と日本臨床腫瘍学会 TLS 診療ガイダンスに準拠。中間リスクで腎機能障害・腎浸潤、または尿酸・K・P が基準上限超（尿酸 >7.0、K >5.0、P >4.5）なら高リスクへ。ベネトクラクスは添付文書の腫瘍量分類（低：全リンパ節 &lt;5 cm かつ ALC &lt;25,000、高：リンパ節 ≥10 cm または ALC ≥25,000 かつリンパ節 ≥5 cm、他は中）。<br>
+      リスク分類は Cairo MS, et al. Br J Haematol 2010 と日本臨床腫瘍学会 TLS 診療ガイダンスに準拠。中間リスクで腎機能障害（Cr &gt;基準上限、自動判定）・腎浸潤、または尿酸・K・P が基準上限超（尿酸 &gt;7.0、K &gt;5.0、P &gt;4.5）なら高リスクへ。Burkitt・リンパ芽球性リンパ腫は、進行期（III/IV）・白血病型（Burkitt 白血病など）または LDH ≥2×基準上限なら高リスク、それ以外は中間リスク。バルキーは中高悪性度リンパ腫（LDH 高値例）と固形腫瘍で使う。ベネトクラクスは添付文書の腫瘍量分類（低：全リンパ節 &lt;5 cm かつ ALC &lt;25,000、高：リンパ節 ≥10 cm または ALC ≥25,000 かつリンパ節 ≥5 cm、他は中）。<br>
       輸液は 2,500–3,000 mL/m²/日、尿量 80–100 mL/m²/時を目標（心不全・腎不全では調整）。尿のアルカリ化はルーチンでは推奨されない。</p>
     <button class="reset" type="button">入力をクリア</button>
   </div>
 </section>
 
 </main>
+
+<div class="calc" id="calc" hidden>
+  <div class="calc-panel">
+    <div class="calc-top"><span>電卓</span><button type="button" id="calc-close">閉じる</button></div>
+    <div class="calc-expr" id="calc-expr"></div>
+    <div class="calc-out" id="calc-out">0</div>
+    <div class="calc-keys">
+      <button type="button" class="fn" data-k="C">C</button><button type="button" class="fn" data-k="B">⌫</button>
+      <button type="button" class="fn" data-k="%">%</button><button type="button" class="op" data-k="÷">÷</button>
+      <button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button><button type="button" class="op" data-k="×">×</button>
+      <button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button><button type="button" class="op" data-k="−">−</button>
+      <button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button><button type="button" class="op" data-k="+">+</button>
+      <button type="button" class="w2" data-k="0">0</button><button type="button" data-k=".">.</button><button type="button" class="eq" data-k="=">=</button>
+    </div>
+  </div>
+</div>
 <footer>計算結果は目安です。最終判断は原典・臨床所見とあわせて行ってください。</footer>
 
 <script>
@@ -1111,13 +1160,14 @@ function calcFL() {
 /* ---------- CLL（改訂 Rai・Binet・iwCLL 2018） ---------- */
 function calcCL() {
   const hb = num('cl-hb'), plt = num('cl-plt'), alc = num('cl-alc'), alc0 = num('cl-alc0'), mo = num('cl-mo');
-  const ln = chk('cl-cer') || chk('cl-axi') || chk('cl-ing') || chk('cl-oln'), so = chk('cl-spl') || chk('cl-liv');
+  const lnn = Math.min(Math.max(Math.round(num('cl-lnn') ?? 0), 0), 3);
+  const ln = lnn > 0 || chk('cl-oln'), so = chk('cl-spl') || chk('cl-liv');
   if (has(hb, plt)) {
     const rai = plt < 100000 ? 4 : hb < 11 ? 3 : so ? 2 : ln ? 1 : 0;
     box('r-rai', '改訂 Rai 分類', ['0', 'I', 'II', 'III', 'IV'][rai], ['低リスク', '中間リスク', '中間リスク', '高リスク', '高リスク'][rai]);
-    const areas = ['cer', 'axi', 'ing', 'spl', 'liv'].filter(k => chk('cl-' + k)).length;
+    const areas = lnn + (chk('cl-spl') ? 1 : 0) + (chk('cl-liv') ? 1 : 0);
     const bi = (hb < 10 || plt < 100000) ? 'C' : areas >= 3 ? 'B' : 'A';
-    box('r-binet', 'Binet 分類', bi, `${areas} 領域${bi === 'C' ? '・血球減少' : ''}`);
+    box('r-binet', 'Binet 分類', bi, `${areas} / 5 領域${bi === 'C' ? '・血球減少' : ''}${(num('cl-lnn') ?? 0) > 3 ? '（リンパ節は最大3領域）' : ''}`);
   } else { box('r-rai', '改訂 Rai 分類', null, 'Hb・Plt と腫大部位'); box('r-binet', 'Binet 分類', null, 'Hb・Plt と腫大部位'); }
 
   const h = [];
@@ -1669,6 +1719,9 @@ const RISK = ['', '低リスク（LRD）', '中間リスク（IRD）', '高リ�
 function calcTL() {
   const dz = $('tl-dz').value, wbc = num('tl-wbc'), ldh = num('tl-ldh'), uln = num('tl-uln');
   $('tl-ven').style.display = dz === 'cllv' ? '' : 'none';
+  document.querySelectorAll('#tl [data-dz]').forEach(el => { el.style.display = el.dataset.dz.split(' ').includes(dz) ? '' : 'none'; });
+  const cu = $('tl-cruln');                                        // Cr 基準上限は手で変えない限り性別で切り替える
+  if (!cu.dataset.edited) cu.value = sexOf('tl-sex') === 'F' ? '0.79' : '1.07';
   const lr = has(ldh, uln) && uln > 0 ? ldh / uln : null;
   const adv = chk('tl-adv'), bulky = chk('tl-bulky');
   const ua = num('tl-ua'), k = num('tl-k'), p = num('tl-p'), ca = num('tl-ca'), cr = num('tl-cr'), crU = num('tl-cruln');
@@ -1683,6 +1736,8 @@ function calcTL() {
     box('r-tld', 'TLS 診断', ctls ? 'Clinical TLS' : ltls ? 'Laboratory TLS' : '該当なし',
         (ab.length ? `異常：${ab.join('・')}` : '検査異常なし') + (ctls ? `／${cl.join('・')}` : '') + (k !== null && k >= 6 ? '<br><b>K ≥6.0：心電図・緊急補正</b>' : ''), ltls ? 'alert' : '');
   else box('r-tld', 'TLS 診断', null, '尿酸・K・P・Ca を入力');
+
+  const renDys = has(cr, crU) && cr > crU;                        // 腎機能障害：Cr > 基準上限
 
   // リスク分類（Cairo 2010）
   let risk = null, why = '', need = '';
@@ -1712,12 +1767,12 @@ function calcTL() {
     case 'st': risk = (chk('tl-sens') || bulky) ? 2 : 1; why = risk === 2 ? '化学療法高感受性・バルキー' : '一般的な固形腫瘍'; break;
   }
   if (risk === 2 && dz !== 'cllv') {
-    if (chk('tl-ren') || chk('tl-reninv')) { risk = 3; why += '＋腎機能障害/腎浸潤'; }
+    if (renDys || chk('tl-reninv')) { risk = 3; why += `＋${[renDys && '腎機能障害', chk('tl-reninv') && '腎浸潤'].filter(Boolean).join('・')}`; }
     else if ((ua !== null && ua > 7) || (k !== null && k > 5) || (p !== null && p > 4.5)) { risk = 3; why += '＋尿酸・K・P 高値'; }
   }
   const lvl = ltls ? 4 : risk;                                   // 4 = TLS 発症
   if (ltls) box('r-tlr', 'リスク', 'TLS 発症', risk ? `治療前分類：${RISK[risk]}` : '治療・腎臓内科へ相談', 'alert');
-  else if (risk) box('r-tlr', 'リスク', RISK[risk].replace('リスク', ''), why, risk === 3 ? 'alert' : '');
+  else if (risk) box('r-tlr', 'リスク', RISK[risk].replace('リスク', ''), why + (has(cr, crU) ? `<br>腎機能障害：${renDys ? 'あり' : 'なし'}（Cr ${cr} / 基準上限 ${crU}）` : '<br>Cr を入れると腎機能障害を自動判定'), risk === 3 ? 'alert' : '');
   else box('r-tlr', 'リスク', null, dz ? `${need}を入力` : '疾患を選択');
 
   // 推奨対応
@@ -1751,13 +1806,20 @@ function calcTL() {
 const calcAll = () => { calcML(); calcFL(); calcCL(); calcMM(); calcMT(); calcMR(); calcKD(); calcRX(); calcVC(); calcNT(); calcGM(); calcCT(); calcTL(); };
 
 /* ---------- 共通項目の同期（年齢・身長・体重・Cr・性別など） ---------- */
-document.addEventListener('input', e => {
-  const k = e.target.dataset.sync;
-  if (k) document.querySelectorAll(`[data-sync="${k}"]`).forEach(el => {
-    if (el === e.target) return;
-    if (el.type === 'radio') el.checked = el.value === e.target.value;
-    else el.value = e.target.value;
+const syncFrom = src => {
+  const k = src.dataset.sync;
+  if (!k || (src.type === 'radio' && !src.checked)) return;
+  document.querySelectorAll(`[data-sync="${k}"]`).forEach(el => {
+    if (el === src) return;
+    if (el.type === 'radio') el.checked = src.type === 'radio' && el.value === src.value;
+    else if (el.type === 'checkbox') el.checked = src.checked;
+    else el.value = src.value;
   });
+};
+document.addEventListener('input', e => {
+  if (e.target.closest('#calc')) return;
+  if (e.target.id === 'tl-cruln') e.target.dataset.edited = '1';
+  syncFrom(e.target);
   calcAll();
 });
 document.addEventListener('change', calcAll);
@@ -1776,6 +1838,12 @@ document.querySelectorAll('.reset').forEach(b => b.addEventListener('click', () 
     else i.value = i.defaultValue;
   });
   body.querySelectorAll('select').forEach(s => { s.selectedIndex = [...s.options].findIndex(o => o.defaultSelected); if (s.selectedIndex < 0) s.selectedIndex = 0; });
+  // 共通項目は他のカードからも消す（性別は全カードで未選択に戻す）
+  body.querySelectorAll('[data-sync]').forEach(el => {
+    if (el.type === 'radio') document.querySelectorAll(`[data-sync="${el.dataset.sync}"]`).forEach(r => { r.checked = false; });
+    else syncFrom(el);
+  });
+  body.querySelectorAll('[data-edited]').forEach(el => delete el.dataset.edited);
   calcAll();
 }));
 
@@ -1802,6 +1870,40 @@ $('sortbtn').addEventListener('click', () => {
   $('sortbtn').textContent = on ? '完了' : '並べ替え';
 });
 $('sortreset').addEventListener('click', () => { setOrder(DEFAULT_ORDER); saveOrder(); });
+
+/* ---------- 電卓 ---------- */
+let cx = '', justEq = false;                                       // 入力中の式（表示用の記号のまま持つ）、= 直後か
+const OPS = '+−×÷';
+const calcEval = e => {                                           // 四則演算と % だけを受け付ける
+  const t = e.replace(/[+−×÷]$/, '').replace(/−/g, '-').replace(/×/g, '*').replace(/÷/g, '/')
+             .replace(/(\d+(?:\.\d+)?)%/g, '($1/100)');
+  if (!t || !/^[\d.+\-*/() ]+$/.test(t)) return null;
+  try { const v = Function(`"use strict";return (${t})`)(); return Number.isFinite(v) ? parseFloat(v.toPrecision(12)) : null; } catch (err) { return null; }
+};
+const showCalc = () => {
+  const v = calcEval(cx);
+  $('calc-expr').textContent = cx && v !== null && /[+−×÷%]/.test(cx) ? cx : '';
+  $('calc-out').textContent = cx === '' ? '0' : v !== null ? v.toLocaleString('ja-JP', { maximumFractionDigits: 10 }) : cx;
+};
+document.querySelectorAll('.calc-keys button').forEach(b => b.addEventListener('click', () => {
+  const k = b.dataset.k;
+  if (justEq && (/\d/.test(k) || k === '.')) cx = '';             // 結果の直後に数字を押したら新しい計算
+  justEq = false;
+  const last = cx.slice(-1), cur = cx.split(/[+−×÷]/).pop();
+  if (k === 'C') cx = '';
+  else if (k === 'B') cx = cx.slice(0, -1);
+  else if (k === '=') { const v = calcEval(cx); if (v !== null) { $('calc-expr').textContent = cx + ' ='; cx = String(v).replace('-', '−'); justEq = true; $('calc-out').textContent = v.toLocaleString('ja-JP', { maximumFractionDigits: 10 }); return; }
+    if (/[+−×÷]\d/.test(cx)) { $('calc-out').textContent = '計算できません'; return; } }
+  else if (OPS.includes(k)) { if (cx === '' && k === '−') cx = '−'; else if (cx && cx !== '−') cx = (OPS.includes(last) ? cx.slice(0, -1) : cx) + k; }
+  else if (k === '%') { if (/\d$/.test(cx)) cx += '%'; }
+  else if (k === '.') { if (!cur.includes('.') && last !== '%') cx += (/\d$/.test(cx) ? '' : '0') + '.'; }
+  else if (last !== '%') cx = (cur === '0' ? cx.slice(0, -1) : cx) + k;
+  showCalc();
+}));
+const openCalc = on => { $('calc').hidden = !on; if (on) showCalc(); };
+$('calcbtn').addEventListener('click', () => openCalc(true));
+$('calc-close').addEventListener('click', () => openCalc(false));
+$('calc').addEventListener('click', e => { if (e.target.id === 'calc') openCalc(false); });
 
 calcAll();
 
