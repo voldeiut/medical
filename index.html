@@ -2080,7 +2080,26 @@ $('cases').addEventListener('click', e => { if (e.target.id === 'cases') openCas
 
 calcAll();
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+/* ---------- 新しい版への切り替え ---------- */
+// アプリに戻ったときに更新を確認し、新しい版が届いたら入力中の値を保ったまま読み込み直す
+const DRAFT_KEY = 'medical-draft';
+try {
+  const dr = JSON.parse(sessionStorage.getItem(DRAFT_KEY) || 'null');
+  if (dr) { sessionStorage.removeItem(DRAFT_KEY); restore(dr.snap); curCase = dr.cur; showCur(); toast('新しい版に更新しました'); }
+} catch (e) {}
+if ('serviceWorker' in navigator) {
+  const hadCtl = !!navigator.serviceWorker.controller;
+  let reloading = false;
+  navigator.serviceWorker.register('sw.js').then(reg => {
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') reg.update().catch(() => {}); });
+  }).catch(() => {});
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadCtl || reloading) return;
+    reloading = true;
+    try { sessionStorage.setItem(DRAFT_KEY, JSON.stringify({ snap: snapshot(), cur: curCase })); } catch (e) {}
+    location.reload();
+  });
+}
 </script>
 </body>
 </html>
