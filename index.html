@@ -830,14 +830,14 @@
     <div class="results">
       <div class="res full" id="r-vctg"></div>
       <div class="res full" id="r-vcpk"></div>
-      <div class="res" id="r-vcld"></div>
-      <div class="res" id="r-vcmt"></div>
+      <div class="res full" id="r-vcld"></div>
+      <div class="res full" id="r-vcmt"></div>
       <div class="res" id="r-vccc"></div>
       <div class="res" id="r-vcauc"></div>
       <div class="res full txt" id="r-vctdm"></div>
     </div>
-    <p class="note">目標は 抗菌薬TDM臨床実践ガイドライン2022（日本化学療法学会・日本TDM学会）に準拠：AUC<sub>24</sub> 400–600 μg·h/mL（MIC 1 を前提）。AUC &gt;600 で腎障害リスクが上がる。トラフ値のみで管理する場合の目安は 10–15 μg/mL（トラフ &gt;20 は腎障害リスク）。重症例・腎機能が変動する例は AUC での管理が望ましい。AUC をベイズ推定で求める場合は定常状態を待たずに投与開始2日目に評価でき、トラフのみで管理する場合は定常状態（目安 3日目以降）で測る。<br>
-      予測は Matzke/Bauer の1-コンパートメント母集団モデル（消失速度定数 k＝0.00083×CCr＋0.0044 /時、分布容積 V＝0.7 L/kg 実体重）による初期設計の目安で、実測濃度にもとづくベイズ推定（PAT・Practical AUC-guided TDM など）とは一致しない。負荷投与は 25–30 mg/kg（実体重、上限の目安 3 g）。点滴は 1 g あたり 60 分以上かけて投与。<br>
+    <p class="note">目標は 抗菌薬TDM臨床実践ガイドライン2022（日本化学療法学会・日本TDM学会）に準拠：AUC<sub>24</sub> 400–600 μg·h/mL（MIC 1 を前提）。AUC &gt;600 で腎障害リスクが上がる。トラフ値のみで管理する場合の目安は 10–15 μg/mL（トラフ &gt;20 は腎障害リスク）。重症例・腎機能が変動する例は AUC での管理が望ましい。初回 TDM は通常運用として投与開始3日目（開始48時間以降の最初の投与直前。q12h なら5回目、q24h なら3回目）に設定。重症例・腎機能が不安定な例では、ベイズ推定を前提に2日目の早期評価も選択肢になる。<br>
+      予測は Matzke/Bauer の1-コンパートメント母集団モデル（消失速度定数 k＝0.00083×CCr＋0.0044 /時、分布容積 V＝0.7 L/kg 実体重）による初期設計の目安で、実測濃度にもとづくベイズ推定（PAT・Practical AUC-guided TDM など）とは一致しない。負荷投与は 25–30 mg/kg（実体重、上限の目安 3 g）。希釈は添付文書のとおり 0.5 g あたり 100 mL 以上（5 mg/mL 以下、生食または 5% ブドウ糖）。点滴時間は添付文書の 60 分以上を満たしたうえで、投与時反応（red neck 症候群）を避けるため 10 mg/分以下を目安に 30 分単位で切り上げて表示（0.5 g 60分、1 g 120分、1.5 g 150分）。施設の標準がある場合はそちらを優先する。<br>
       肥満（BMI ≥30）・浮腫・低栄養高齢者（Cr 低値）では CCr の推定誤差が大きい。血液透析・CRRT 中の患者には使わない。必ず実測濃度で再設計する。</p>
     <button class="reset" type="button">入力をクリア</button>
   </div>
@@ -1241,7 +1241,7 @@
       <li><b>MM治療効果判定</b>：最良値が空欄のときは治療前値を基準に PD を判定します。</li>
       <li><b>腎機能</b>：eCCr（Cr+0.2）は、日本の酵素法 Cr を CG 式の作成時の測定法（Jaffe 法）に近づけた値です。Cr が低い高齢者ほど差が大きくなります。</li>
       <li><b>薬剤投与量</b>：院内推奨がある薬剤は院内推奨を先頭に表示し、<b>左右にスライド（またはタブ）で一般的な推奨</b>に切り替えます。判定に使う腎機能の値も選べます。</li>
-      <li><b>バンコマイシンTDM</b>：母集団モデルによる初期設計の目安です。必ず実測濃度で再設計してください。透析・CRRT 中は対象外です。</li>
+      <li><b>バンコマイシンTDM</b>：母集団モデルによる初期設計の目安です。希釈量（生食 100／250／500 mL）・点滴時間と、初回の採血日時（通常は3日目）も表示します。必ず実測濃度で再設計してください。透析・CRRT 中は対象外です。</li>
       <li><b>CRS / ICANS</b>：「覚醒せず ICE 評価不能」は ICANS Grade 4 になります（誤タップに注意）。</li>
       <li><b>TLS</b>：疾患を選ぶと、その疾患で使う項目だけが表示されます。腎機能障害は Cr と基準上限（性別で自動）から自動判定します。</li>
     </ul>
@@ -1786,13 +1786,21 @@ function calcVC() {
   const tauIn = $('vc-tau').value, tau = tauIn ? +tauIn : th <= 14 ? 12 : th <= 30 ? 24 : 48;
   const dIn = num('vc-dose'), dose = dIn && dIn > 0 ? dIn : r250(tAUC * CL * tau / 24);
   const useLoad = chk('vc-load'), load = useLoad ? r250(Math.min(25 * wt, 3000)) : 0;
-  const tinf = d => Math.max(1, d / 1000);
-  const hr = h => h >= 1 && h % 1 === 0 ? `${h}時間` : `${Math.round(h * 60)}分`;
+  // 点滴時間：添付文書は60分以上。投与時反応を避けるため 10 mg/分以下を目安に 30 分単位で切り上げる
+  const tinf = d => Math.max(60, Math.ceil(d / 10 / 30) * 30) / 60;
+  const hr = h => `${Math.round(h * 60)}分`;
+  // 希釈：添付文書「0.5 g（力価）に対し 100 mL 以上」＝ 5 mg/mL 以下。生食（または 5% ブドウ糖）のバッグを選ぶ
+  const dil = d => {
+    const need = d / 5, bag = [100, 250, 500].find(v => v >= need);
+    const v = bag ? `生食 ${bag} mL` : `生食 ${Math.ceil(need / 100) * 100} mL 以上（500 mL＋100 mL など）`;
+    const why = bag === 100 ? '' : `<br>※ 100 mL では ${fmt(d / 100, 1)} mg/mL で濃すぎる（0.5 g あたり 100 mL 以上が必要）`;
+    return [`${v} に希釈（${fmt(d / (bag || Math.ceil(need / 100) * 100), 1)} mg/mL）`, why];
+  };
 
   box('r-vcld', keys[1], useLoad ? `${load.toLocaleString()}<small> mg</small>` : 'なし',
-    useLoad ? `25–30 mg/kg＝${Math.round(25 * wt).toLocaleString()}–${Math.round(30 * wt).toLocaleString()} mg（上限 3 g）を ${hr(tinf(load))}以上で` : '負荷投与なしで設計');
+    useLoad ? `25–30 mg/kg＝${Math.round(25 * wt).toLocaleString()}–${Math.round(30 * wt).toLocaleString()} mg（上限 3 g）<br>${dil(load)[0]}、${hr(tinf(load))}かけて点滴${dil(load)[1]}` : '負荷投与なしで設計');
   box('r-vcmt', `維持量（${tau}時間ごと）`, `${dose.toLocaleString()}<small> mg</small>`,
-    `${hr(tinf(dose))}以上で点滴。${useLoad ? `負荷の ${tau} 時間後から` : '初回から'}${dIn ? '（手入力）' : `（目標 AUC ${tAUC}）`}`);
+    `${dil(dose)[0]}、${hr(tinf(dose))}かけて点滴<br>${useLoad ? `負荷の ${tau} 時間後から` : '初回から'}${dIn ? '（手入力）' : `（目標 AUC ${tAUC}）`}${dil(dose)[1]}`);
 
   // 投与スケジュールと濃度（1-コンパートメント、点滴の重ね合わせ）
   const doses = [];
@@ -1825,13 +1833,14 @@ function calcVC() {
     return;
   }
   const at = tReq => { const i = doses.findIndex(([t]) => t > 0 && t >= tReq); return [i, doses[i][0]]; };
-  const [iA, tA] = at(24), tPA = tA + tinf(doses[iA][1]) + 1;                        // AUC（ベイズ推定）：2日目
-  const [iT, tT] = at(Math.min(Math.max(4 * th, 2 * tau), 72));                         // トラフのみ：定常状態
-  const [dA, cA] = clock(t0, tA), [dP, cP] = clock(t0, tPA), [dT, cT] = clock(t0, tT);
-  box('r-vctdm', keys[5], `${dA}日目 ${cA}<small>（AUC 評価）</small>`,
-    `<b>AUC をベイズ推定で評価（推奨）</b>：${iA + 1}回目の投与直前にトラフ（予測 ${fmt(conc(tA - 0.01))} μg/mL）、同じ回の点滴終了1–2時間後（${dP}日目 ${cP} ごろ、予測 ${fmt(conc(tPA))} μg/mL）にピークの2点を採血`
-    + `<br><b>トラフのみで管理する場合</b>：定常状態の ${dT}日目 ${cT}（${iT + 1}回目の投与直前、予測 ${fmt(conc(tT - 0.01))} μg/mL）`
-    + `<br>実際の投与・点滴終了・採血の時刻を記録して解析する。${follow}`, 'txt');
+  const [iT, tT] = at(48);                                          // 通常運用：3日目（開始48時間以降の最初の投与直前）
+  const tP = tT + tinf(doses[iT][1]) + 1, [dT, cT] = clock(t0, tT), [dP, cP] = clock(t0, tP);
+  const ss = tT >= 4 * th;                                          // 定常状態（t½ の約4倍）に達しているか
+  box('r-vctdm', keys[5], `${dT}日目 ${cT}<small>（${iT + 1}回目の投与直前）</small>`,
+    `<b>トラフ</b>：${dT}日目 ${cT} の投与直前（予測 ${fmt(conc(tT - 0.01))} μg/mL）`
+    + `<br><b>AUC を求める場合</b>：同じ回の点滴終了1–2時間後（${dP}日目 ${cP} ごろ、予測 ${fmt(conc(tP))} μg/mL）にピークも採血`
+    + (ss ? '' : `<br>t½ ${fmt(th)} 時間のため、この時点ではまだ定常状態に達していない。AUC はベイズ推定（PAT など）で評価する`)
+    + `<br>重症例・腎機能が不安定な例は、2日目の早期評価も検討。${follow}`, 'txt');
 }
 
 /* ---------- ガンマ計算 ---------- */
