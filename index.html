@@ -236,6 +236,10 @@
   .dt-res b { font-size: 20px; }
   .dt-res .dd { margin-top: 6px; padding-top: 6px; border-top: 1px dashed #A9DCC6; }
   .dt-res .nw { white-space: nowrap; display: inline-block; }
+  .dt-chips { display: flex; gap: 5px; margin-top: 8px; }
+  .dt-chips button { all: unset; flex: 1 1 0; min-width: 0; text-align: center; padding: 8px 0; border-radius: 999px; font-size: 15px;
+                     background: #F4F0F6; color: var(--ink); cursor: pointer; }
+  .dt-chips button.on { background: #5FA889; color: #fff; font-weight: 600; }
   .dt-hint { font-size: 11px; color: var(--sub); margin-top: 10px; line-height: 1.5; }
 
   /* 使い方 */
@@ -1173,6 +1177,7 @@
     <div class="dt-row">
       <div class="dt-lbl"><span>日数（マイナスで「前」）</span><span class="auto" id="dt-a-d" hidden>自動計算</span></div>
       <div class="dt-in" id="dt-w-d"><input type="number" id="dt-d" inputmode="decimal" placeholder="14"><select id="dt-u"><option value="1">日後</option><option value="7">週後</option></select></div>
+      <div class="dt-chips" id="dt-chips"></div>
     </div>
     <div class="dt-res empty" id="dt-res">3つのうち2つを入力すると、残りの1つを自動で計算します</div>
     <p class="dt-hint">日付は「2026.11.6」「2026/11/6」「20261106」「11.6」（今年）のように入力できます。右のボタンでカレンダーから選べます。自動計算された欄を書き換えると、その欄が入力側になり、起点を基準に残りの欄（日数、または終点）を計算し直します。</p>
@@ -1209,7 +1214,7 @@
     <ul>
       <li>起点・終点・日数のうち2つを入れると、残りの1つを自動計算します（緑の欄が自動計算）。</li>
       <li>日付は「2026.11.6」「20261106」「11.6」（今年）などで直接入力するか、右のボタンでカレンダーから選びます。</li>
-      <li>日数は「日後／週後」を選べます。マイナスで「前」になります。</li>
+      <li>日数は「日後／週後」を選べます。マイナスで「前」になります。よく使う日数（日後：7・14・21・28・35・56・100、週後：1〜8）は下のボタンでワンタップで入ります。</li>
       <li>結果に、起点を day 0／day 1 としたときの day 数も表示します。</li>
     </ul>
 
@@ -2266,6 +2271,7 @@ function dtCalc() {
     wd.textContent = d ? `(${WD[d.getUTCDay()]})` : t ? '？' : ''; wd.style.color = d || !t ? '' : '#C0473B';
     if (d) $(`dt-${k}p`).value = isoD(d);
   });
+  dtChips();
   const w = dtGet(), r = $('dt-res');
   if (w.s && w.e) {
     const n = Math.round((w.e - w.s) / DAY), wk = Math.trunc(Math.abs(n) / 7), rd = Math.abs(n) % 7;
@@ -2297,16 +2303,28 @@ const dtEdit = k => {                                             // 手で入�
 ['s', 'e'].forEach(k => $(`dt-${k}`).addEventListener('input', () => { if (parseD($(`dt-${k}`).value) || !$(`dt-${k}`).value) dtEdit(k); else dtCalc(); }));
 ['dt-s', 'dt-e'].forEach(id => $(id).addEventListener('blur', () => { const d = parseD($(id).value); if (d) $(id).value = ymd(d); }));
 $('dt-d').addEventListener('input', () => dtEdit('d'));
-$('dt-u').addEventListener('change', () => { if (DT.auto === 'd') { const v = dtGet(); if (v.s && v.e) { const n = Math.round((v.e - v.s) / DAY); $('dt-d').value = +(n / +$('dt-u').value).toFixed(2); } } else dtEdit('d'); });
+$('dt-u').addEventListener('change', () => { if (DT.auto === 'd') { const v = dtGet(); if (v.s && v.e) { const n = Math.round((v.e - v.s) / DAY); $('dt-d').value = +(n / +$('dt-u').value).toFixed(2); } dtCalc(); } else dtEdit('d'); });
 ['s', 'e'].forEach(k => $(`dt-${k}p`).addEventListener('change', () => {
   const v = $(`dt-${k}p`).value; if (!v) return;
   const [y, m, d] = v.split('-').map(Number); $(`dt-${k}`).value = ymd(new Date(Date.UTC(y, m - 1, d))); dtEdit(k);
 }));
 $('dt-today').addEventListener('click', () => { $('dt-s').value = ymd(todayUTC()); dtEdit('s'); });
+
+// よく使う日数（日後：7…100、週後：1…8）をワンタップで入れる
+const CHIPS = { 1: [7, 14, 21, 28, 35, 56, 100], 7: [1, 2, 3, 4, 5, 6, 7, 8] };
+function dtChips() {
+  const u = $('dt-u').value, cur = $('dt-d').value.trim();
+  $('dt-chips').innerHTML = CHIPS[u].map(n => `<button type="button" data-n="${n}" class="${cur !== '' && +cur === n ? 'on' : ''}">${n}</button>`).join('');
+}
+$('dt-chips').addEventListener('click', e => {
+  const n = e.target.dataset && e.target.dataset.n; if (!n) return;
+  $('dt-d').value = n; dtEdit('d');
+});
 const openDates = on => {
   $('dates').hidden = !on;
   if (on && !$('dt-s').value && !$('dt-e').value) { $('dt-s').value = ymd(todayUTC()); DT.order = ['s']; DT.auto = null; dtCalc(); }
 };
+dtChips();
 $('datebtn').addEventListener('click', () => openDates(true));
 $('dates-close').addEventListener('click', () => openDates(false));
 $('dates').addEventListener('click', e => { if (e.target.id === 'dates') openDates(false); });
