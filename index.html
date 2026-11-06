@@ -294,6 +294,373 @@
 
 <main>
 
+<!-- ================= 腎機能 ================= -->
+<section class="card kd" id="kd">
+  <button class="head" type="button">
+    <div class="ico">
+      <!-- 腎臓 -->
+      <svg viewBox="0 0 64 64">
+        <path d="M24 8c-10 0-16 10-16 23s5 25 15 25c7 0 9-6 6-11-2-4-2-9 1-13 3-4 2-9-1-12 3-6 1-12-5-12z" fill="#A9DCC6" stroke="#5FA889" stroke-width="2.2"/>
+        <path d="M40 8c10 0 16 10 16 23s-5 25-15 25c-7 0-9-6-6-11 2-4 2-9-1-13-3-4-2-9 1-12-3-6-1-12 5-12z" fill="#A9DCC6" stroke="#5FA889" stroke-width="2.2"/>
+        <path d="M27 32c2-1 4-1 5 1v24M37 32c-2-1-4-1-5 1" fill="none" stroke="#F2A7B5" stroke-width="2.4" stroke-linecap="round"/>
+        <ellipse cx="17" cy="20" rx="3.5" ry="2" fill="#fff" opacity=".7" transform="rotate(-50 17 20)"/>
+        <ellipse cx="47" cy="20" rx="3.5" ry="2" fill="#fff" opacity=".7" transform="rotate(50 47 20)"/>
+      </svg>
+    </div>
+    <div class="ttl"><b>腎機能</b><small>個別化 eGFR ・ 個別化 eCCr</small></div>
+    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
+  <div class="body">
+    <h3>患者情報</h3>
+    <div class="grid">
+      <div class="f full" style="font-size:12px;color:var(--sub)">性別
+        <div class="seg">
+          <label><input type="radio" name="kd-sex" value="M" data-sync="sex"><span>男性</span></label>
+          <label><input type="radio" name="kd-sex" value="F" data-sync="sex"><span>女性</span></label>
+        </div>
+      </div>
+      <label class="f">年齢<input type="number" inputmode="numeric" id="kd-age" data-sync="age" placeholder="歳"></label>
+      <label class="f">Cr <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="kd-cr" data-sync="cr"></label>
+      <label class="f">身長 <span class="unit">cm</span><input type="number" inputmode="decimal" id="kd-ht" data-sync="ht"></label>
+      <label class="f">体重 <span class="unit">kg</span><input type="number" inputmode="decimal" id="kd-wt" data-sync="wt"></label>
+      <label class="f full">シスタチンC <span class="unit">mg/L（任意）</span><input type="number" inputmode="decimal" id="kd-cys"></label>
+    </div>
+    <div class="results">
+      <div class="res full" id="r-egfr"></div>
+      <div class="res full" id="r-egfrcys"></div>
+      <div class="res full" id="r-ccr"></div>
+      <div class="res full" id="r-bsa"></div>
+    </div>
+    <p class="note">eGFRcr＝194×Cr<sup>−1.094</sup>×年齢<sup>−0.287</sup>（女性×0.739）。eGFRcys＝104×Cys<sup>−1.019</sup>×0.996<sup>年齢</sup>（女性×0.929）−8。<br>
+      個別化＝標準化eGFR×BSA/1.73（BSAはDuBois式）。<br>
+      eCCr＝Cockcroft-Gault（(140−年齢)×体重/(72×Cr)、女性×0.85）。日本の酵素法Crは Jaffe 法より約0.2 mg/dL低いため、Cr+0.2 で計算した値も併記。</p>
+    <button class="reset" type="button">入力をクリア</button>
+  </div>
+</section>
+
+<!-- ================= 薬剤投与量 ================= -->
+<section class="card rx" id="rx">
+  <button class="head" type="button">
+    <div class="ico">
+      <!-- カプセル＋錠剤 -->
+      <svg viewBox="0 0 64 64">
+        <g transform="rotate(-40 30 30)">
+          <rect x="10" y="20" width="40" height="20" rx="10" fill="#fff" stroke="#5A8CC8" stroke-width="2.5"/>
+          <path d="M30 20h10a10 10 0 0 1 0 20H30z" fill="#9CC2EE"/>
+          <rect x="10" y="20" width="40" height="20" rx="10" fill="none" stroke="#5A8CC8" stroke-width="2.5"/>
+          <ellipse cx="18" cy="25" rx="4" ry="1.8" fill="#DCEBFB"/>
+        </g>
+        <circle cx="46" cy="47" r="10" fill="#fff" stroke="#5A8CC8" stroke-width="2.5"/>
+        <path d="M39 47h14" stroke="#9CC2EE" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="ttl"><b>薬剤投与量</b><small>抗菌薬 ・ ガンシクロビル ・ バリキサ ・ タリージェ ・ リリカ</small></div>
+    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
+  <div class="body">
+    <h3>腎機能（腎機能カードと共通）</h3>
+    <div class="grid">
+      <div class="f full" style="font-size:12px;color:var(--sub)">性別
+        <div class="seg">
+          <label><input type="radio" name="rx-sex" value="M" data-sync="sex"><span>男性</span></label>
+          <label><input type="radio" name="rx-sex" value="F" data-sync="sex"><span>女性</span></label>
+        </div>
+      </div>
+      <label class="f">年齢<input type="number" inputmode="numeric" id="rx-age" data-sync="age" placeholder="歳"></label>
+      <label class="f">Cr <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="rx-cr" data-sync="cr"></label>
+      <label class="f">身長 <span class="unit">cm</span><input type="number" inputmode="decimal" id="rx-ht" data-sync="ht"></label>
+      <label class="f">体重 <span class="unit">kg</span><input type="number" inputmode="decimal" id="rx-wt" data-sync="wt"></label>
+      <label class="f">判定に使う値
+        <select id="rx-basis">
+          <option value="cg" selected>eCCr（CG）</option><option value="cg2">eCCr（Cr+0.2）</option>
+          <option value="egfr">個別化 eGFRcr</option><option value="man">手入力</option>
+        </select>
+      </label>
+      <label class="f" id="rx-manwrap">CCr 手入力 <span class="unit">mL/min</span><input type="number" inputmode="decimal" id="rx-man"></label>
+    </div>
+    <div class="checks sub">
+      <label class="chk"><input type="checkbox" id="rx-hd"><span>血液透析中</span></label>
+    </div>
+    <h3>薬剤</h3>
+    <label class="f"><select id="rx-drug"></select></label>
+    <div class="results">
+      <div class="res full" id="r-rxc"></div>
+    </div>
+    <div class="tabs" id="rx-tabs"></div>
+    <div class="pages" id="rx-pages"></div>
+    <p class="note" id="rx-note"></p>
+    <p class="note">セフェピム・タゾバクタム/ピペラシリン・メロペネムは院内推奨を先頭に表示し、左右にスライドすると一般的な推奨を表示する。一般的な推奨は 添付文書・Sanford Guide・日本腎臓病薬物療法学会の腎機能別投与量一覧などを参考にした成人の目安。添付文書の CCr は Cockcroft-Gault 式（実測Cr）を前提とするものが多い。eGFR を使う場合は体表面積補正を外した個別化 eGFR を用いる。るい痩・高齢者では Cr が低く過大評価になりやすい。必ず最新の添付文書・施設基準で確認する。</p>
+    <button class="reset" type="button">入力をクリア</button>
+  </div>
+</section>
+
+<!-- ================= バンコマイシン TDM ================= -->
+<section class="card vc" id="vc">
+  <button class="head" type="button">
+    <div class="ico">
+      <!-- バイアル＋採血管 -->
+      <svg viewBox="0 0 64 64">
+        <rect x="10" y="20" width="24" height="34" rx="6" fill="#FBFDF3" stroke="#879B37" stroke-width="2.4"/>
+        <rect x="13" y="12" width="18" height="9" rx="2.5" fill="#C9D98A" stroke="#879B37" stroke-width="2"/>
+        <path d="M12 38h20v10a4 4 0 0 1-4 4H16a4 4 0 0 1-4-4z" fill="#DCE8A8"/>
+        <path d="M17 30h10" stroke="#C9D98A" stroke-width="2.2" stroke-linecap="round"/>
+        <rect x="40" y="10" width="13" height="44" rx="6.5" fill="#fff" stroke="#879B37" stroke-width="2.4"/>
+        <rect x="40" y="10" width="13" height="9" rx="4" fill="#F2A7B5" stroke="#879B37" stroke-width="2"/>
+        <path d="M42.5 34h8v14a4 4 0 0 1-8 0z" fill="#F2A7B5"/>
+      </svg>
+    </div>
+    <div class="ttl"><b>バンコマイシンTDM</b><small>初期投与設計 ・ 予測濃度と AUC/MIC ・ 採血のタイミング</small></div>
+    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
+  <div class="body">
+    <h3>患者情報（他のカードと共通）</h3>
+    <div class="grid">
+      <div class="f full" style="font-size:12px;color:var(--sub)">性別
+        <div class="seg">
+          <label><input type="radio" name="vc-sex" value="M" data-sync="sex"><span>男性</span></label>
+          <label><input type="radio" name="vc-sex" value="F" data-sync="sex"><span>女性</span></label>
+        </div>
+      </div>
+      <label class="f">年齢<input type="number" inputmode="numeric" id="vc-age" data-sync="age" placeholder="歳"></label>
+      <label class="f">Cr <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="vc-cr" data-sync="cr"></label>
+      <label class="f">身長 <span class="unit">cm</span><input type="number" inputmode="decimal" id="vc-ht" data-sync="ht"></label>
+      <label class="f">体重 <span class="unit">kg（実体重）</span><input type="number" inputmode="decimal" id="vc-wt" data-sync="wt"></label>
+      <label class="f">腎機能に使う値
+        <select id="vc-basis"><option value="cg" selected>eCCr（CG）</option><option value="cg2">eCCr（Cr+0.2）</option><option value="man">手入力</option></select>
+      </label>
+      <label class="f" id="vc-manwrap">CCr 手入力 <span class="unit">mL/min</span><input type="number" inputmode="decimal" id="vc-man"></label>
+    </div>
+    <h3>投与設計</h3>
+    <div class="grid">
+      <label class="f">MIC <span class="unit">μg/mL</span>
+        <select id="vc-mic"><option value="0.5">0.5</option><option value="1" selected>1（不明時）</option><option value="2">2</option></select>
+      </label>
+      <label class="f">目標 AUC <span class="unit">μg·h/mL</span><input type="number" inputmode="numeric" id="vc-auc" value="500"></label>
+      <label class="f">投与間隔
+        <select id="vc-tau"><option value="" selected>自動</option><option value="8">8時間ごと</option><option value="12">12時間ごと</option><option value="24">24時間ごと</option><option value="48">48時間ごと</option></select>
+      </label>
+      <label class="f">維持量 <span class="unit">mg/回（空欄で自動）</span><input type="number" inputmode="numeric" id="vc-dose"></label>
+      <label class="f">初回投与の時刻<input type="time" id="vc-t0" value="10:00"></label>
+      <div class="f" style="align-self:end"><label class="chk"><input type="checkbox" id="vc-load" checked><span>初回負荷投与</span></label></div>
+    </div>
+    <div class="results">
+      <div class="res full" id="r-vctg"></div>
+      <div class="res full" id="r-vcpk"></div>
+      <div class="res full" id="r-vcld"></div>
+      <div class="res full" id="r-vcmt"></div>
+      <div class="res" id="r-vccc"></div>
+      <div class="res" id="r-vcauc"></div>
+      <div class="res full txt" id="r-vctdm"></div>
+    </div>
+    <p class="note">目標は 抗菌薬TDM臨床実践ガイドライン2022（日本化学療法学会・日本TDM学会）に準拠：AUC<sub>24</sub> 400–600 μg·h/mL（MIC 1 を前提）。AUC &gt;600 で腎障害リスクが上がる。トラフ値のみで管理する場合の目安は 10–15 μg/mL（トラフ &gt;20 は腎障害リスク）。重症例・腎機能が変動する例は AUC での管理が望ましい。初回 TDM は通常運用として投与開始3日目（開始48時間以降の最初の投与直前。q12h なら5回目、q24h なら3回目）に設定。重症例・腎機能が不安定な例では、ベイズ推定を前提に2日目の早期評価も選択肢になる。<br>
+      予測は Matzke/Bauer の1-コンパートメント母集団モデル（消失速度定数 k＝0.00083×CCr＋0.0044 /時、分布容積 V＝0.7 L/kg 実体重）による初期設計の目安で、実測濃度にもとづくベイズ推定（PAT・Practical AUC-guided TDM など）とは一致しない。負荷投与は 25–30 mg/kg（実体重、上限の目安 3 g）。希釈は添付文書のとおり 0.5 g あたり 100 mL 以上（5 mg/mL 以下、生食または 5% ブドウ糖）。点滴時間は添付文書の 60 分以上を満たしたうえで、投与時反応（red neck 症候群）を避けるため 10 mg/分以下を目安に 30 分単位で切り上げて表示（0.5 g 60分、1 g 120分、1.5 g 150分）。施設の標準がある場合はそちらを優先する。<br>
+      肥満（BMI ≥30）・浮腫・低栄養高齢者（Cr 低値）では CCr の推定誤差が大きい。血液透析・CRRT 中の患者には使わない。必ず実測濃度で再設計する。</p>
+    <button class="reset" type="button">入力をクリア</button>
+  </div>
+</section>
+
+<!-- ================= 栄養 ================= -->
+<section class="card nt" id="nt">
+  <button class="head" type="button">
+    <div class="ico">
+      <!-- りんご＋お茶碗 -->
+      <svg viewBox="0 0 64 64">
+        <path d="M32 18c-4-4-14-4-17 4-4 10 2 30 11 32 3 1 4-1 6-1s3 2 6 1c9-2 15-22 11-32-3-8-13-8-17-4z" fill="#FFB8A1" stroke="#E07F63" stroke-width="2.2"/>
+        <path d="M32 18c0-5 1-9 4-12" fill="none" stroke="#9B6B4A" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M34 12c4-5 10-5 13-3-3 4-8 6-13 3z" fill="#9ED3A6" stroke="#5FA889" stroke-width="1.6"/>
+        <ellipse cx="22" cy="28" rx="3.5" ry="5" fill="#fff" opacity=".6" transform="rotate(20 22 28)"/>
+      </svg>
+    </div>
+    <div class="ttl"><b>栄養</b><small>標準体重 ・ 必要エネルギー ・ Harris-Benedict ・ タンパク質 ・ 脂質</small></div>
+    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
+  <div class="body">
+    <h3>患者情報</h3>
+    <div class="grid">
+      <div class="f full" style="font-size:12px;color:var(--sub)">性別
+        <div class="seg">
+          <label><input type="radio" name="nt-sex" value="M" data-sync="sex"><span>男性</span></label>
+          <label><input type="radio" name="nt-sex" value="F" data-sync="sex"><span>女性</span></label>
+        </div>
+      </div>
+      <label class="f">年齢<input type="number" inputmode="numeric" id="nt-age" data-sync="age" placeholder="歳"></label>
+      <label class="f">身長 <span class="unit">cm</span><input type="number" inputmode="decimal" id="nt-ht" data-sync="ht"></label>
+      <label class="f">体重 <span class="unit">kg</span><input type="number" inputmode="decimal" id="nt-wt" data-sync="wt"></label>
+      <label class="f">活動係数
+        <select id="nt-af">
+          <option value="1.0">1.0 寝たきり</option><option value="1.2" selected>1.2 ベッド上安静</option>
+          <option value="1.3">1.3 ベッド外活動</option><option value="1.5">1.5 軽労働</option>
+        </select>
+      </label>
+      <label class="f full">ストレス係数
+        <select id="nt-sf">
+          <option value="1.0">1.0 ストレスなし</option><option value="1.1">1.1 軽度（小手術・軽度感染）</option>
+          <option value="1.2" selected>1.2 中等度（癌・中等度感染）</option><option value="1.3">1.3 高度（大手術・重症感染）</option>
+          <option value="1.5">1.5 重度（敗血症・多臓器不全）</option>
+        </select>
+      </label>
+      <label class="f full">タンパク質の基準となる病態
+        <select id="nt-pro">
+          <option value="1.0-1.2" selected>一般・維持（1.0–1.2 g/kg）</option>
+          <option value="1.2-1.5">がん・軽〜中等度侵襲・高齢者（1.2–1.5 g/kg）</option>
+          <option value="1.2-2.0">重症・高度侵襲（1.2–2.0 g/kg）</option>
+          <option value="0.6-0.8">保存期 CKD G3b–G5（0.6–0.8 g/kg 標準体重）</option>
+          <option value="0.9-1.2">透析（0.9–1.2 g/kg 標準体重）</option>
+        </select>
+      </label>
+    </div>
+    <div class="results">
+      <div class="res" id="r-ibw"></div>
+      <div class="res" id="r-bmi"></div>
+      <div class="res full" id="r-kcal"></div>
+      <div class="res" id="r-bee"></div>
+      <div class="res" id="r-tee"></div>
+      <div class="res full" id="r-pro"></div>
+      <div class="res full" id="r-fat"></div>
+    </div>
+    <p class="note">標準体重＝22×身長(m)²。必要エネルギー＝標準体重×25〜30 kcal。<br>
+      Harris-Benedict：男性 66.47+13.75W+5.0H−6.76A、女性 655.1+9.56W+1.85H−4.68A（W kg、H cm、A 歳）。TEE＝BEE×活動係数×ストレス係数。<br>
+      タンパク質（静脈栄養ではアミノ酸量としてほぼ同量）：実体重で計算。BMI ≥25 と CKD・透析では標準体重で計算（肥満の体重の扱いは指針により標準体重・調整体重などで異なる）。一般 1.0–1.2、がん・侵襲・高齢者 1.2–1.5（ESPEN がんガイドライン 1.0–1.5）、重症 1.2–2.0 g/kg/日。CKD は日本腎臓学会の食事療法基準（G3b 以降 0.6–0.8、透析 0.9–1.2 g/kg 標準体重。KDIGO 2024 は 0.8）。低栄養・サルコペニア・急性期の異化亢進では制限を自動的に当てはめない。重症例は病期に応じて段階的に増やす。<br>
+      脂質：総エネルギーの 20–30%（日本人の食事摂取基準）、1 g＝9 kcal。静脈栄養の脂肪乳剤は 1.0 g/kg/日以下、投与速度 0.1 g/kg/時以下が保守的な目安（製剤・病態で異なる。プロポフォール由来の脂質も合算する）。</p>
+    <button class="reset" type="button">入力をクリア</button>
+  </div>
+</section>
+
+<!-- ================= ガンマ計算 ================= -->
+<section class="card gm" id="gm">
+  <button class="head" type="button">
+    <div class="ico">
+      <!-- シリンジポンプ -->
+      <svg viewBox="0 0 64 64">
+        <rect x="6" y="30" width="52" height="22" rx="6" fill="#FFFBEA" stroke="#BF9520" stroke-width="2.5"/>
+        <rect x="12" y="36" width="20" height="10" rx="3" fill="#E9D27A"/>
+        <text x="22" y="44.5" font-size="8" font-weight="700" text-anchor="middle" fill="#7A5E0E" font-family="-apple-system, sans-serif">2.4</text>
+        <circle cx="42" cy="41" r="3" fill="#F2B7C8"/><circle cx="51" cy="41" r="3" fill="#A9DCC6"/>
+        <rect x="10" y="14" width="34" height="11" rx="3" fill="#fff" stroke="#BF9520" stroke-width="2.2"/>
+        <rect x="12" y="16" width="18" height="7" rx="2" fill="#FFE08A"/>
+        <path d="M44 19.5h10M6 19.5h4" stroke="#BF9520" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="ttl"><b>ガンマ計算</b><small>γ（μg/kg/min）⇄ mL/時 ・ 主な持続静注薬</small></div>
+    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
+  <div class="body">
+    <h3>薬剤・希釈</h3>
+    <div class="grid">
+      <label class="f full">薬剤（選ぶと組成を自動入力）<select id="gm-drug"></select></label>
+      <label class="f">薬剤量 <span class="unit">mg</span><input type="number" inputmode="decimal" id="gm-mg"></label>
+      <label class="f">全量 <span class="unit">mL</span><input type="number" inputmode="decimal" id="gm-ml"></label>
+      <label class="f">体重 <span class="unit">kg</span><input type="number" inputmode="decimal" id="gm-wt" data-sync="wt"></label>
+      <label class="f">単位
+        <select id="gm-unit">
+          <option value="g" selected>μg/kg/min（γ）</option><option value="kgh">μg/kg/時</option>
+          <option value="mgkgh">mg/kg/時</option><option value="mgh">mg/時</option>
+        </select>
+      </label>
+    </div>
+    <h3>換算</h3>
+    <div class="grid">
+      <label class="f">投与量 <span class="unit" id="gm-ulbl">γ</span><input type="number" inputmode="decimal" id="gm-dose"></label>
+      <label class="f">流量 <span class="unit">mL/時</span><input type="number" inputmode="decimal" id="gm-rate"></label>
+    </div>
+    <div class="results">
+      <div class="res full" id="r-gmc"></div>
+      <div class="res" id="r-gm1"></div>
+      <div class="res" id="r-gmr"></div>
+      <div class="res full" id="r-gmd"></div>
+    </div>
+    <p class="note">mL/時 ＝ 投与量（μg/kg/min）× 体重 × 60 ÷ 濃度（μg/mL）。<br>
+      組成は代表例。施設の標準希釈と異なる場合は薬剤量・全量を書き換えて使う。用量範囲は目安。</p>
+    <button class="reset" type="button">入力をクリア</button>
+  </div>
+</section>
+
+<!-- ================= TLS ================= -->
+<section class="card tl" id="tl">
+  <button class="head" type="button">
+    <div class="ico">
+      <!-- 点滴バッグ -->
+      <svg viewBox="0 0 64 64">
+        <path d="M32 4v6" stroke="#D9695F" stroke-width="2.4" stroke-linecap="round"/>
+        <rect x="16" y="10" width="32" height="34" rx="9" fill="#FFF5F3" stroke="#D9695F" stroke-width="2.5"/>
+        <path d="M18 28c6 3 22 3 28 0v8a7 7 0 0 1-7 7H25a7 7 0 0 1-7-7z" fill="#FFB4A8"/>
+        <path d="M24 17h8M24 22h5" stroke="#F2B0A6" stroke-width="2" stroke-linecap="round"/>
+        <path d="M32 44v6" stroke="#D9695F" stroke-width="2.4"/>
+        <path d="M32 52c-3 4-4 6-4 7.5a4 4 0 0 0 8 0c0-1.5-1-3.5-4-7.5z" fill="#9CC2EE"/>
+      </svg>
+    </div>
+    <div class="ttl"><b>TLS</b><small>腫瘍崩壊症候群の診断 ・ リスク評価 ・ 輸液量 ・ 尿酸対策</small></div>
+    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
+  <div class="body">
+    <h3>疾患・腫瘍量</h3>
+    <div class="grid">
+      <label class="f full">疾患
+        <select id="tl-dz">
+          <option value="">—</option>
+          <option value="aml">AML</option><option value="all">ALL</option>
+          <option value="bl">Burkitt リンパ腫・白血病</option><option value="lbl">リンパ芽球性リンパ腫</option>
+          <option value="agg">DLBCL・PTCL・ATL・MCL など中高悪性度</option>
+          <option value="ind">低悪性度リンパ腫・Hodgkin リンパ腫</option>
+          <option value="cll">CLL（従来治療）</option><option value="cllv">CLL（ベネトクラクス導入）</option>
+          <option value="cml">CML</option><option value="mm">多発性骨髄腫</option><option value="st">固形腫瘍</option>
+        </select>
+      </label>
+      <label class="f">WBC <span class="unit">/μL</span><input type="number" inputmode="numeric" id="tl-wbc" data-sync="wbc" placeholder="例 25000"></label>
+      <label class="f">LDH <span class="unit">U/L</span><input type="number" inputmode="decimal" id="tl-ldh" data-sync="ldh"></label>
+      <label class="f">LDH 基準上限 <span class="unit">U/L</span><input type="number" inputmode="decimal" id="tl-uln" data-sync="uln" value="222"></label>
+    </div>
+    <div id="tl-ven" class="grid" style="margin-top:8px">
+      <label class="f">最大リンパ節径 <span class="unit">cm</span><input type="number" inputmode="decimal" id="tl-ln" data-sync="lnmax"></label>
+      <label class="f">リンパ球数 <span class="unit">/μL</span><input type="number" inputmode="numeric" id="tl-alc" data-sync="alc"></label>
+    </div>
+    <div class="checks sub">
+      <label class="chk" data-dz="bl lbl"><input type="checkbox" id="tl-adv"><span>進行期（III/IV）または白血病型</span></label>
+      <label class="chk" data-dz="agg st"><input type="checkbox" id="tl-bulky"><span>バルキー（≥10 cm）</span></label>
+      <label class="chk" data-dz="cll"><input type="checkbox" id="tl-flu"><span>フルダラビン・リツキシマブを含む治療</span></label>
+      <label class="chk" data-dz="st"><input type="checkbox" id="tl-sens"><span>化学療法高感受性の固形腫瘍</span></label>
+      <label class="chk"><input type="checkbox" id="tl-reninv"><span>腎浸潤</span></label>
+    </div>
+    <h3>体格・腎機能（輸液量・ラスブリカーゼ・リスク調整）</h3>
+    <div class="grid">
+      <div class="f full" style="font-size:12px;color:var(--sub)">性別
+        <div class="seg">
+          <label><input type="radio" name="tl-sex" value="M" data-sync="sex"><span>男性</span></label>
+          <label><input type="radio" name="tl-sex" value="F" data-sync="sex"><span>女性</span></label>
+        </div>
+      </div>
+      <label class="f">身長 <span class="unit">cm</span><input type="number" inputmode="decimal" id="tl-ht" data-sync="ht"></label>
+      <label class="f">体重 <span class="unit">kg</span><input type="number" inputmode="decimal" id="tl-wt" data-sync="wt"></label>
+      <label class="f">年齢<input type="number" inputmode="numeric" id="tl-age" data-sync="age" placeholder="歳"></label>
+      <label class="f">Cr <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="tl-cr" data-sync="cr"></label>
+      <label class="f full">Cr 基準上限 <span class="unit">mg/dL（性別で自動：男性 1.07、女性 0.79）</span><input type="number" inputmode="decimal" id="tl-cruln" value="1.07"></label>
+    </div>
+    <h3>検査値・症状（治療3日前〜7日後）</h3>
+    <div class="grid">
+      <label class="f">尿酸 <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="tl-ua"></label>
+      <label class="f">K <span class="unit">mEq/L</span><input type="number" inputmode="decimal" id="tl-k"></label>
+      <label class="f">P <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="tl-p"></label>
+      <label class="f">補正Ca <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="tl-ca" data-sync="ca"></label>
+    </div>
+    <div class="checks sub">
+      <label class="chk"><input type="checkbox" id="tl-arr"><span>不整脈・突然死</span></label>
+      <label class="chk"><input type="checkbox" id="tl-sz"><span>痙攣</span></label>
+    </div>
+    <div class="results">
+      <div class="res" id="r-tld"></div>
+      <div class="res" id="r-tlr"></div>
+      <div class="res full txt" id="r-tlf"></div>
+      <div class="res full txt" id="r-tlu"></div>
+      <div class="res full txt" id="r-tlx"></div>
+      <div class="res full txt" id="r-tlm"></div>
+    </div>
+    <p class="note">Laboratory TLS（Cairo-Bishop）：尿酸 ≥8.0 mg/dL、K ≥6.0 mEq/L、P ≥4.5 mg/dL、補正Ca ≤7.0 mg/dL のうち2項目以上（または治療前から25%の変化）。Clinical TLS：LTLS＋Cr ≥1.5×基準上限・不整脈/突然死・痙攣のいずれか。Cr 基準上限は男性 1.07、女性 0.79（JCCLS）。<br>
+      リスク分類は Cairo MS, et al. Br J Haematol 2010 と日本臨床腫瘍学会 TLS 診療ガイダンスに準拠。中間リスクで腎機能障害（Cr &gt;基準上限、自動判定）・腎浸潤、または尿酸・K・P が基準上限超（尿酸 &gt;7.0、K &gt;5.0、P &gt;4.5）なら高リスクへ。Burkitt・リンパ芽球性リンパ腫は、進行期（III/IV）・白血病型（Burkitt 白血病など）または LDH ≥2×基準上限なら高リスク、それ以外は中間リスク。バルキーは中高悪性度リンパ腫（LDH 高値例）と固形腫瘍で使う。ベネトクラクスは添付文書の腫瘍量分類（低：全リンパ節 &lt;5 cm かつ ALC &lt;25,000、高：リンパ節 ≥10 cm または ALC ≥25,000 かつリンパ節 ≥5 cm、他は中）。<br>
+      輸液は 2,500–3,000 mL/m²/日、尿量 80–100 mL/m²/時を目標（心不全・腎不全では調整）。尿のアルカリ化はルーチンでは推奨されない。</p>
+    <button class="reset" type="button">入力をクリア</button>
+  </div>
+</section>
+
 <!-- ================= 悪性リンパ腫 ================= -->
 <section class="card ml" id="ml">
   <button class="head" type="button">
@@ -678,287 +1045,6 @@
   </div>
 </section>
 
-<!-- ================= 腎機能 ================= -->
-<section class="card kd" id="kd">
-  <button class="head" type="button">
-    <div class="ico">
-      <!-- 腎臓 -->
-      <svg viewBox="0 0 64 64">
-        <path d="M24 8c-10 0-16 10-16 23s5 25 15 25c7 0 9-6 6-11-2-4-2-9 1-13 3-4 2-9-1-12 3-6 1-12-5-12z" fill="#A9DCC6" stroke="#5FA889" stroke-width="2.2"/>
-        <path d="M40 8c10 0 16 10 16 23s-5 25-15 25c-7 0-9-6-6-11 2-4 2-9-1-13-3-4-2-9 1-12-3-6-1-12 5-12z" fill="#A9DCC6" stroke="#5FA889" stroke-width="2.2"/>
-        <path d="M27 32c2-1 4-1 5 1v24M37 32c-2-1-4-1-5 1" fill="none" stroke="#F2A7B5" stroke-width="2.4" stroke-linecap="round"/>
-        <ellipse cx="17" cy="20" rx="3.5" ry="2" fill="#fff" opacity=".7" transform="rotate(-50 17 20)"/>
-        <ellipse cx="47" cy="20" rx="3.5" ry="2" fill="#fff" opacity=".7" transform="rotate(50 47 20)"/>
-      </svg>
-    </div>
-    <div class="ttl"><b>腎機能</b><small>個別化 eGFR ・ 個別化 eCCr</small></div>
-    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
-  </button>
-  <div class="body">
-    <h3>患者情報</h3>
-    <div class="grid">
-      <div class="f full" style="font-size:12px;color:var(--sub)">性別
-        <div class="seg">
-          <label><input type="radio" name="kd-sex" value="M" data-sync="sex"><span>男性</span></label>
-          <label><input type="radio" name="kd-sex" value="F" data-sync="sex"><span>女性</span></label>
-        </div>
-      </div>
-      <label class="f">年齢<input type="number" inputmode="numeric" id="kd-age" data-sync="age" placeholder="歳"></label>
-      <label class="f">Cr <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="kd-cr" data-sync="cr"></label>
-      <label class="f">身長 <span class="unit">cm</span><input type="number" inputmode="decimal" id="kd-ht" data-sync="ht"></label>
-      <label class="f">体重 <span class="unit">kg</span><input type="number" inputmode="decimal" id="kd-wt" data-sync="wt"></label>
-      <label class="f full">シスタチンC <span class="unit">mg/L（任意）</span><input type="number" inputmode="decimal" id="kd-cys"></label>
-    </div>
-    <div class="results">
-      <div class="res full" id="r-egfr"></div>
-      <div class="res full" id="r-egfrcys"></div>
-      <div class="res full" id="r-ccr"></div>
-      <div class="res full" id="r-bsa"></div>
-    </div>
-    <p class="note">eGFRcr＝194×Cr<sup>−1.094</sup>×年齢<sup>−0.287</sup>（女性×0.739）。eGFRcys＝104×Cys<sup>−1.019</sup>×0.996<sup>年齢</sup>（女性×0.929）−8。<br>
-      個別化＝標準化eGFR×BSA/1.73（BSAはDuBois式）。<br>
-      eCCr＝Cockcroft-Gault（(140−年齢)×体重/(72×Cr)、女性×0.85）。日本の酵素法Crは Jaffe 法より約0.2 mg/dL低いため、Cr+0.2 で計算した値も併記。</p>
-    <button class="reset" type="button">入力をクリア</button>
-  </div>
-</section>
-
-<!-- ================= 薬剤投与量 ================= -->
-<section class="card rx" id="rx">
-  <button class="head" type="button">
-    <div class="ico">
-      <!-- カプセル＋錠剤 -->
-      <svg viewBox="0 0 64 64">
-        <g transform="rotate(-40 30 30)">
-          <rect x="10" y="20" width="40" height="20" rx="10" fill="#fff" stroke="#5A8CC8" stroke-width="2.5"/>
-          <path d="M30 20h10a10 10 0 0 1 0 20H30z" fill="#9CC2EE"/>
-          <rect x="10" y="20" width="40" height="20" rx="10" fill="none" stroke="#5A8CC8" stroke-width="2.5"/>
-          <ellipse cx="18" cy="25" rx="4" ry="1.8" fill="#DCEBFB"/>
-        </g>
-        <circle cx="46" cy="47" r="10" fill="#fff" stroke="#5A8CC8" stroke-width="2.5"/>
-        <path d="M39 47h14" stroke="#9CC2EE" stroke-width="2.5" stroke-linecap="round"/>
-      </svg>
-    </div>
-    <div class="ttl"><b>薬剤投与量</b><small>抗菌薬 ・ ガンシクロビル ・ バリキサ ・ タリージェ ・ リリカ</small></div>
-    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
-  </button>
-  <div class="body">
-    <h3>腎機能（腎機能カードと共通）</h3>
-    <div class="grid">
-      <div class="f full" style="font-size:12px;color:var(--sub)">性別
-        <div class="seg">
-          <label><input type="radio" name="rx-sex" value="M" data-sync="sex"><span>男性</span></label>
-          <label><input type="radio" name="rx-sex" value="F" data-sync="sex"><span>女性</span></label>
-        </div>
-      </div>
-      <label class="f">年齢<input type="number" inputmode="numeric" id="rx-age" data-sync="age" placeholder="歳"></label>
-      <label class="f">Cr <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="rx-cr" data-sync="cr"></label>
-      <label class="f">身長 <span class="unit">cm</span><input type="number" inputmode="decimal" id="rx-ht" data-sync="ht"></label>
-      <label class="f">体重 <span class="unit">kg</span><input type="number" inputmode="decimal" id="rx-wt" data-sync="wt"></label>
-      <label class="f">判定に使う値
-        <select id="rx-basis">
-          <option value="cg" selected>eCCr（CG）</option><option value="cg2">eCCr（Cr+0.2）</option>
-          <option value="egfr">個別化 eGFRcr</option><option value="man">手入力</option>
-        </select>
-      </label>
-      <label class="f" id="rx-manwrap">CCr 手入力 <span class="unit">mL/min</span><input type="number" inputmode="decimal" id="rx-man"></label>
-    </div>
-    <div class="checks sub">
-      <label class="chk"><input type="checkbox" id="rx-hd"><span>血液透析中</span></label>
-    </div>
-    <h3>薬剤</h3>
-    <label class="f"><select id="rx-drug"></select></label>
-    <div class="results">
-      <div class="res full" id="r-rxc"></div>
-    </div>
-    <div class="tabs" id="rx-tabs"></div>
-    <div class="pages" id="rx-pages"></div>
-    <p class="note" id="rx-note"></p>
-    <p class="note">セフェピム・タゾバクタム/ピペラシリン・メロペネムは院内推奨を先頭に表示し、左右にスライドすると一般的な推奨を表示する。一般的な推奨は 添付文書・Sanford Guide・日本腎臓病薬物療法学会の腎機能別投与量一覧などを参考にした成人の目安。添付文書の CCr は Cockcroft-Gault 式（実測Cr）を前提とするものが多い。eGFR を使う場合は体表面積補正を外した個別化 eGFR を用いる。るい痩・高齢者では Cr が低く過大評価になりやすい。必ず最新の添付文書・施設基準で確認する。</p>
-    <button class="reset" type="button">入力をクリア</button>
-  </div>
-</section>
-
-<!-- ================= バンコマイシン TDM ================= -->
-<section class="card vc" id="vc">
-  <button class="head" type="button">
-    <div class="ico">
-      <!-- バイアル＋採血管 -->
-      <svg viewBox="0 0 64 64">
-        <rect x="10" y="20" width="24" height="34" rx="6" fill="#FBFDF3" stroke="#879B37" stroke-width="2.4"/>
-        <rect x="13" y="12" width="18" height="9" rx="2.5" fill="#C9D98A" stroke="#879B37" stroke-width="2"/>
-        <path d="M12 38h20v10a4 4 0 0 1-4 4H16a4 4 0 0 1-4-4z" fill="#DCE8A8"/>
-        <path d="M17 30h10" stroke="#C9D98A" stroke-width="2.2" stroke-linecap="round"/>
-        <rect x="40" y="10" width="13" height="44" rx="6.5" fill="#fff" stroke="#879B37" stroke-width="2.4"/>
-        <rect x="40" y="10" width="13" height="9" rx="4" fill="#F2A7B5" stroke="#879B37" stroke-width="2"/>
-        <path d="M42.5 34h8v14a4 4 0 0 1-8 0z" fill="#F2A7B5"/>
-      </svg>
-    </div>
-    <div class="ttl"><b>バンコマイシンTDM</b><small>初期投与設計 ・ 予測濃度と AUC/MIC ・ 採血のタイミング</small></div>
-    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
-  </button>
-  <div class="body">
-    <h3>患者情報（他のカードと共通）</h3>
-    <div class="grid">
-      <div class="f full" style="font-size:12px;color:var(--sub)">性別
-        <div class="seg">
-          <label><input type="radio" name="vc-sex" value="M" data-sync="sex"><span>男性</span></label>
-          <label><input type="radio" name="vc-sex" value="F" data-sync="sex"><span>女性</span></label>
-        </div>
-      </div>
-      <label class="f">年齢<input type="number" inputmode="numeric" id="vc-age" data-sync="age" placeholder="歳"></label>
-      <label class="f">Cr <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="vc-cr" data-sync="cr"></label>
-      <label class="f">身長 <span class="unit">cm</span><input type="number" inputmode="decimal" id="vc-ht" data-sync="ht"></label>
-      <label class="f">体重 <span class="unit">kg（実体重）</span><input type="number" inputmode="decimal" id="vc-wt" data-sync="wt"></label>
-      <label class="f">腎機能に使う値
-        <select id="vc-basis"><option value="cg" selected>eCCr（CG）</option><option value="cg2">eCCr（Cr+0.2）</option><option value="man">手入力</option></select>
-      </label>
-      <label class="f" id="vc-manwrap">CCr 手入力 <span class="unit">mL/min</span><input type="number" inputmode="decimal" id="vc-man"></label>
-    </div>
-    <h3>投与設計</h3>
-    <div class="grid">
-      <label class="f">MIC <span class="unit">μg/mL</span>
-        <select id="vc-mic"><option value="0.5">0.5</option><option value="1" selected>1（不明時）</option><option value="2">2</option></select>
-      </label>
-      <label class="f">目標 AUC <span class="unit">μg·h/mL</span><input type="number" inputmode="numeric" id="vc-auc" value="500"></label>
-      <label class="f">投与間隔
-        <select id="vc-tau"><option value="" selected>自動</option><option value="8">8時間ごと</option><option value="12">12時間ごと</option><option value="24">24時間ごと</option><option value="48">48時間ごと</option></select>
-      </label>
-      <label class="f">維持量 <span class="unit">mg/回（空欄で自動）</span><input type="number" inputmode="numeric" id="vc-dose"></label>
-      <label class="f">初回投与の時刻<input type="time" id="vc-t0" value="10:00"></label>
-      <div class="f" style="align-self:end"><label class="chk"><input type="checkbox" id="vc-load" checked><span>初回負荷投与</span></label></div>
-    </div>
-    <div class="results">
-      <div class="res full" id="r-vctg"></div>
-      <div class="res full" id="r-vcpk"></div>
-      <div class="res full" id="r-vcld"></div>
-      <div class="res full" id="r-vcmt"></div>
-      <div class="res" id="r-vccc"></div>
-      <div class="res" id="r-vcauc"></div>
-      <div class="res full txt" id="r-vctdm"></div>
-    </div>
-    <p class="note">目標は 抗菌薬TDM臨床実践ガイドライン2022（日本化学療法学会・日本TDM学会）に準拠：AUC<sub>24</sub> 400–600 μg·h/mL（MIC 1 を前提）。AUC &gt;600 で腎障害リスクが上がる。トラフ値のみで管理する場合の目安は 10–15 μg/mL（トラフ &gt;20 は腎障害リスク）。重症例・腎機能が変動する例は AUC での管理が望ましい。初回 TDM は通常運用として投与開始3日目（開始48時間以降の最初の投与直前。q12h なら5回目、q24h なら3回目）に設定。重症例・腎機能が不安定な例では、ベイズ推定を前提に2日目の早期評価も選択肢になる。<br>
-      予測は Matzke/Bauer の1-コンパートメント母集団モデル（消失速度定数 k＝0.00083×CCr＋0.0044 /時、分布容積 V＝0.7 L/kg 実体重）による初期設計の目安で、実測濃度にもとづくベイズ推定（PAT・Practical AUC-guided TDM など）とは一致しない。負荷投与は 25–30 mg/kg（実体重、上限の目安 3 g）。希釈は添付文書のとおり 0.5 g あたり 100 mL 以上（5 mg/mL 以下、生食または 5% ブドウ糖）。点滴時間は添付文書の 60 分以上を満たしたうえで、投与時反応（red neck 症候群）を避けるため 10 mg/分以下を目安に 30 分単位で切り上げて表示（0.5 g 60分、1 g 120分、1.5 g 150分）。施設の標準がある場合はそちらを優先する。<br>
-      肥満（BMI ≥30）・浮腫・低栄養高齢者（Cr 低値）では CCr の推定誤差が大きい。血液透析・CRRT 中の患者には使わない。必ず実測濃度で再設計する。</p>
-    <button class="reset" type="button">入力をクリア</button>
-  </div>
-</section>
-
-<!-- ================= 栄養 ================= -->
-<section class="card nt" id="nt">
-  <button class="head" type="button">
-    <div class="ico">
-      <!-- りんご＋お茶碗 -->
-      <svg viewBox="0 0 64 64">
-        <path d="M32 18c-4-4-14-4-17 4-4 10 2 30 11 32 3 1 4-1 6-1s3 2 6 1c9-2 15-22 11-32-3-8-13-8-17-4z" fill="#FFB8A1" stroke="#E07F63" stroke-width="2.2"/>
-        <path d="M32 18c0-5 1-9 4-12" fill="none" stroke="#9B6B4A" stroke-width="2.4" stroke-linecap="round"/>
-        <path d="M34 12c4-5 10-5 13-3-3 4-8 6-13 3z" fill="#9ED3A6" stroke="#5FA889" stroke-width="1.6"/>
-        <ellipse cx="22" cy="28" rx="3.5" ry="5" fill="#fff" opacity=".6" transform="rotate(20 22 28)"/>
-      </svg>
-    </div>
-    <div class="ttl"><b>栄養</b><small>標準体重 ・ 必要エネルギー ・ Harris-Benedict ・ タンパク質 ・ 脂質</small></div>
-    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
-  </button>
-  <div class="body">
-    <h3>患者情報</h3>
-    <div class="grid">
-      <div class="f full" style="font-size:12px;color:var(--sub)">性別
-        <div class="seg">
-          <label><input type="radio" name="nt-sex" value="M" data-sync="sex"><span>男性</span></label>
-          <label><input type="radio" name="nt-sex" value="F" data-sync="sex"><span>女性</span></label>
-        </div>
-      </div>
-      <label class="f">年齢<input type="number" inputmode="numeric" id="nt-age" data-sync="age" placeholder="歳"></label>
-      <label class="f">身長 <span class="unit">cm</span><input type="number" inputmode="decimal" id="nt-ht" data-sync="ht"></label>
-      <label class="f">体重 <span class="unit">kg</span><input type="number" inputmode="decimal" id="nt-wt" data-sync="wt"></label>
-      <label class="f">活動係数
-        <select id="nt-af">
-          <option value="1.0">1.0 寝たきり</option><option value="1.2" selected>1.2 ベッド上安静</option>
-          <option value="1.3">1.3 ベッド外活動</option><option value="1.5">1.5 軽労働</option>
-        </select>
-      </label>
-      <label class="f full">ストレス係数
-        <select id="nt-sf">
-          <option value="1.0">1.0 ストレスなし</option><option value="1.1">1.1 軽度（小手術・軽度感染）</option>
-          <option value="1.2" selected>1.2 中等度（癌・中等度感染）</option><option value="1.3">1.3 高度（大手術・重症感染）</option>
-          <option value="1.5">1.5 重度（敗血症・多臓器不全）</option>
-        </select>
-      </label>
-      <label class="f full">タンパク質の基準となる病態
-        <select id="nt-pro">
-          <option value="1.0-1.2" selected>一般・維持（1.0–1.2 g/kg）</option>
-          <option value="1.2-1.5">がん・軽〜中等度侵襲・高齢者（1.2–1.5 g/kg）</option>
-          <option value="1.2-2.0">重症・高度侵襲（1.2–2.0 g/kg）</option>
-          <option value="0.6-0.8">保存期 CKD G3b–G5（0.6–0.8 g/kg 標準体重）</option>
-          <option value="0.9-1.2">透析（0.9–1.2 g/kg 標準体重）</option>
-        </select>
-      </label>
-    </div>
-    <div class="results">
-      <div class="res" id="r-ibw"></div>
-      <div class="res" id="r-bmi"></div>
-      <div class="res full" id="r-kcal"></div>
-      <div class="res" id="r-bee"></div>
-      <div class="res" id="r-tee"></div>
-      <div class="res full" id="r-pro"></div>
-      <div class="res full" id="r-fat"></div>
-    </div>
-    <p class="note">標準体重＝22×身長(m)²。必要エネルギー＝標準体重×25〜30 kcal。<br>
-      Harris-Benedict：男性 66.47+13.75W+5.0H−6.76A、女性 655.1+9.56W+1.85H−4.68A（W kg、H cm、A 歳）。TEE＝BEE×活動係数×ストレス係数。<br>
-      タンパク質（静脈栄養ではアミノ酸量としてほぼ同量）：実体重で計算。BMI ≥25 と CKD・透析では標準体重で計算（肥満の体重の扱いは指針により標準体重・調整体重などで異なる）。一般 1.0–1.2、がん・侵襲・高齢者 1.2–1.5（ESPEN がんガイドライン 1.0–1.5）、重症 1.2–2.0 g/kg/日。CKD は日本腎臓学会の食事療法基準（G3b 以降 0.6–0.8、透析 0.9–1.2 g/kg 標準体重。KDIGO 2024 は 0.8）。低栄養・サルコペニア・急性期の異化亢進では制限を自動的に当てはめない。重症例は病期に応じて段階的に増やす。<br>
-      脂質：総エネルギーの 20–30%（日本人の食事摂取基準）、1 g＝9 kcal。静脈栄養の脂肪乳剤は 1.0 g/kg/日以下、投与速度 0.1 g/kg/時以下が保守的な目安（製剤・病態で異なる。プロポフォール由来の脂質も合算する）。</p>
-    <button class="reset" type="button">入力をクリア</button>
-  </div>
-</section>
-
-<!-- ================= ガンマ計算 ================= -->
-<section class="card gm" id="gm">
-  <button class="head" type="button">
-    <div class="ico">
-      <!-- シリンジポンプ -->
-      <svg viewBox="0 0 64 64">
-        <rect x="6" y="30" width="52" height="22" rx="6" fill="#FFFBEA" stroke="#BF9520" stroke-width="2.5"/>
-        <rect x="12" y="36" width="20" height="10" rx="3" fill="#E9D27A"/>
-        <text x="22" y="44.5" font-size="8" font-weight="700" text-anchor="middle" fill="#7A5E0E" font-family="-apple-system, sans-serif">2.4</text>
-        <circle cx="42" cy="41" r="3" fill="#F2B7C8"/><circle cx="51" cy="41" r="3" fill="#A9DCC6"/>
-        <rect x="10" y="14" width="34" height="11" rx="3" fill="#fff" stroke="#BF9520" stroke-width="2.2"/>
-        <rect x="12" y="16" width="18" height="7" rx="2" fill="#FFE08A"/>
-        <path d="M44 19.5h10M6 19.5h4" stroke="#BF9520" stroke-width="2.2" stroke-linecap="round"/>
-      </svg>
-    </div>
-    <div class="ttl"><b>ガンマ計算</b><small>γ（μg/kg/min）⇄ mL/時 ・ 主な持続静注薬</small></div>
-    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
-  </button>
-  <div class="body">
-    <h3>薬剤・希釈</h3>
-    <div class="grid">
-      <label class="f full">薬剤（選ぶと組成を自動入力）<select id="gm-drug"></select></label>
-      <label class="f">薬剤量 <span class="unit">mg</span><input type="number" inputmode="decimal" id="gm-mg"></label>
-      <label class="f">全量 <span class="unit">mL</span><input type="number" inputmode="decimal" id="gm-ml"></label>
-      <label class="f">体重 <span class="unit">kg</span><input type="number" inputmode="decimal" id="gm-wt" data-sync="wt"></label>
-      <label class="f">単位
-        <select id="gm-unit">
-          <option value="g" selected>μg/kg/min（γ）</option><option value="kgh">μg/kg/時</option>
-          <option value="mgkgh">mg/kg/時</option><option value="mgh">mg/時</option>
-        </select>
-      </label>
-    </div>
-    <h3>換算</h3>
-    <div class="grid">
-      <label class="f">投与量 <span class="unit" id="gm-ulbl">γ</span><input type="number" inputmode="decimal" id="gm-dose"></label>
-      <label class="f">流量 <span class="unit">mL/時</span><input type="number" inputmode="decimal" id="gm-rate"></label>
-    </div>
-    <div class="results">
-      <div class="res full" id="r-gmc"></div>
-      <div class="res" id="r-gm1"></div>
-      <div class="res" id="r-gmr"></div>
-      <div class="res full" id="r-gmd"></div>
-    </div>
-    <p class="note">mL/時 ＝ 投与量（μg/kg/min）× 体重 × 60 ÷ 濃度（μg/mL）。<br>
-      組成は代表例。施設の標準希釈と異なる場合は薬剤量・全量を書き換えて使う。用量範囲は目安。</p>
-    <button class="reset" type="button">入力をクリア</button>
-  </div>
-</section>
-
 <!-- ================= CRS / ICANS ================= -->
 <section class="card ct" id="ct">
   <button class="head" type="button">
@@ -1047,91 +1133,6 @@
   </div>
 </section>
 
-<!-- ================= TLS ================= -->
-<section class="card tl" id="tl">
-  <button class="head" type="button">
-    <div class="ico">
-      <!-- 点滴バッグ -->
-      <svg viewBox="0 0 64 64">
-        <path d="M32 4v6" stroke="#D9695F" stroke-width="2.4" stroke-linecap="round"/>
-        <rect x="16" y="10" width="32" height="34" rx="9" fill="#FFF5F3" stroke="#D9695F" stroke-width="2.5"/>
-        <path d="M18 28c6 3 22 3 28 0v8a7 7 0 0 1-7 7H25a7 7 0 0 1-7-7z" fill="#FFB4A8"/>
-        <path d="M24 17h8M24 22h5" stroke="#F2B0A6" stroke-width="2" stroke-linecap="round"/>
-        <path d="M32 44v6" stroke="#D9695F" stroke-width="2.4"/>
-        <path d="M32 52c-3 4-4 6-4 7.5a4 4 0 0 0 8 0c0-1.5-1-3.5-4-7.5z" fill="#9CC2EE"/>
-      </svg>
-    </div>
-    <div class="ttl"><b>TLS</b><small>腫瘍崩壊症候群の診断 ・ リスク評価 ・ 輸液量 ・ 尿酸対策</small></div>
-    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
-  </button>
-  <div class="body">
-    <h3>疾患・腫瘍量</h3>
-    <div class="grid">
-      <label class="f full">疾患
-        <select id="tl-dz">
-          <option value="">—</option>
-          <option value="aml">AML</option><option value="all">ALL</option>
-          <option value="bl">Burkitt リンパ腫・白血病</option><option value="lbl">リンパ芽球性リンパ腫</option>
-          <option value="agg">DLBCL・PTCL・ATL・MCL など中高悪性度</option>
-          <option value="ind">低悪性度リンパ腫・Hodgkin リンパ腫</option>
-          <option value="cll">CLL（従来治療）</option><option value="cllv">CLL（ベネトクラクス導入）</option>
-          <option value="cml">CML</option><option value="mm">多発性骨髄腫</option><option value="st">固形腫瘍</option>
-        </select>
-      </label>
-      <label class="f">WBC <span class="unit">/μL</span><input type="number" inputmode="numeric" id="tl-wbc" data-sync="wbc" placeholder="例 25000"></label>
-      <label class="f">LDH <span class="unit">U/L</span><input type="number" inputmode="decimal" id="tl-ldh" data-sync="ldh"></label>
-      <label class="f">LDH 基準上限 <span class="unit">U/L</span><input type="number" inputmode="decimal" id="tl-uln" data-sync="uln" value="222"></label>
-    </div>
-    <div id="tl-ven" class="grid" style="margin-top:8px">
-      <label class="f">最大リンパ節径 <span class="unit">cm</span><input type="number" inputmode="decimal" id="tl-ln" data-sync="lnmax"></label>
-      <label class="f">リンパ球数 <span class="unit">/μL</span><input type="number" inputmode="numeric" id="tl-alc" data-sync="alc"></label>
-    </div>
-    <div class="checks sub">
-      <label class="chk" data-dz="bl lbl"><input type="checkbox" id="tl-adv"><span>進行期（III/IV）または白血病型</span></label>
-      <label class="chk" data-dz="agg st"><input type="checkbox" id="tl-bulky"><span>バルキー（≥10 cm）</span></label>
-      <label class="chk" data-dz="cll"><input type="checkbox" id="tl-flu"><span>フルダラビン・リツキシマブを含む治療</span></label>
-      <label class="chk" data-dz="st"><input type="checkbox" id="tl-sens"><span>化学療法高感受性の固形腫瘍</span></label>
-      <label class="chk"><input type="checkbox" id="tl-reninv"><span>腎浸潤</span></label>
-    </div>
-    <h3>体格・腎機能（輸液量・ラスブリカーゼ・リスク調整）</h3>
-    <div class="grid">
-      <div class="f full" style="font-size:12px;color:var(--sub)">性別
-        <div class="seg">
-          <label><input type="radio" name="tl-sex" value="M" data-sync="sex"><span>男性</span></label>
-          <label><input type="radio" name="tl-sex" value="F" data-sync="sex"><span>女性</span></label>
-        </div>
-      </div>
-      <label class="f">身長 <span class="unit">cm</span><input type="number" inputmode="decimal" id="tl-ht" data-sync="ht"></label>
-      <label class="f">体重 <span class="unit">kg</span><input type="number" inputmode="decimal" id="tl-wt" data-sync="wt"></label>
-      <label class="f">年齢<input type="number" inputmode="numeric" id="tl-age" data-sync="age" placeholder="歳"></label>
-      <label class="f">Cr <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="tl-cr" data-sync="cr"></label>
-      <label class="f full">Cr 基準上限 <span class="unit">mg/dL（性別で自動：男性 1.07、女性 0.79）</span><input type="number" inputmode="decimal" id="tl-cruln" value="1.07"></label>
-    </div>
-    <h3>検査値・症状（治療3日前〜7日後）</h3>
-    <div class="grid">
-      <label class="f">尿酸 <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="tl-ua"></label>
-      <label class="f">K <span class="unit">mEq/L</span><input type="number" inputmode="decimal" id="tl-k"></label>
-      <label class="f">P <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="tl-p"></label>
-      <label class="f">補正Ca <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="tl-ca" data-sync="ca"></label>
-    </div>
-    <div class="checks sub">
-      <label class="chk"><input type="checkbox" id="tl-arr"><span>不整脈・突然死</span></label>
-      <label class="chk"><input type="checkbox" id="tl-sz"><span>痙攣</span></label>
-    </div>
-    <div class="results">
-      <div class="res" id="r-tld"></div>
-      <div class="res" id="r-tlr"></div>
-      <div class="res full txt" id="r-tlf"></div>
-      <div class="res full txt" id="r-tlu"></div>
-      <div class="res full txt" id="r-tlx"></div>
-      <div class="res full txt" id="r-tlm"></div>
-    </div>
-    <p class="note">Laboratory TLS（Cairo-Bishop）：尿酸 ≥8.0 mg/dL、K ≥6.0 mEq/L、P ≥4.5 mg/dL、補正Ca ≤7.0 mg/dL のうち2項目以上（または治療前から25%の変化）。Clinical TLS：LTLS＋Cr ≥1.5×基準上限・不整脈/突然死・痙攣のいずれか。Cr 基準上限は男性 1.07、女性 0.79（JCCLS）。<br>
-      リスク分類は Cairo MS, et al. Br J Haematol 2010 と日本臨床腫瘍学会 TLS 診療ガイダンスに準拠。中間リスクで腎機能障害（Cr &gt;基準上限、自動判定）・腎浸潤、または尿酸・K・P が基準上限超（尿酸 &gt;7.0、K &gt;5.0、P &gt;4.5）なら高リスクへ。Burkitt・リンパ芽球性リンパ腫は、進行期（III/IV）・白血病型（Burkitt 白血病など）または LDH ≥2×基準上限なら高リスク、それ以外は中間リスク。バルキーは中高悪性度リンパ腫（LDH 高値例）と固形腫瘍で使う。ベネトクラクスは添付文書の腫瘍量分類（低：全リンパ節 &lt;5 cm かつ ALC &lt;25,000、高：リンパ節 ≥10 cm または ALC ≥25,000 かつリンパ節 ≥5 cm、他は中）。<br>
-      輸液は 2,500–3,000 mL/m²/日、尿量 80–100 mL/m²/時を目標（心不全・腎不全では調整）。尿のアルカリ化はルーチンでは推奨されない。</p>
-    <button class="reset" type="button">入力をクリア</button>
-  </div>
-</section>
 
 </main>
 
@@ -2037,7 +2038,7 @@ document.querySelectorAll('.card > .head').forEach(h => h.addEventListener('clic
   card.classList.toggle('open');
   if (card.classList.contains('open')) setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
 }));
-document.querySelectorAll('.reset').forEach(b => b.addEventListener('click', () => {
+document.querySelectorAll('.card .reset').forEach(b => b.addEventListener('click', () => {
   const body = b.closest('.body');
   body.querySelectorAll('input').forEach(i => {
     if (i.type === 'checkbox' || i.type === 'radio') i.checked = i.defaultChecked;
