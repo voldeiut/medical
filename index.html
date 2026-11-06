@@ -389,7 +389,7 @@
     <div class="tabs" id="rx-tabs"></div>
     <div class="pages" id="rx-pages"></div>
     <p class="note" id="rx-note"></p>
-    <p class="note">セフェピム・タゾバクタム/ピペラシリン・メロペネムは院内推奨を先頭に表示し、左右にスライドすると一般的な推奨を表示する。一般的な推奨は 添付文書・Sanford Guide・日本腎臓病薬物療法学会の腎機能別投与量一覧などを参考にした成人の目安。添付文書の CCr は Cockcroft-Gault 式（実測Cr）を前提とするものが多い。eGFR を使う場合は体表面積補正を外した個別化 eGFR を用いる。るい痩・高齢者では Cr が低く過大評価になりやすい。必ず最新の添付文書・施設基準で確認する。</p>
+    <p class="note">セフェピム・タゾバクタム/ピペラシリン・メロペネムは院内推奨（作成者の所属施設の院内推奨）を先頭に表示し、左右にスライドすると一般的な推奨を表示する。一般的な推奨は 添付文書・Sanford Guide・日本腎臓病薬物療法学会の腎機能別投与量一覧などを参考にした成人の目安。添付文書の CCr は Cockcroft-Gault 式（実測Cr）を前提とするものが多い。eGFR を使う場合は体表面積補正を外した個別化 eGFR を用いる。るい痩・高齢者では Cr が低く過大評価になりやすい。必ず最新の添付文書・施設基準で確認する。</p>
     <button class="reset" type="button">入力をクリア</button>
   </div>
 </section>
@@ -1241,7 +1241,7 @@
       <li><b>MM治療開始規準</b>：SLiM-CRAB から MM／SMM を判定し、SMM なら Mayo 2/20/20 とダラツムマブ単剤の対象（AQUILA 基準）を表示します。</li>
       <li><b>MM治療効果判定</b>：最良値が空欄のときは治療前値を基準に PD を判定します。</li>
       <li><b>腎機能</b>：eCCr（Cr+0.2）は、日本の酵素法 Cr を CG 式の作成時の測定法（Jaffe 法）に近づけた値です。Cr が低い高齢者ほど差が大きくなります。</li>
-      <li><b>薬剤投与量</b>：院内推奨がある薬剤は院内推奨を先頭に表示し、<b>左右にスライド（またはタブ）で一般的な推奨</b>に切り替えます。判定に使う腎機能の値も選べます。</li>
+      <li><b>薬剤投与量</b>：院内推奨（作成者の所属施設の院内推奨）がある薬剤はそれを先頭に表示し、<b>左右にスライド（またはタブ）で一般的な推奨</b>に切り替えます。判定に使う腎機能の値も選べます。</li>
       <li><b>バンコマイシンTDM</b>：母集団モデルによる初期設計の目安です。希釈量（生食 100／250／500 mL）・点滴時間と、初回の採血日時（通常は3日目）も表示します。必ず実測濃度で再設計してください。透析・CRRT 中は対象外です。</li>
       <li><b>CRS / ICANS</b>：「覚醒せず ICE 評価不能」は ICANS Grade 4 になります（誤タップに注意）。</li>
       <li><b>TLS</b>：疾患を選ぶと、その疾患で使う項目だけが表示されます。腎機能障害は Cr と基準上限（性別で自動）から自動判定します。</li>
@@ -1690,7 +1690,7 @@ function calcRX() {
   const k = HOSP[d.n];
   if (k) {
     const at = Math.round(pages.scrollLeft / (pages.clientWidth || 1));
-    if (put(pages, page('院内推奨', k.t, '院内マニュアルに透析時の記載なし（一般的な推奨を参照）', k.u, '') + gen))
+    if (put(pages, page('院内推奨', k.t, '院内マニュアルに透析時の記載なし（一般的な推奨を参照）', k.u, '※ 作成者の所属施設の院内推奨。他施設では各施設の基準を確認') + gen))
       pages.scrollLeft = Math.min(at, 1) * pages.clientWidth;        // 中身が変わっても見ているページを保つ
     if (put(tabs, '<button type="button">院内推奨</button><button type="button">一般的な推奨</button>'))
       [...tabs.children].forEach((b, n) => b.addEventListener('click', () => pages.scrollTo({ left: n * pages.clientWidth, behavior: 'smooth' })));
