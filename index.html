@@ -210,6 +210,33 @@
   .toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom) + 24px); transform: translateX(-50%); background: var(--ink); color: #fff;
            font-size: 14px; padding: 10px 18px; border-radius: 999px; z-index: 60; opacity: 0; transition: opacity .2s; pointer-events: none; white-space: nowrap; }
   .toast.show { opacity: .94; }
+
+  .hrow { align-items: flex-start; }
+  .hright { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+  .icons { display: flex; gap: 8px; }
+
+  /* 日数確認 */
+  .dt-row { margin-top: 12px; }
+  .dt-lbl { font-size: 12px; color: var(--sub); display: flex; justify-content: space-between; align-items: baseline; }
+  .dt-lbl .auto { font-size: 11px; color: #4E9277; background: var(--kd); border-radius: 999px; padding: 1px 8px; }
+  .dt-in { display: flex; gap: 8px; margin-top: 3px; align-items: center; }
+  .dt-in input[type=text], .dt-in input[type=number], .dt-in select {
+    flex: 1; min-width: 0; font-size: 18px; padding: 10px 12px; border-radius: 12px; border: 1.5px solid var(--line);
+    background: #FCFBFD; color: var(--ink); -webkit-appearance: none; appearance: none; font-family: inherit; }
+  .dt-in select { flex: 0 0 92px; }
+  .dt-in input:focus, .dt-in select:focus { outline: none; border-color: #5FA889; background: #fff; }
+  .dt-in.is-auto input, .dt-in.is-auto select { background: var(--kd); border-color: #A9DCC6; font-weight: 600; }
+  .dt-wd { flex: 0 0 34px; text-align: center; font-size: 14px; color: var(--sub); }
+  .dt-pick { position: relative; flex: 0 0 44px; height: 44px; border-radius: 12px; background: var(--kd); display: grid; place-items: center; overflow: hidden; }
+  .dt-pick svg { width: 22px; height: 22px; pointer-events: none; }
+  .dt-pick input[type=date] { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; font-size: 16px; }
+  .dt-today { all: unset; font-size: 12px; color: #4E9277; cursor: pointer; }
+  .dt-res { background: var(--kd); border-radius: 16px; padding: 12px 14px; margin-top: 14px; font-size: 14px; line-height: 1.7; }
+  .dt-res.empty { color: var(--sub); }
+  .dt-res b { font-size: 20px; }
+  .dt-res .dd { margin-top: 6px; padding-top: 6px; border-top: 1px dashed #A9DCC6; }
+  .dt-res .nw { white-space: nowrap; display: inline-block; }
+  .dt-hint { font-size: 11px; color: var(--sub); margin-top: 10px; line-height: 1.5; }
   footer { text-align: center; font-size: 11px; color: var(--sub); padding: 12px 20px; }
 </style>
 </head>
@@ -217,19 +244,29 @@
 <header>
   <div class="hrow">
     <h1>Medi<span>Cal</span><em>for Hematologist</em></h1>
-    <button class="icbtn" id="casebtn" type="button" aria-label="症例リスト">
-      <svg viewBox="0 0 24 24"><rect x="3.5" y="3" width="17" height="18" rx="3.5" fill="#E9E1FA" stroke="#8E7CC3" stroke-width="1.6"/>
-        <g fill="#8E7CC3"><circle cx="8" cy="8.5" r="1.2"/><circle cx="8" cy="12.5" r="1.2"/><circle cx="8" cy="16.5" r="1.2"/></g>
-        <path d="M11 8.5h6M11 12.5h6M11 16.5h4" stroke="#8E7CC3" stroke-width="1.6" stroke-linecap="round"/></svg>
-    </button>
-    <button class="icbtn" id="calcbtn" type="button" aria-label="電卓">
-      <svg viewBox="0 0 24 24"><rect x="4.5" y="2.5" width="15" height="19" rx="3" fill="#FCE3EA" stroke="#D17A96" stroke-width="1.6"/>
-        <rect x="7" y="5" width="10" height="4" rx="1" fill="#fff" stroke="#D17A96" stroke-width="1.2"/>
-        <g fill="#D17A96"><circle cx="8.5" cy="12.5" r="1.1"/><circle cx="12" cy="12.5" r="1.1"/><circle cx="15.5" cy="12.5" r="1.1"/>
-        <circle cx="8.5" cy="16" r="1.1"/><circle cx="12" cy="16" r="1.1"/><circle cx="15.5" cy="16" r="1.1"/>
-        <circle cx="8.5" cy="19" r="1.1"/><circle cx="12" cy="19" r="1.1"/><circle cx="15.5" cy="19" r="1.1"/></g></svg>
-    </button>
-    <button class="hbtn" id="sortbtn" type="button">並べ替え</button>
+    <div class="hright">
+      <div class="icons">
+        <button class="icbtn" id="casebtn" type="button" aria-label="症例リスト">
+          <svg viewBox="0 0 24 24"><rect x="3.5" y="3" width="17" height="18" rx="3.5" fill="#E9E1FA" stroke="#8E7CC3" stroke-width="1.6"/>
+            <g fill="#8E7CC3"><circle cx="8" cy="8.5" r="1.2"/><circle cx="8" cy="12.5" r="1.2"/><circle cx="8" cy="16.5" r="1.2"/></g>
+            <path d="M11 8.5h6M11 12.5h6M11 16.5h4" stroke="#8E7CC3" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </button>
+        <button class="icbtn" id="datebtn" type="button" aria-label="日数確認">
+          <svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="16" rx="3.5" fill="#DDF3EA" stroke="#5FA889" stroke-width="1.6"/>
+            <path d="M3.5 9.5h17" stroke="#5FA889" stroke-width="1.6"/><path d="M8 2.8v3.6M16 2.8v3.6" stroke="#5FA889" stroke-width="1.8" stroke-linecap="round"/>
+            <g fill="#5FA889"><circle cx="8" cy="13" r="1.1"/><circle cx="12" cy="13" r="1.1"/><circle cx="16" cy="13" r="1.1"/><circle cx="8" cy="16.8" r="1.1"/><circle cx="12" cy="16.8" r="1.1"/></g>
+            <circle cx="16" cy="16.8" r="1.6" fill="#F2A7B5"/></svg>
+        </button>
+        <button class="icbtn" id="calcbtn" type="button" aria-label="電卓">
+          <svg viewBox="0 0 24 24"><rect x="4.5" y="2.5" width="15" height="19" rx="3" fill="#FCE3EA" stroke="#D17A96" stroke-width="1.6"/>
+            <rect x="7" y="5" width="10" height="4" rx="1" fill="#fff" stroke="#D17A96" stroke-width="1.2"/>
+            <g fill="#D17A96"><circle cx="8.5" cy="12.5" r="1.1"/><circle cx="12" cy="12.5" r="1.1"/><circle cx="15.5" cy="12.5" r="1.1"/>
+            <circle cx="8.5" cy="16" r="1.1"/><circle cx="12" cy="16" r="1.1"/><circle cx="15.5" cy="16" r="1.1"/>
+            <circle cx="8.5" cy="19" r="1.1"/><circle cx="12" cy="19" r="1.1"/><circle cx="15.5" cy="19" r="1.1"/></g></svg>
+        </button>
+      </div>
+      <button class="hbtn" id="sortbtn" type="button">並べ替え</button>
+    </div>
   </div>
   <p>診療で使う計算をまとめて</p>
   <p class="cur" id="curcase"></p>
@@ -1106,6 +1143,26 @@
     <div id="cs-list"></div>
   </div>
 </div>
+
+<div class="calc" id="dates" hidden>
+  <div class="calc-panel tall">
+    <div class="calc-top"><span>日数確認</span><button type="button" id="dates-close">閉じる</button></div>
+    <div class="dt-row">
+      <div class="dt-lbl"><span>起点の日付 <button type="button" class="dt-today" id="dt-today">今日にする</button></span><span class="auto" id="dt-a-s" hidden>自動計算</span></div>
+      <div class="dt-in" id="dt-w-s"><input type="text" id="dt-s" inputmode="decimal" placeholder="2026/11/6" autocomplete="off"><span class="dt-wd" id="dt-wd-s"></span><span class="dt-pick"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="16" rx="3" fill="#fff" stroke="#5FA889" stroke-width="1.6"/><path d="M3.5 9.5h17M8 2.8v3.4M16 2.8v3.4" stroke="#5FA889" stroke-width="1.6" stroke-linecap="round"/></svg><input type="date" id="dt-sp" aria-label="カレンダーから選ぶ"></span></div>
+    </div>
+    <div class="dt-row">
+      <div class="dt-lbl"><span>終点の日付</span><span class="auto" id="dt-a-e" hidden>自動計算</span></div>
+      <div class="dt-in" id="dt-w-e"><input type="text" id="dt-e" inputmode="decimal" placeholder="2026/11/20" autocomplete="off"><span class="dt-wd" id="dt-wd-e"></span><span class="dt-pick"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="16" rx="3" fill="#fff" stroke="#5FA889" stroke-width="1.6"/><path d="M3.5 9.5h17M8 2.8v3.4M16 2.8v3.4" stroke="#5FA889" stroke-width="1.6" stroke-linecap="round"/></svg><input type="date" id="dt-ep" aria-label="カレンダーから選ぶ"></span></div>
+    </div>
+    <div class="dt-row">
+      <div class="dt-lbl"><span>日数（マイナスで「前」）</span><span class="auto" id="dt-a-d" hidden>自動計算</span></div>
+      <div class="dt-in" id="dt-w-d"><input type="number" id="dt-d" inputmode="decimal" placeholder="14"><select id="dt-u"><option value="1">日後</option><option value="7">週後</option></select></div>
+    </div>
+    <div class="dt-res empty" id="dt-res">3つのうち2つを入力すると、残りの1つを自動で計算します</div>
+    <p class="dt-hint">日付は「2026.11.6」「2026/11/6」「20261106」「11.6」（今年）のように入力できます。右のボタンでカレンダーから選べます。自動計算された欄を書き換えると、その欄が入力側になり、起点を基準に残りの欄（日数、または終点）を計算し直します。</p>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
 <footer>計算結果は目安です。最終判断は原典・臨床所見とあわせて行ってください。</footer>
 
@@ -1905,7 +1962,7 @@ const syncFrom = src => {
   });
 };
 document.addEventListener('input', e => {
-  if (e.target.closest('#calc, #cases')) return;
+  if (e.target.closest('#calc, #cases, #dates')) return;
   if (e.target.id === 'tl-cruln') e.target.dataset.edited = '1';
   syncFrom(e.target);
   calcAll();
@@ -2079,6 +2136,88 @@ $('cases-close').addEventListener('click', () => openCases(false));
 $('cases').addEventListener('click', e => { if (e.target.id === 'cases') openCases(false); });
 
 calcAll();
+
+/* ---------- 日数確認（起点・終点・日数のうち2つから残り1つを計算） ---------- */
+const DAY = 864e5, WD = '日月火水木金土';
+const ymd = d => `${d.getUTCFullYear()}/${String(d.getUTCMonth() + 1).padStart(2, '0')}/${String(d.getUTCDate()).padStart(2, '0')}`;
+const jdate = d => `${d.getUTCFullYear()}年${d.getUTCMonth() + 1}月${d.getUTCDate()}日（${WD[d.getUTCDay()]}）`;
+const isoD = d => ymd(d).replace(/\//g, '-');
+const todayUTC = () => { const n = new Date(); return new Date(Date.UTC(n.getFullYear(), n.getMonth(), n.getDate())); };
+const parseD = t => {                                             // 2026/11/6・2026-11-6・2026.11.6・20261106・11/6 を受け付ける
+  t = (t || '').trim().replace(/[年月.\-－／]/g, '/').replace(/日/g, '').replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0));
+  let y, m, d, x;
+  if ((x = t.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/))) [, y, m, d] = x;
+  else if ((x = t.match(/^(\d{4})(\d{2})(\d{2})$/))) [, y, m, d] = x;
+  else if ((x = t.match(/^(\d{1,2})\/(\d{1,2})$/))) { y = todayUTC().getUTCFullYear(); [, m, d] = x; }
+  else return null;
+  const dt = new Date(Date.UTC(+y, +m - 1, +d));
+  return dt.getUTCMonth() === +m - 1 && dt.getUTCDate() === +d ? dt : null;
+};
+const DT = { auto: null, order: [] };                              // auto＝自動計算の欄、order＝手入力した順（新しい順）
+const dtGet = () => ({ s: parseD($('dt-s').value), e: parseD($('dt-e').value),
+  d: $('dt-d').value.trim() === '' || isNaN(+$('dt-d').value) ? null : Math.round(+$('dt-d').value * +$('dt-u').value) });
+const dtSet = (k, v) => {
+  if (k === 'd') { $('dt-u').value = v % 7 === 0 && v !== 0 && $('dt-u').value === '7' ? '7' : '1'; $('dt-d').value = v / +$('dt-u').value; }
+  else $(`dt-${k}`).value = ymd(v);
+};
+function dtCalc() {
+  const v = dtGet();
+  if (DT.auto) {
+    const a = DT.auto;
+    if (a === 'e' && v.s && v.d !== null) dtSet('e', new Date(v.s.getTime() + v.d * DAY));
+    else if (a === 's' && v.e && v.d !== null) dtSet('s', new Date(v.e.getTime() - v.d * DAY));
+    else if (a === 'd' && v.s && v.e) dtSet('d', Math.round((v.e - v.s) / DAY));
+  }
+  ['s', 'e', 'd'].forEach(k => { $(`dt-a-${k}`).hidden = DT.auto !== k; $(`dt-w-${k}`).classList.toggle('is-auto', DT.auto === k); });
+  ['s', 'e'].forEach(k => {
+    const t = $(`dt-${k}`).value.trim(), d = parseD(t), wd = $(`dt-wd-${k}`);
+    wd.textContent = d ? `(${WD[d.getUTCDay()]})` : t ? '？' : ''; wd.style.color = d || !t ? '' : '#C0473B';
+    if (d) $(`dt-${k}p`).value = isoD(d);
+  });
+  const w = dtGet(), r = $('dt-res');
+  if (w.s && w.e) {
+    const n = Math.round((w.e - w.s) / DAY), wk = Math.trunc(Math.abs(n) / 7), rd = Math.abs(n) % 7;
+    const span = n === 0 ? '同じ日' : `${Math.abs(n)}日${n > 0 ? '後' : '前'}${wk ? `（${wk}週${rd ? rd + '日' : ''}${n > 0 ? '後' : '前'}）` : ''}`;
+    r.classList.remove('empty');
+    r.innerHTML = `終点：<b>${jdate(w.e)}</b><br>起点 ${jdate(w.s)} から ${span}`
+      + `<div class="dd">${jdate(w.s)} を<br><span class="nw">day 0 とすると <b>day ${n}</b></span>　<span class="nw">day 1 とすると <b>day ${n + 1}</b></span></div>`;
+  } else {
+    const bad = ['s', 'e'].some(k => $(`dt-${k}`).value.trim() && !parseD($(`dt-${k}`).value));
+    r.classList.add('empty'); r.textContent = bad ? '日付を確認してください（存在しない日付、または読み取れない形式です）' : '3つのうち2つを入力すると、残りの1つを自動で計算します';
+  }
+}
+const dtEdit = k => {                                             // 手で入力した欄を記録し、自動計算の欄を決める
+  const v = dtGet(), filled = x => (x === 'd' ? v.d !== null : !!v[x]);
+  if (!filled(k)) {                                               // 欄を消したら自動計算の欄も消して決め直す
+    if (DT.auto && DT.auto !== k) { if (DT.auto === 'd') $('dt-d').value = ''; else $(`dt-${DT.auto}`).value = ''; }
+    DT.auto = null; DT.order = DT.order.filter(x => x !== k); dtCalc(); return;
+  }
+  DT.order = [k, ...DT.order.filter(x => x !== k)];
+  if (DT.auto === k || !DT.auto) {
+    const others = ['s', 'e', 'd'].filter(x => x !== k);
+    const empty = others.filter(x => !filled(x));
+    if (empty.length === 1) DT.auto = empty[0];
+    else if (empty.length === 0) DT.auto = others.includes('d') ? 'd' : 'e';   // 起点は基準として残し、日数→終点の順に計算し直す
+    else DT.auto = null;
+  }
+  dtCalc();
+};
+['s', 'e'].forEach(k => $(`dt-${k}`).addEventListener('input', () => { if (parseD($(`dt-${k}`).value) || !$(`dt-${k}`).value) dtEdit(k); else dtCalc(); }));
+['dt-s', 'dt-e'].forEach(id => $(id).addEventListener('blur', () => { const d = parseD($(id).value); if (d) $(id).value = ymd(d); }));
+$('dt-d').addEventListener('input', () => dtEdit('d'));
+$('dt-u').addEventListener('change', () => { if (DT.auto === 'd') { const v = dtGet(); if (v.s && v.e) { const n = Math.round((v.e - v.s) / DAY); $('dt-d').value = +(n / +$('dt-u').value).toFixed(2); } } else dtEdit('d'); });
+['s', 'e'].forEach(k => $(`dt-${k}p`).addEventListener('change', () => {
+  const v = $(`dt-${k}p`).value; if (!v) return;
+  const [y, m, d] = v.split('-').map(Number); $(`dt-${k}`).value = ymd(new Date(Date.UTC(y, m - 1, d))); dtEdit(k);
+}));
+$('dt-today').addEventListener('click', () => { $('dt-s').value = ymd(todayUTC()); dtEdit('s'); });
+const openDates = on => {
+  $('dates').hidden = !on;
+  if (on && !$('dt-s').value && !$('dt-e').value) { $('dt-s').value = ymd(todayUTC()); DT.order = ['s']; DT.auto = null; dtCalc(); }
+};
+$('datebtn').addEventListener('click', () => openDates(true));
+$('dates-close').addEventListener('click', () => openDates(false));
+$('dates').addEventListener('click', e => { if (e.target.id === 'dates') openDates(false); });
 
 /* ---------- 新しい版への切り替え ---------- */
 // アプリに戻ったときに更新を確認し、新しい版が届いたら入力中の値を保ったまま読み込み直す
