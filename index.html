@@ -237,6 +237,17 @@
   .dt-res .dd { margin-top: 6px; padding-top: 6px; border-top: 1px dashed #A9DCC6; }
   .dt-res .nw { white-space: nowrap; display: inline-block; }
   .dt-hint { font-size: 11px; color: var(--sub); margin-top: 10px; line-height: 1.5; }
+
+  /* 使い方 */
+  .help h4 { font-size: 15px; margin: 18px 0 6px; color: var(--ink); display: flex; align-items: center; gap: 8px; }
+  .help h4 .mk { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; flex: none; box-shadow: 0 1px 4px rgba(120,100,140,.15); background: #fff; }
+  .help h4 .mk svg { width: 15px; height: 15px; }
+  .help p, .help li { font-size: 13.5px; line-height: 1.7; margin: 0; }
+  .help ul { margin: 4px 0 0; padding-left: 1.2em; }
+  .help li { margin: 3px 0; }
+  .help .box { background: #F7F4F9; border-radius: 14px; padding: 10px 12px; margin-top: 8px; }
+  .help b { font-weight: 600; }
+  .help .warn { background: #FFF1EE; }
   footer { text-align: center; font-size: 11px; color: var(--sub); padding: 12px 20px; }
 </style>
 </head>
@@ -264,11 +275,15 @@
             <circle cx="8.5" cy="16" r="1.1"/><circle cx="12" cy="16" r="1.1"/><circle cx="15.5" cy="16" r="1.1"/>
             <circle cx="8.5" cy="19" r="1.1"/><circle cx="12" cy="19" r="1.1"/><circle cx="15.5" cy="19" r="1.1"/></g></svg>
         </button>
+        <button class="icbtn" id="helpbtn" type="button" aria-label="使い方">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#FFF3C7" stroke="#BF9520" stroke-width="1.6"/>
+            <path d="M9.6 9.4a2.5 2.5 0 1 1 3.6 2.3c-.8.4-1.2.9-1.2 1.8v.4" fill="none" stroke="#BF9520" stroke-width="1.8" stroke-linecap="round"/>
+            <circle cx="12" cy="17" r="1.1" fill="#BF9520"/></svg>
+        </button>
       </div>
       <button class="hbtn" id="sortbtn" type="button">並べ替え</button>
     </div>
   </div>
-  <p>診療で使う計算をまとめて</p>
   <p class="cur" id="curcase"></p>
   <button class="reset" id="sortreset" type="button">初期の並び順に戻す</button>
 </header>
@@ -1161,6 +1176,83 @@
     </div>
     <div class="dt-res empty" id="dt-res">3つのうち2つを入力すると、残りの1つを自動で計算します</div>
     <p class="dt-hint">日付は「2026.11.6」「2026/11/6」「20261106」「11.6」（今年）のように入力できます。右のボタンでカレンダーから選べます。自動計算された欄を書き換えると、その欄が入力側になり、起点を基準に残りの欄（日数、または終点）を計算し直します。</p>
+  </div>
+</div>
+
+<div class="calc" id="help" hidden>
+  <div class="calc-panel tall help">
+    <div class="calc-top"><span>使い方</span><button type="button" id="help-close">閉じる</button></div>
+
+    <h4>基本の使い方</h4>
+    <ul>
+      <li>カードをタップすると開き、入力した時点で結果が出ます。計算ボタンはありません。</li>
+      <li>年齢・性別・身長・体重・Cr・LDH・Hb・血小板・WBC など<b>共通の項目は、1か所に入れると全カードに入ります</b>。</li>
+      <li>各カードの「入力をクリア」は、そのカードの入力と、共通の項目（全カード分）を消します。</li>
+      <li>赤い背景・赤字の結果は、注意が必要な判定（高リスク・治療適応・目標範囲外など）です。</li>
+      <li>カードの下の小さな文字に、判定基準と出典を書いています。</li>
+    </ul>
+
+    <h4><span class="mk"><svg viewBox="0 0 24 24"><rect x="3.5" y="3" width="17" height="18" rx="3.5" fill="#E9E1FA" stroke="#8E7CC3" stroke-width="1.6"/>
+            <g fill="#8E7CC3"><circle cx="8" cy="8.5" r="1.2"/><circle cx="8" cy="12.5" r="1.2"/><circle cx="8" cy="16.5" r="1.2"/></g>
+            <path d="M11 8.5h6M11 12.5h6M11 16.5h4" stroke="#8E7CC3" stroke-width="1.6" stroke-linecap="round"/></svg></span>症例リスト</h4>
+    <ul>
+      <li>「今の入力を保存」で、全カードの入力をまとめて保存します。名前は自動で「症例1」「症例2」…になり、保存日時が付きます。</li>
+      <li>名前はタップして変更できます。<b>患者名・ID など個人が特定できる情報は入れないでください。</b></li>
+      <li>「呼び出す」で入力を復元、「今の入力で上書き」で更新、「新しい症例（全クリア）」で全カードを空にします。</li>
+      <li>呼び出し中の症例名は画面上部に表示されます。</li>
+    </ul>
+
+    <h4><span class="mk"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="16" rx="3.5" fill="#DDF3EA" stroke="#5FA889" stroke-width="1.6"/>
+            <path d="M3.5 9.5h17" stroke="#5FA889" stroke-width="1.6"/><path d="M8 2.8v3.6M16 2.8v3.6" stroke="#5FA889" stroke-width="1.8" stroke-linecap="round"/>
+            <g fill="#5FA889"><circle cx="8" cy="13" r="1.1"/><circle cx="12" cy="13" r="1.1"/><circle cx="16" cy="13" r="1.1"/><circle cx="8" cy="16.8" r="1.1"/><circle cx="12" cy="16.8" r="1.1"/></g>
+            <circle cx="16" cy="16.8" r="1.6" fill="#F2A7B5"/></svg></span>日数確認</h4>
+    <ul>
+      <li>起点・終点・日数のうち2つを入れると、残りの1つを自動計算します（緑の欄が自動計算）。</li>
+      <li>日付は「2026.11.6」「20261106」「11.6」（今年）などで直接入力するか、右のボタンでカレンダーから選びます。</li>
+      <li>日数は「日後／週後」を選べます。マイナスで「前」になります。</li>
+      <li>結果に、起点を day 0／day 1 としたときの day 数も表示します。</li>
+    </ul>
+
+    <h4><span class="mk"><svg viewBox="0 0 24 24"><rect x="4.5" y="2.5" width="15" height="19" rx="3" fill="#FCE3EA" stroke="#D17A96" stroke-width="1.6"/>
+            <rect x="7" y="5" width="10" height="4" rx="1" fill="#fff" stroke="#D17A96" stroke-width="1.2"/>
+            <g fill="#D17A96"><circle cx="8.5" cy="12.5" r="1.1"/><circle cx="12" cy="12.5" r="1.1"/><circle cx="15.5" cy="12.5" r="1.1"/>
+            <circle cx="8.5" cy="16" r="1.1"/><circle cx="12" cy="16" r="1.1"/><circle cx="15.5" cy="16" r="1.1"/>
+            <circle cx="8.5" cy="19" r="1.1"/><circle cx="12" cy="19" r="1.1"/><circle cx="15.5" cy="19" r="1.1"/></g></svg></span>電卓</h4>
+    <ul>
+      <li>四則演算と %（例：200×15% ＝ 30）。上の段に入力中の式、下の段に結果が出ます。</li>
+      <li>⌫ で1文字削除、C で全消去。結果のあとに数字を押すと新しい計算になります。</li>
+    </ul>
+
+    <h4>並べ替え</h4>
+    <ul>
+      <li>「並べ替え」を押すと各カードに ▲▼ が出ます。順番はこの端末に保存されます。「完了」で終了、「初期の並び順に戻す」で元に戻ります。</li>
+    </ul>
+
+    <h4>カードごとのポイント</h4>
+    <ul>
+      <li><b>MLリスク分類</b>：IPI 系は上の欄、FLIPI・MIPI は下の欄を追加で入れます（年齢・LDH・病期などは共用）。</li>
+      <li><b>MMリスク分類</b>：FISH は未選択の項目を「陰性」として計算します。未検査なら「FISH未検査」を選んでください。</li>
+      <li><b>MM治療開始規準</b>：SLiM-CRAB から MM／SMM を判定し、SMM なら Mayo 2/20/20 とダラツムマブ単剤の対象（AQUILA 基準）を表示します。</li>
+      <li><b>MM治療効果判定</b>：最良値が空欄のときは治療前値を基準に PD を判定します。</li>
+      <li><b>腎機能</b>：eCCr（Cr+0.2）は、日本の酵素法 Cr を CG 式の作成時の測定法（Jaffe 法）に近づけた値です。Cr が低い高齢者ほど差が大きくなります。</li>
+      <li><b>腎機能別薬剤投与量</b>：院内推奨がある薬剤は院内推奨を先頭に表示し、<b>左右にスライド（またはタブ）で一般的な推奨</b>に切り替えます。判定に使う腎機能の値も選べます。</li>
+      <li><b>バンコマイシンTDM</b>：母集団モデルによる初期設計の目安です。必ず実測濃度で再設計してください。透析・CRRT 中は対象外です。</li>
+      <li><b>CRS / ICANS</b>：「覚醒せず ICE 評価不能」は ICANS Grade 4 になります（誤タップに注意）。</li>
+      <li><b>TLS</b>：疾患を選ぶと、その疾患で使う項目だけが表示されます。腎機能障害は Cr と基準上限（性別で自動）から自動判定します。</li>
+    </ul>
+
+    <h4>更新とオフライン</h4>
+    <ul>
+      <li>アプリに戻ったときに新しい版を確認し、あれば入力を保ったまま自動で切り替えます（「新しい版に更新しました」と表示）。</li>
+      <li>一度開いたあとは、圏外でも使えます。</li>
+    </ul>
+
+    <div class="box warn">
+      <p><b>データの扱い</b>：入力値・保存した症例・並び順は、この端末の中だけに保存され、外部には送信しません。ホーム画面からアプリを削除すると消えます。ほかの端末とは共有されません。</p>
+    </div>
+    <div class="box">
+      <p><b>注意</b>：計算結果は目安です。最終判断は原典・添付文書・施設の基準と臨床所見をあわせて行ってください。</p>
+    </div>
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -2218,6 +2310,12 @@ const openDates = on => {
 $('datebtn').addEventListener('click', () => openDates(true));
 $('dates-close').addEventListener('click', () => openDates(false));
 $('dates').addEventListener('click', e => { if (e.target.id === 'dates') openDates(false); });
+
+/* ---------- 使い方 ---------- */
+const openHelp = on => { $('help').hidden = !on; if (on) $('help').querySelector('.calc-panel').scrollTop = 0; };
+$('helpbtn').addEventListener('click', () => openHelp(true));
+$('help-close').addEventListener('click', () => openHelp(false));
+$('help').addEventListener('click', e => { if (e.target.id === 'help') openHelp(false); });
 
 /* ---------- 新しい版への切り替え ---------- */
 // アプリに戻ったときに更新を確認し、新しい版が届いたら入力中の値を保ったまま読み込み直す
