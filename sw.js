@@ -7,7 +7,7 @@ self.addEventListener('install', e => {
   self.skipWaiting();
 });
 self.addEventListener('activate', e => e.waitUntil(
-  caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k))))   // 古い版の保存分を消す
+  caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith('medical-') && k !== CACHE).map(k => caches.delete(k))))   // 古い版の保存分を消す（同じサイトの HemaEvi の保存分には触れない）
     .then(() => self.clients.claim())
 ));
 self.addEventListener('fetch', e => {
