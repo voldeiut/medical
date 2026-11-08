@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="HemaEvi">
+<meta name="theme-color" content="#F6F8FC">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="manifest" href="manifest.json">
+<title>HemaEvi 血液疾患 治療エビデンス</title>
+<style>
+  :root {
+    --bg: #F6F8FC;
+    --card: #fff;
+    --ink: #3D4256;
+    --sub: #858AA0;
+    --line: #E6E9F2;
+    --soft: #EEF1F7;
+    --jsh: #D0605E;   --jsh-t: #FCE6E4;
+    --nccn: #3F7CC4;  --nccn-t: #E0ECFA;
+    --acc: #6C63C7;   --tint: #ECEAFB;
+    --a: #6C63C7;     --b: #8A90A6;
+    --hit: #FFF4D6;
+  }
+  body[data-dz="dlbcl"] { --acc: #6C63C7; --tint: #ECEAFB; }
+  body[data-dz="fl"]    { --acc: #4E9A63; --tint: #E3F3E6; }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+    font-size: 15px; line-height: 1.55;
+    padding: env(safe-area-inset-top) 0 calc(env(safe-area-inset-bottom) + 24px);
+  }
+  button { font: inherit; color: inherit; }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 0 14px; }
+
+  /* ---------- ヘッダー ---------- */
+  header { padding: 18px 0 6px; }
+  .hrow { display: flex; align-items: center; gap: 10px; }
+  .logo { flex: 1; }
+  .logo h1 { margin: 0; font-size: 26px; letter-spacing: .01em; line-height: 1.2; }
+  .logo h1 span { color: var(--acc); transition: color .2s; }
+  .logo p { margin: 0; font-size: 12.5px; color: var(--sub); font-weight: 600; letter-spacing: .03em; }
+  .icbtn { all: unset; width: 40px; height: 40px; border-radius: 50%; background: #fff; display: grid; place-items: center;
+           box-shadow: 0 1px 6px rgba(70, 80, 120, .12); cursor: pointer; flex: none; }
+  .icbtn svg { width: 20px; height: 20px; }
+
+  .search { position: relative; margin-top: 12px; }
+  .search input { width: 100%; font: inherit; font-size: 16px; padding: 10px 38px 10px 40px; border-radius: 14px; border: 1.5px solid var(--line);
+                  background: #fff; color: var(--ink); -webkit-appearance: none; appearance: none; }
+  .search input:focus { outline: none; border-color: var(--acc); }
+  .search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--sub); pointer-events: none; }
+  .search .clr { all: unset; position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 30px; height: 30px; display: none;
+                 place-items: center; color: var(--sub); cursor: pointer; font-size: 18px; }
+  .search.has .clr { display: grid; }
+
+  /* ---------- 疾患・場面の選択 ---------- */
+  .dzs { display: flex; gap: 8px; margin-top: 14px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .dzs::-webkit-scrollbar { display: none; }
+  .dzs button { all: unset; flex: 0 0 auto; cursor: pointer; padding: 9px 18px; border-radius: 999px; background: #fff; font-weight: 700; font-size: 15px;
+                box-shadow: 0 1px 4px rgba(70, 80, 120, .08); border: 1.5px solid transparent; }
+  .dzs button.on { background: var(--acc); color: #fff; }
+  .dzfull { font-size: 12.5px; color: var(--sub); margin: 8px 2px 0; }
+  .seg { display: flex; background: var(--soft); border-radius: 13px; padding: 3px; margin-top: 10px; }
+  .seg button { all: unset; flex: 1; text-align: center; padding: 9px 0; border-radius: 10px; font-size: 15px; color: var(--sub); cursor: pointer; }
+  .seg button.on { background: #fff; color: var(--ink); font-weight: 700; box-shadow: 0 1px 3px rgba(0, 0, 0, .08); }
+
+  /* ---------- ガイドライン ---------- */
+  .jump { display: flex; gap: 8px; margin: 14px 0 0; }
+  .jump a { flex: 1; text-align: center; text-decoration: none; font-size: 12.5px; font-weight: 600; padding: 7px 0; border-radius: 10px; }
+  .jump a.jsh { background: var(--jsh-t); color: var(--jsh); }
+  .jump a.nccn { background: var(--nccn-t); color: var(--nccn); }
+  .src { margin-top: 18px; scroll-margin-top: 12px; }
+  .src-h { display: flex; align-items: center; gap: 10px; margin: 0 2px 8px; }
+  .src-h .bdg { flex: none; font-size: 11px; font-weight: 700; color: #fff; padding: 3px 8px; border-radius: 7px; letter-spacing: .04em; }
+  .src-h b { display: block; font-size: 16px; line-height: 1.3; }
+  .src-h small { display: block; font-size: 11.5px; color: var(--sub); }
+  .src.jsh .bdg { background: var(--jsh); }
+  .src.nccn .bdg { background: var(--nccn); }
+
+  .sit { background: var(--card); border-radius: 18px; margin: 10px 0; box-shadow: 0 2px 10px rgba(70, 80, 120, .06); overflow: hidden; }
+  .sit h3 { margin: 0; font-size: 13.5px; padding: 11px 14px 9px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 8px; }
+  .sit h3::before { content: ""; width: 4px; height: 15px; border-radius: 2px; background: var(--c, var(--acc)); flex: none; }
+  .src.jsh .sit { --c: var(--jsh); }
+  .src.nccn .sit { --c: var(--nccn); }
+  .opt { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-top: 1px solid var(--line); }
+  button.opt { all: unset; display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-top: 1px solid var(--line); cursor: pointer; width: 100%; box-sizing: border-box; }
+  .sit h3 + .opt, .sit h3 + button.opt { border-top: 0; }
+  button.opt:active { background: var(--soft); }
+  .opt .tx { flex: 1; min-width: 0; }
+  .opt .lb { font-weight: 700; font-size: 15px; line-height: 1.4; }
+  button.opt .lb { color: var(--acc); }
+  .opt .nt { font-size: 12.5px; color: var(--sub); line-height: 1.5; margin-top: 1px; }
+  .opt .tr { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+  .tg { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: var(--tint); color: var(--ink); white-space: nowrap; }
+  .chev { width: 18px; height: 18px; color: #B9BDCC; flex: none; }
+
+  .alltr { margin-top: 22px; }
+  .alltr h2 { font-size: 14px; margin: 0 2px 8px; color: var(--sub); }
+  .trow { all: unset; display: flex; align-items: center; gap: 10px; width: 100%; box-sizing: border-box; background: #fff; border-radius: 14px; padding: 10px 12px;
+          margin: 6px 0; cursor: pointer; box-shadow: 0 1px 6px rgba(70, 80, 120, .05); }
+  .trow:active { background: var(--soft); }
+  .trow .tx { flex: 1; min-width: 0; }
+  .trow b { font-size: 14.5px; }
+  .trow small { display: block; font-size: 12px; color: var(--sub); line-height: 1.45; }
+  .trow .ph { font-size: 10.5px; color: var(--sub); background: var(--soft); border-radius: 6px; padding: 1px 6px; margin-left: 6px; font-weight: 600; vertical-align: 1px; }
+
+  .empty { text-align: center; color: var(--sub); padding: 24px 0; font-size: 14px; }
+  .note { font-size: 11.5px; color: var(--sub); line-height: 1.6; margin: 18px 2px 0; }
+  footer { font-size: 11px; color: var(--sub); text-align: center; padding: 18px 20px 0; line-height: 1.6; }
+
+  /* ---------- 詳細シート ---------- */
+  .sheet { position: fixed; inset: 0; z-index: 40; background: rgba(50, 55, 75, .32); display: flex; align-items: flex-end; justify-content: center;
+           opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .sheet.show { opacity: 1; pointer-events: auto; }
+  .panel { background: var(--bg); width: 100%; max-width: 680px; height: calc(100% - env(safe-area-inset-top) - 18px); border-radius: 24px 24px 0 0;
+           display: flex; flex-direction: column; transform: translateY(24px); transition: transform .22s; box-shadow: 0 -4px 24px rgba(50, 55, 75, .18); }
+  .sheet.show .panel { transform: none; }
+  .bar { display: flex; align-items: center; gap: 6px; padding: 10px 10px 8px; border-bottom: 1px solid var(--line); flex: none; }
+  .bar .ttl { flex: 1; text-align: center; font-size: 13px; color: var(--sub); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bar button { all: unset; min-width: 64px; padding: 6px 8px; font-size: 14.5px; color: var(--acc); cursor: pointer; border-radius: 8px; }
+  .bar button.r { text-align: right; }
+  .bar button[hidden] { visibility: hidden; display: block; }
+  .scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 14px 16px calc(env(safe-area-inset-bottom) + 28px); }
+
+  .kicker { font-size: 12px; font-weight: 700; color: var(--acc); letter-spacing: .04em; }
+  .big { font-size: 24px; font-weight: 800; margin: 2px 0 2px; line-height: 1.25; }
+  .lead { font-size: 13.5px; color: var(--sub); margin: 0; }
+  .box { background: #fff; border-radius: 16px; padding: 12px 14px; margin-top: 12px; box-shadow: 0 1px 6px rgba(70, 80, 120, .05); }
+  .box h4 { margin: 0 0 6px; font-size: 12.5px; color: var(--sub); letter-spacing: .04em; }
+  .box ul { margin: 0; padding-left: 1.15em; }
+  .box li { margin: 3px 0; font-size: 14px; }
+  .box .cav { font-size: 11px; color: var(--sub); margin: 8px 0 0; }
+  .sec { font-size: 13px; font-weight: 700; color: var(--sub); margin: 20px 2px 4px; letter-spacing: .04em; }
+  .sec.focus { color: var(--acc); }
+
+  .tcard { all: unset; display: block; width: 100%; box-sizing: border-box; background: #fff; border-radius: 16px; padding: 12px 14px; margin-top: 8px; cursor: pointer;
+           box-shadow: 0 1px 6px rgba(70, 80, 120, .06); border: 1.5px solid transparent; }
+  .tcard.focus { border-color: var(--acc); }
+  .tcard:active { background: var(--soft); }
+  .tcard .top { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .tcard .top b { font-size: 17px; }
+  .tcard .top span { font-size: 11px; color: var(--sub); }
+  .tcard .t { font-size: 13px; font-weight: 600; margin-top: 2px; }
+  .tcard .s { font-size: 13px; color: var(--sub); margin-top: 4px; line-height: 1.55; }
+  .tcard .key { margin-top: 8px; background: var(--tint); border-radius: 10px; padding: 6px 10px; font-size: 12.5px; }
+  .tcard .key b { font-weight: 700; }
+  .tcard .more { font-size: 12.5px; color: var(--acc); font-weight: 600; margin-top: 6px; text-align: right; }
+
+  /* 試験の詳細 */
+  .meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .meta span { font-size: 11.5px; padding: 3px 9px; border-radius: 999px; background: #fff; border: 1px solid var(--line); }
+  .cite { font-size: 12px; color: var(--sub); margin-top: 8px; }
+  .cite a { color: var(--acc); text-decoration: none; font-weight: 600; white-space: nowrap; }
+  .summary { background: var(--tint); border-radius: 16px; padding: 12px 14px; margin-top: 12px; font-size: 14.5px; font-weight: 600; line-height: 1.6; }
+  .tabs { display: flex; gap: 4px; margin: 14px -16px 0; padding: 8px 16px; position: sticky; top: -14px; background: var(--bg); z-index: 2;
+          overflow-x: auto; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tabs button { all: unset; flex: 1 0 auto; text-align: center; padding: 8px 12px; border-radius: 10px; font-size: 13.5px; color: var(--sub); background: var(--soft); cursor: pointer; white-space: nowrap; }
+  .tabs button.on { background: var(--acc); color: #fff; font-weight: 700; }
+  .pane[hidden] { display: none; }
+
+  dl.kv { margin: 0; }
+  dl.kv dt { font-size: 12px; color: var(--sub); margin-top: 10px; }
+  dl.kv dt:first-child { margin-top: 0; }
+  dl.kv dd { margin: 2px 0 0; font-size: 14px; }
+  dl.kv dd ul { margin: 0; padding-left: 1.15em; }
+
+  table.bg { width: 100%; border-collapse: collapse; font-size: 14px; }
+  table.bg td { padding: 8px 4px; border-top: 1px solid var(--line); vertical-align: top; }
+  table.bg tr:first-child td { border-top: 0; }
+  table.bg td:first-child { color: var(--sub); font-size: 12.5px; width: 40%; padding-right: 10px; }
+
+  .rt { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 8px; }
+  .rt.one { grid-template-columns: minmax(0, 1fr); }
+  .rt .hd { font-size: 11.5px; font-weight: 700; text-align: center; padding: 6px 4px; border-radius: 8px; line-height: 1.3; }
+  .rt .hd.a { background: var(--tint); color: var(--acc); }
+  .rt .hd.b { background: var(--soft); color: var(--sub); }
+  .rrow { border-top: 1px solid var(--line); padding: 10px 0 8px; }
+  .rrow.p { background: var(--hit); margin: 0 -14px; padding: 10px 14px 8px; }
+  .rrow .ep { font-size: 12.5px; color: var(--sub); font-weight: 600; display: flex; align-items: center; gap: 6px; }
+  .rrow .ep i { font-style: normal; font-size: 10px; color: #fff; background: #C99A1E; border-radius: 5px; padding: 1px 6px; }
+  .rrow .v { font-size: 19px; font-weight: 800; text-align: center; margin-top: 2px; line-height: 1.3; }
+  .rrow .v.a { color: var(--acc); }
+  .rrow .v.txt { font-size: 13.5px; font-weight: 600; }
+  .rrow .hr { font-size: 12.5px; text-align: center; margin-top: 4px; color: var(--ink); }
+  .rrow .hr:empty { display: none; }
+  .rt.one .v { text-align: left; }
+  .rt.one .hr { text-align: left; }
+  .upd { font-size: 13px; margin-top: 10px; padding: 8px 10px; background: var(--soft); border-radius: 10px; }
+  .disc { font-size: 11px; color: var(--sub); margin-top: 16px; line-height: 1.6; }
+
+  /* ---------- 使い方 ---------- */
+  .help p, .help li { font-size: 14px; line-height: 1.7; }
+  .help ul { padding-left: 1.2em; margin: 4px 0; }
+  .help h4 { margin: 16px 0 4px; font-size: 14.5px; color: var(--ink); }
+</style>
+</head>
+<body data-dz="dlbcl">
+<div class="wrap">
+  <header>
+    <div class="hrow">
+      <div class="logo">
+        <h1>Hema<span>Evi</span></h1>
+        <p>血液疾患 治療エビデンス</p>
+      </div>
+      <button class="icbtn" id="helpbtn" type="button" aria-label="使い方">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#ECEAFB" stroke="#6C63C7" stroke-width="1.6"/>
+          <path d="M9.6 9.4a2.5 2.5 0 1 1 3.6 2.3c-.8.4-1.2.9-1.2 1.8v.4" fill="none" stroke="#6C63C7" stroke-width="1.8" stroke-linecap="round"/>
+          <circle cx="12" cy="17" r="1.1" fill="#6C63C7"/></svg>
+      </button>
+    </div>
+    <div class="search" id="search">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input type="search" id="q" placeholder="試験名・薬剤名で検索（例：POLARIX、CAR-T）" autocomplete="off" enterkeyhint="search">
+      <button class="clr" id="qclr" type="button" aria-label="検索をクリア">×</button>
+    </div>
+    <div id="nav">
+      <div class="dzs" id="dzs"></div>
+      <p class="dzfull" id="dzfull"></p>
+      <div class="seg" id="seg">
+        <button type="button" data-st="1l">初発</button>
+        <button type="button" data-st="rr">再発・難治</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main"></main>
+
+  <footer>本アプリの内容は原著・ガイドラインの要約です。診療では必ず原典・最新版のガイドライン・添付文書を確認してください。<br>内容の確認日：2026年11月</footer>
+</div>
+
+<div class="sheet" id="sheet" aria-hidden="true">
+  <div class="panel" role="dialog" aria-modal="true">
+    <div class="bar">
+      <button type="button" id="back">‹ 戻る</button>
+      <div class="ttl" id="sttl"></div>
+      <button type="button" class="r" id="close">閉じる</button>
+    </div>
+    <div class="scroll" id="sbody"></div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const esc = x => String(x ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const ST_NAME = { '1l': '初発', rr: '再発・難治' };
+const PREF_KEY = 'hemaevi-pref';
+const CHEV = '<svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
+
+/* ---------- 画面の状態はすべて URL の # に持たせる（戻るボタン・共有に対応） ----------
+   #/dlbcl/1l                      疾患と場面
+   #/dlbcl/1l/r/pola-r-chp         治療法
+   #/dlbcl/1l/r/axi-cel/f/zuma7    治療法（この場面の根拠となる試験を先頭に）
+   #/dlbcl/1l/r/.../t/polarix      治療法から開いた試験
+   #/dlbcl/1l/t/polarix            試験                                                       */
+function parse() {
+  const p = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean).map(decodeURIComponent);
+  const s = { dz: p[0], st: p[1] };
+  for (let i = 2; i + 1 < p.length; i += 2) s[p[i]] = p[i + 1];
+  if (!DISEASES[s.dz]) s.dz = null;
+  if (s.dz && !DISEASES[s.dz].settings[s.st]) s.st = null;
+  if (s.r && !REGIMENS[s.r]) delete s.r;
+  if (s.t && !TRIALS[s.t]) delete s.t;
+  return s;
+}
+const build = s => '#/' + [s.dz, s.st, ...['r', 'f', 't'].flatMap(k => s[k] ? [k, s[k]] : [])].map(encodeURIComponent).join('/');
+
+let depth = 0;   // このアプリ内で進んだ（履歴を積んだ）回数。閉じるときに履歴を戻す数の目安
+function go(s) { depth++; location.hash = build(s); }
+function replace(s) { history.replaceState(null, '', build(s)); render(); }
+
+/* ---------- 初期表示 ---------- */
+(function init() {
+  let s = parse();
+  if (!s.dz || !s.st) {
+    let pref = {};
+    try { pref = JSON.parse(localStorage.getItem(PREF_KEY) || '{}'); } catch (e) {}
+    const dz = s.dz || (DISEASES[pref.dz] ? pref.dz : 'dlbcl');
+    const st = DISEASES[dz].settings[pref.st] ? pref.st : '1l';
+    history.replaceState(null, '', build({ ...s, dz, st }));
+  }
+  $('dzs').innerHTML = Object.entries(DISEASES).map(([k, d]) => `<button type="button" data-dz="${k}">${esc(d.name)}</button>`).join('');
+})();
+
+/* ---------- メイン画面 ---------- */
+const trialsOf = (reg, dz) => (REGIMENS[reg]?.trials || []).filter(t => TRIALS[t] && TRIALS[t].dz.includes(dz));
+
+function renderMain(s) {
+  const d = DISEASES[s.dz], set = d.settings[s.st];
+  document.body.dataset.dz = s.dz;
+  [...$('dzs').children].forEach(b => b.classList.toggle('on', b.dataset.dz === s.dz));
+  [...$('seg').children].forEach(b => b.classList.toggle('on', b.dataset.st === s.st));
+  $('dzfull').textContent = d.full;
+  try { localStorage.setItem(PREF_KEY, JSON.stringify({ dz: s.dz, st: s.st })); } catch (e) {}
+
+  const used = [];
+  const srcHtml = key => {
+    const src = SOURCES[key], sits = set[key] || [];
+    return `<section class="src ${key}" id="src-${key}">
+      <div class="src-h"><span class="bdg">${src.short}</span><div><b>${esc(src.name)}</b><small>${esc(src.ver)}</small></div></div>
+      ${sits.map((sit, si) => `<div class="sit"><h3>${esc(sit.sit)}</h3>${sit.opts.map((o, oi) => {
+        const inner = `<div class="tx"><div class="lb">${esc(o.label)}</div>${o.note ? `<div class="nt">${esc(o.note)}</div>` : ''}`;
+        if (!o.reg || !REGIMENS[o.reg]) return `<div class="opt">${inner}</div></div>`;
+        const ts = trialsOf(o.reg, s.dz);
+        const focus = (o.focus || []).filter(t => ts.includes(t));
+        const shown = focus.length ? focus : ts;
+        ts.forEach(t => { if (!used.includes(t)) used.push(t); });
+        return `<button class="opt" type="button" data-src="${key}" data-si="${si}" data-oi="${oi}">${inner}
+          ${shown.length ? `<div class="tr">${shown.map(t => `<span class="tg">${esc(TRIALS[t].name)}</span>`).join('')}</div>` : ''}</div>${CHEV}</button>`;
+      }).join('')}</div>`).join('')}
+    </section>`;
+  };
+  const html = srcHtml('jsh') + srcHtml('nccn');
+  $('main').innerHTML = `
+    <div class="jump"><a class="jsh" href="#src-jsh" data-jump="jsh">JSH ガイドライン</a><a class="nccn" href="#src-nccn" data-jump="nccn">NCCN ガイドライン</a></div>
+    ${html}
+    <section class="alltr">
+      <h2>${esc(d.name)}・${ST_NAME[s.st]}の主要試験（${used.length}）</h2>
+      ${used.map(trialRow).join('')}
+    </section>
+    <p class="note">ガイドラインの記載は要旨です。推奨度・エビデンスレベル、適応の細かな条件は原典で確認してください。国内で未承認・適応外の治療を含みます。</p>`;
+}
+const trialRow = t => {
+  const x = TRIALS[t];
+  return `<button class="trow" type="button" data-trial="${t}"><div class="tx"><b>${esc(x.name)}</b><span class="ph">${esc(x.phase.split(' ')[0])}</span><small>${esc(x.title)}</small></div>${CHEV}</button>`;
+};
+
+$('dzs').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const st = parse().st;
+  replace({ dz: b.dataset.dz, st: DISEASES[b.dataset.dz].settings[st] ? st : '1l' });
+  window.scrollTo({ top: 0 });
+});
+$('seg').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  replace({ dz: parse().dz, st: b.dataset.st });
+});
+$('main').addEventListener('click', e => {
+  const j = e.target.closest('[data-jump]');
+  if (j) { e.preventDefault(); $('src-' + j.dataset.jump).scrollIntoView({ behavior: 'smooth' }); return; }
+  const s = parse();
+  const o = e.target.closest('button.opt');
+  if (o) {
+    const opt = DISEASES[s.dz].settings[s.st][o.dataset.src][+o.dataset.si].opts[+o.dataset.oi];
+    go({ dz: s.dz, st: s.st, r: opt.reg, f: (opt.focus || []).join(',') || undefined });
+    return;
+  }
+  const t = e.target.closest('[data-trial]');
+  if (t) go({ dz: s.dz, st: s.st, t: t.dataset.trial });
+});
+
+/* ---------- 検索 ---------- */
+const norm = x => String(x || '').toLowerCase().normalize('NFKC').replace(/[\s\-・]/g, '');
+function renderSearch(q) {
+  const n = norm(q);
+  const hitT = Object.entries(TRIALS).filter(([k, t]) => norm([t.name, t.title, t.summary, t.cite, t.tx, (t.arms || []).join(' ')].join(' ')).includes(n));
+  const hitR = Object.entries(REGIMENS).filter(([k, r]) => norm([r.name, r.full].join(' ')).includes(n));
+  $('main').innerHTML = `
+    ${hitR.length ? `<section class="alltr"><h2>治療法（${hitR.length}）</h2>${hitR.map(([k, r]) => {
+      const dz = Object.keys(DISEASES).find(d => trialsOf(k, d).length) || parse().dz;
+      return `<button class="trow" type="button" data-reg="${k}" data-dz="${dz}"><div class="tx"><b>${esc(r.name)}</b><small>${esc(r.full)}</small></div>${CHEV}</button>`;
+    }).join('')}</section>` : ''}
+    ${hitT.length ? `<section class="alltr"><h2>試験（${hitT.length}）</h2>${hitT.map(([k]) => trialRow(k)).join('')}</section>` : ''}
+    ${!hitR.length && !hitT.length ? '<div class="empty">見つかりませんでした</div>' : ''}`;
+}
+let searching = false;
+function onQuery() {
+  const q = $('q').value.trim();
+  $('search').classList.toggle('has', !!$('q').value);
+  searching = !!q;
+  $('nav').hidden = searching;
+  if (searching) { renderSearch(q); lastMain = ''; } else render();
+}
+$('q').addEventListener('input', onQuery);
+$('q').addEventListener('keydown', e => { if (e.key === 'Enter') $('q').blur(); });
+$('qclr').addEventListener('click', () => { $('q').value = ''; onQuery(); $('q').focus(); });
+// 検索結果のタップ（メイン画面のクリック処理より前に拾う）
+$('main').addEventListener('click', e => {
+  if (!searching) return;
+  const s = parse();
+  const r = e.target.closest('[data-reg]');
+  if (r) { e.stopImmediatePropagation(); go({ dz: r.dataset.dz, st: s.st, r: r.dataset.reg }); return; }
+  const t = e.target.closest('[data-trial]');
+  if (t) { e.stopImmediatePropagation(); const dz = TRIALS[t.dataset.trial].dz[0]; go({ dz, st: s.st, t: t.dataset.trial }); }
+}, true);
+
+/* ---------- 治療法シート ---------- */
+function regimenHtml(s) {
+  const r = REGIMENS[s.r];
+  const ts = trialsOf(s.r, s.dz);
+  const focus = (s.f || '').split(',').filter(t => ts.includes(t));
+  const rest = ts.filter(t => !focus.includes(t));
+  const card = (t, f) => {
+    const x = TRIALS[t], pr = x.res.find(z => z.p) || x.res[0];
+    const key = pr ? `<div class="key">${esc(pr.ep)}：<b>${esc(pr.a)}</b>${pr.b ? ` vs ${esc(pr.b)}` : ''}${pr.hr ? `（${esc(pr.hr)}）` : ''}</div>` : '';
+    return `<button class="tcard${f ? ' focus' : ''}" type="button" data-trial="${t}">
+      <div class="top"><b>${esc(x.name)}</b><span>${esc(x.phase)}・n=${x.n.toLocaleString()}</span></div>
+      <div class="t">${esc(x.title)}</div>
+      <div class="s">${esc(x.summary)}</div>${key}
+      <div class="more">詳しく見る ›</div></button>`;
+  };
+  return `
+    <div class="kicker">${esc(DISEASES[s.dz].name)}・${ST_NAME[s.st]}</div>
+    <div class="big">${esc(r.name)}</div>
+    <p class="lead">${esc(r.full)}</p>
+    ${r.dose ? `<div class="box"><h4>投与法（代表例）</h4><ul>${r.dose.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+      <p class="cav">用量・スケジュールは代表的なものです。実際の投与は添付文書・プロトコールで確認してください。</p></div>` : ''}
+    ${focus.length ? `<div class="sec focus">この場面の根拠となる試験</div>${focus.map(t => card(t, true)).join('')}` : ''}
+    ${rest.length ? `<div class="sec">${focus.length ? 'その他の関連試験' : '根拠となる試験'}</div>${rest.map(t => card(t, false)).join('')}` : ''}
+    ${!ts.length ? '<div class="empty">登録された試験はありません</div>' : ''}`;
+}
+
+/* ---------- 試験シート ---------- */
+let curTab = 'ov';
+function trialHtml(id) {
+  const x = TRIALS[id];
+  const two = x.arms.length > 1;
+  const head = `<div class="rt${two ? '' : ' one'}">${x.arms.map((a, i) => `<div class="hd ${i ? 'b' : 'a'}">${esc(a)}</div>`).join('')}</div>`;
+  const val = (v, cls) => `<div class="v ${cls}${/[ぁ-んァ-ヶ一-龠]/.test(v || '') && !/^[\d.,%約<>≥≤〜–\- ]/.test(v || '') ? ' txt' : ''}">${esc(v || '—')}</div>`;
+  const resRows = x.res.map(z => `<div class="rrow${z.p ? ' p' : ''}">
+      <div class="ep">${esc(z.ep)}${z.p ? '<i>主要評価項目</i>' : ''}</div>
+      ${(z.a || z.b) ? `<div class="rt${two ? '' : ' one'}">${val(z.a, 'a')}${two ? val(z.b, 'b') : ''}</div>` : ''}
+      <div class="hr">${esc(z.hr)}</div></div>`).join('');
+  const aeRows = (x.ae || []).map(z => `<div class="rrow"><div class="ep">${esc(z.k)}</div>
+      <div class="rt${two ? '' : ' one'}">${val(z.a, 'a')}${two ? val(z.b, 'b') : ''}</div></div>`).join('');
+  const tabs = [['ov', '概要'], ['bg', '患者背景'], ['res', '結果'], ['ae', '有害事象'], ['pt', 'ポイント']];
+  if (!tabs.some(t => t[0] === curTab)) curTab = 'ov';
+  return `
+    <div class="kicker">${esc(x.phase)}</div>
+    <div class="big">${esc(x.name)}</div>
+    <p class="lead">${esc(x.title)}</p>
+    <div class="meta"><span>n = ${x.n.toLocaleString()}</span>${x.arms.map(a => `<span>${esc(a)}</span>`).join(two ? '<span style="border:0;background:none;padding:3px 0">vs</span>' : '')}</div>
+    <div class="cite">${esc(x.cite)}　<a href="https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(x.q || x.cite)}" target="_blank" rel="noopener">PubMed で探す ↗</a></div>
+    <div class="summary">${esc(x.summary)}</div>
+    <div class="tabs" id="ttabs">${tabs.map(([k, n]) => `<button type="button" data-tab="${k}" class="${k === curTab ? 'on' : ''}">${n}</button>`).join('')}</div>
+    <div class="pane" data-pane="ov"><div class="box"><dl class="kv">
+      <dt>対象</dt><dd><ul>${x.elig.map(e => `<li>${esc(e)}</li>`).join('')}</ul></dd>
+      <dt>治療</dt><dd>${esc(x.tx)}</dd>
+      <dt>主要評価項目</dt><dd>${esc(x.primary)}</dd>
+      <dt>観察期間</dt><dd>${esc(x.fu)}</dd>
+    </dl></div></div>
+    <div class="pane" data-pane="bg"><div class="box"><table class="bg">${x.bg.map(([k, v]) => `<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join('')}</table></div></div>
+    <div class="pane" data-pane="res"><div class="box">${head}${resRows}</div>
+      ${(x.updates || []).map(u => `<div class="upd">${esc(u)}</div>`).join('')}</div>
+    <div class="pane" data-pane="ae"><div class="box">${aeRows ? head + aeRows : '<div class="empty">記載なし</div>'}</div></div>
+    <div class="pane" data-pane="pt"><div class="box"><ul>${(x.points || []).map(p => `<li>${esc(p)}</li>`).join('')}</ul></div>
+      ${(x.updates || []).length ? `<div class="sec">長期追跡・更新解析</div>${x.updates.map(u => `<div class="upd">${esc(u)}</div>`).join('')}` : ''}</div>
+    <p class="disc">数値は原著（主に主解析）からの抜粋です。詳細・最新の追跡結果は原著で確認してください。</p>`;
+}
+function showTab() {
+  document.querySelectorAll('#ttabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === curTab));
+  document.querySelectorAll('#sbody .pane').forEach(p => { p.hidden = p.dataset.pane !== curTab; });
+}
+
+$('sbody').addEventListener('click', e => {
+  const tb = e.target.closest('[data-tab]');
+  if (tb) { curTab = tb.dataset.tab; showTab(); return; }
+  const t = e.target.closest('[data-trial]');
+  if (t) { const s = parse(); go({ ...s, t: t.dataset.trial }); }
+});
+
+/* ---------- シートの開閉 ---------- */
+let lastSheet = '';
+function renderSheet(s) {
+  const sh = $('sheet');
+  const key = s.t ? 't:' + s.t : s.r ? 'r:' + s.r + (s.f || '') : '';
+  if (!key) { sh.classList.remove('show'); sh.setAttribute('aria-hidden', 'true'); lastSheet = ''; document.body.style.overflow = ''; return; }
+  if (key !== lastSheet) {
+    if (s.t) { $('sbody').innerHTML = trialHtml(s.t); showTab(); $('sttl').textContent = s.r ? REGIMENS[s.r].name : '臨床試験'; }
+    else { $('sbody').innerHTML = regimenHtml(s); $('sttl').textContent = '治療法'; }
+    $('sbody').scrollTop = 0;
+    lastSheet = key;
+  }
+  $('back').hidden = !(s.t && s.r);
+  sh.classList.add('show'); sh.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+function closeSheet() {
+  if (lastSheet === 'help') { renderSheet({}); return; }   // 使い方は履歴を積まないので表示だけ閉じる
+  const s = parse(), lv = (s.r ? 1 : 0) + (s.t ? 1 : 0);
+  if (depth >= lv && lv > 0) { depth -= lv; history.go(-lv); }
+  else { depth = 0; replace({ dz: s.dz, st: s.st }); }
+}
+$('close').addEventListener('click', closeSheet);
+$('sheet').addEventListener('click', e => { if (e.target.id === 'sheet') closeSheet(); });
+$('back').addEventListener('click', () => {
+  const s = parse();
+  if (depth > 0) { depth--; history.back(); }
+  else replace({ dz: s.dz, st: s.st, r: s.r, f: s.f });
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('sheet').classList.contains('show')) closeSheet(); });
+
+/* ---------- 使い方 ---------- */
+$('helpbtn').addEventListener('click', () => {
+  $('sbody').innerHTML = `<div class="help">
+    <div class="big">使い方</div>
+    <h4>探し方</h4>
+    <ul>
+      <li>上で<b>疾患</b>（DLBCL・FL）と<b>場面</b>（初発・再発・難治）を選ぶと、造血器腫瘍診療ガイドライン（JSH）と NCCN ガイドラインの推奨が状況別に並びます。</li>
+      <li>色の付いた治療名をタップすると、<b>投与法の代表例</b>と<b>根拠となる臨床試験</b>が出ます。</li>
+      <li>試験をタップすると、<b>概要・患者背景・結果・有害事象・ポイント</b>をタブで切り替えて見られます。主要評価項目は黄色で示します。</li>
+      <li>検索欄では、試験名（POLARIX など）や薬剤名（ポラツズマブ、CAR-T など）から直接探せます。</li>
+    </ul>
+    <h4>そのほか</h4>
+    <ul>
+      <li>端末の「戻る」操作で前の画面に戻れます。画面の URL をブックマーク・共有すると、その画面を直接開けます。</li>
+      <li>一度開いたあとは圏外でも使えます。最後に見ていた疾患・場面を覚えています。</li>
+      <li>「PubMed で探す」から原著を検索できます。</li>
+    </ul>
+    <h4>注意</h4>
+    <ul>
+      <li>内容は原著・ガイドラインの要約で、すべての推奨・試験を網羅するものではありません。</li>
+      <li>国内で未承認・適応外の治療を含みます。推奨度や適応の条件、用量は必ず最新のガイドライン・添付文書で確認してください。</li>
+    </ul></div>`;
+  $('sttl').textContent = 'HemaEvi'; $('back').hidden = true;
+  lastSheet = 'help';
+  $('sheet').classList.add('show'); $('sheet').setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden';
+  $('sbody').scrollTop = 0;
+});
+
+/* ---------- 描画 ---------- */
+let lastMain = '';
+function render() {
+  const s = parse();
+  if (!s.dz || !s.st) { history.replaceState(null, '', build({ dz: s.dz || 'dlbcl', st: '1l' })); return render(); }
+  const mk = s.dz + '/' + s.st;
+  if (!searching && mk !== lastMain) { renderMain(s); lastMain = mk; }
+  renderSheet(s);
+}
+window.addEventListener('hashchange', render);
+render();
+
+/* ---------- オフライン対応・更新 ---------- */
+if ('serviceWorker' in navigator) {
+  const hadCtl = !!navigator.serviceWorker.controller;
+  let reloading = false;
+  navigator.serviceWorker.register('sw.js').then(reg => {
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') reg.update().catch(() => {}); });
+  }).catch(() => {});
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadCtl || reloading) return;
+    reloading = true;
+    location.reload();   // 表示中の画面は URL の # に残っているので、そのまま復元される
+  });
+}
+</script>
+</body>
+</html>
