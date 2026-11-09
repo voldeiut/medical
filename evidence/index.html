@@ -70,6 +70,20 @@
   .seg button { all: unset; flex: 1; text-align: center; padding: 9px 0; border-radius: 10px; font-size: 15px; color: var(--sub); cursor: pointer; }
   .seg button.on { background: #fff; color: var(--ink); font-weight: 700; box-shadow: 0 1px 3px rgba(0, 0, 0, .08); }
 
+  .view { display: flex; gap: 8px; margin-top: 10px; }
+  .view button { all: unset; flex: 1; text-align: center; padding: 8px 0; border-radius: 12px; font-size: 13.5px; font-weight: 700; cursor: pointer;
+                 background: #fff; color: var(--sub); border: 1.5px solid var(--line); }
+  .view button.on { border-color: var(--acc); color: var(--acc); background: var(--tint); }
+
+  /* ---------- 国内で使えるレジメン ---------- */
+  .src.jp .sit { --c: var(--acc); }
+  .src.jp .opt .lb { font-size: 16px; }
+  .sit.off { background: transparent; box-shadow: none; border: 1.5px dashed var(--line); }
+  .sit.off h3 { color: var(--sub); }
+  .sit.off button.opt .lb { color: var(--sub); }
+  .sit .gn { font-size: 12px; color: var(--sub); padding: 0 14px 8px; margin-top: -3px; border-bottom: 1px solid var(--line); }
+  .sit h3:has(+ .gn) { border-bottom: 0; }
+
   /* ---------- ガイドライン ---------- */
   .jump { display: flex; gap: 8px; margin: 14px 0 0; }
   .jump a { flex: 1; text-align: center; text-decoration: none; font-size: 12.5px; font-weight: 600; padding: 7px 0; border-radius: 10px; }
@@ -132,6 +146,7 @@
   .big { font-size: 24px; font-weight: 800; margin: 2px 0 2px; line-height: 1.25; }
   .lead { font-size: 13.5px; color: var(--sub); margin: 0; }
   .box { background: #fff; border-radius: 16px; padding: 12px 14px; margin-top: 12px; box-shadow: 0 1px 6px rgba(70, 80, 120, .05); }
+  .box:has(table.multi) { overflow-x: auto; }
   .box h4 { margin: 0 0 6px; font-size: 12.5px; color: var(--sub); letter-spacing: .04em; }
   .box ul { margin: 0; padding-left: 1.15em; }
   .box li { margin: 3px 0; font-size: 14px; }
@@ -175,6 +190,22 @@
   table.bg td { padding: 8px 4px; border-top: 1px solid var(--line); vertical-align: top; }
   table.bg tr:first-child td { border-top: 0; }
   table.bg td:first-child { color: var(--sub); font-size: 12.5px; width: 40%; padding-right: 10px; }
+  table.bg.multi { font-size: 13px; table-layout: fixed; }
+  table.bg.multi td { padding: 6px 4px; }
+  table.bg.multi td:first-child { width: 44%; }
+  table.bg.multi.c1 td:first-child { width: 55%; }
+  table.bg.multi.c3 td:first-child { width: 31%; }
+  table.bg.multi td + td { text-align: right; padding-left: 8px; }
+  table.bg.multi th { font-size: 11px; font-weight: 700; color: var(--acc); text-align: right; padding: 0 4px 6px 8px; vertical-align: bottom; line-height: 1.3; }
+  table.bg.multi th + th { color: var(--sub); }
+  table.bg tr.gh td { font-size: 12px; font-weight: 700; color: var(--ink); background: var(--soft); padding: 5px 8px; text-align: left; }
+  table.bg tr.sub td:first-child { padding-left: 14px; }
+  .bgnote { font-size: 11.5px; color: var(--sub); margin: 8px 0 0; line-height: 1.6; }
+  .jpbox { background: var(--tint); }
+  .vf { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; margin-left: 6px; vertical-align: 2px; }
+  .vf.ok { background: #E3F3E6; color: #3F7F52; }
+  .vf.ng { background: #FFF1D6; color: #9A6B00; }
+  .lv { font-size: 11px; font-weight: 700; color: #9A6B00; background: #FFF1D6; border-radius: 6px; padding: 1px 6px; margin-left: 6px; vertical-align: 1px; }
 
   .rt { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 8px; }
   .rt.one { grid-template-columns: minmax(0, 1fr); }
@@ -227,6 +258,10 @@
         <button type="button" data-st="1l">初発</button>
         <button type="button" data-st="rr">再発・難治</button>
       </div>
+      <div class="view" id="view">
+        <button type="button" data-v="jp">国内で使えるレジメン</button>
+        <button type="button" data-v="gl">ガイドライン</button>
+      </div>
     </div>
   </header>
 
@@ -255,7 +290,8 @@ const PREF_KEY = 'hemaevi-pref';
 const CHEV = '<svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
 
 /* ---------- 画面の状態はすべて URL の # に持たせる（戻るボタン・共有に対応） ----------
-   #/dlbcl/1l                      疾患と場面
+   #/dlbcl/1l                      疾患と場面（国内で使えるレジメン一覧）
+   #/dlbcl/1l/v/gl                 疾患と場面（ガイドラインの推奨）
    #/dlbcl/1l/r/pola-r-chp         治療法
    #/dlbcl/1l/r/axi-cel/f/zuma7    治療法（この場面の根拠となる試験を先頭に）
    #/dlbcl/1l/r/.../t/polarix      治療法から開いた試験
@@ -268,9 +304,10 @@ function parse() {
   if (s.dz && !DISEASES[s.dz].settings[s.st]) s.st = null;
   if (s.r && !REGIMENS[s.r]) delete s.r;
   if (s.t && !TRIALS[s.t]) delete s.t;
+  if (s.v !== 'gl') delete s.v;
   return s;
 }
-const build = s => '#/' + [s.dz, s.st, ...['r', 'f', 't'].flatMap(k => s[k] ? [k, s[k]] : [])].map(encodeURIComponent).join('/');
+const build = s => '#/' + [s.dz, s.st, ...['v', 'r', 'f', 't'].flatMap(k => s[k] ? [k, s[k]] : [])].map(encodeURIComponent).join('/');
 
 let depth = 0;   // このアプリ内で進んだ（履歴を積んだ）回数。閉じるときに履歴を戻す数の目安
 function go(s) { depth++; location.hash = build(s); }
@@ -297,6 +334,7 @@ function renderMain(s) {
   document.body.dataset.dz = s.dz;
   [...$('dzs').children].forEach(b => b.classList.toggle('on', b.dataset.dz === s.dz));
   [...$('seg').children].forEach(b => b.classList.toggle('on', b.dataset.st === s.st));
+  [...$('view').children].forEach(b => b.classList.toggle('on', b.dataset.v === (s.v || 'jp')));
   $('dzfull').textContent = d.full;
   try { localStorage.setItem(PREF_KEY, JSON.stringify({ dz: s.dz, st: s.st })); } catch (e) {}
 
@@ -304,8 +342,8 @@ function renderMain(s) {
   const srcHtml = key => {
     const src = SOURCES[key], sits = set[key] || [];
     return `<section class="src ${key}" id="src-${key}">
-      <div class="src-h"><span class="bdg">${src.short}</span><div><b>${esc(src.name)}</b><small>${esc(src.ver)}</small></div></div>
-      ${sits.map((sit, si) => `<div class="sit"><h3>${esc(sit.sit)}</h3>${sit.opts.map((o, oi) => {
+      ${key === 'jp' ? '' : `<div class="src-h"><span class="bdg">${src.short}</span><div><b>${esc(src.name)}</b><small>${esc(src.ver)}</small></div></div>`}
+      ${sits.map((sit, si) => `<div class="sit${sit.off ? ' off' : ''}"><h3>${esc(sit.sit)}</h3>${sit.gn ? `<div class="gn">${esc(sit.gn)}</div>` : ''}${sit.opts.map((o, oi) => {
         const inner = `<div class="tx"><div class="lb">${esc(o.label)}</div>${o.note ? `<div class="nt">${esc(o.note)}</div>` : ''}`;
         if (!o.reg || !REGIMENS[o.reg]) return `<div class="opt">${inner}</div></div>`;
         const ts = trialsOf(o.reg, s.dz);
@@ -317,15 +355,17 @@ function renderMain(s) {
       }).join('')}</div>`).join('')}
     </section>`;
   };
-  const html = srcHtml('jsh') + srcHtml('nccn');
+  const gl = s.v === 'gl';
+  const html = gl ? srcHtml('jsh') + srcHtml('nccn') : srcHtml('jp');
   $('main').innerHTML = `
-    <div class="jump"><a class="jsh" href="#src-jsh" data-jump="jsh">JSH ガイドライン</a><a class="nccn" href="#src-nccn" data-jump="nccn">NCCN ガイドライン</a></div>
+    ${gl ? `<div class="jump"><a class="jsh" href="#src-jsh" data-jump="jsh">JSH ガイドライン</a><a class="nccn" href="#src-nccn" data-jump="nccn">NCCN ガイドライン</a></div>` : ''}
     ${html}
     <section class="alltr">
       <h2>${esc(d.name)}・${ST_NAME[s.st]}の主要試験（${used.length}）</h2>
       ${used.map(trialRow).join('')}
     </section>
-    <p class="note">ガイドラインの記載は要旨です。推奨度・エビデンスレベル、適応の細かな条件は原典で確認してください。国内で未承認・適応外の治療を含みます。</p>`;
+    <p class="note">${gl ? 'ガイドラインの記載は要旨です。推奨度・エビデンスレベル、適応の細かな条件は原典で確認してください。国内で未承認・適応外の治療を含みます。'
+      : `国内の承認状況は${esc(SOURCES.jp.ver)}時点。ガイドラインでの位置づけとは別に、国内で使える治療を並べています。適応の細かな条件（前治療数・移植適応など）は添付文書・最適使用推進ガイドラインで確認してください。`}</p>`;
 }
 const trialRow = t => {
   const x = TRIALS[t];
@@ -335,12 +375,17 @@ const trialRow = t => {
 $('dzs').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   const st = parse().st;
-  replace({ dz: b.dataset.dz, st: DISEASES[b.dataset.dz].settings[st] ? st : '1l' });
+  replace({ dz: b.dataset.dz, st: DISEASES[b.dataset.dz].settings[st] ? st : '1l', v: parse().v });
   window.scrollTo({ top: 0 });
 });
 $('seg').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
-  replace({ dz: parse().dz, st: b.dataset.st });
+  replace({ dz: parse().dz, st: b.dataset.st, v: parse().v });
+});
+$('view').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const s = parse();
+  replace({ dz: s.dz, st: s.st, v: b.dataset.v === 'gl' ? 'gl' : undefined });
 });
 $('main').addEventListener('click', e => {
   const j = e.target.closest('[data-jump]');
@@ -349,11 +394,11 @@ $('main').addEventListener('click', e => {
   const o = e.target.closest('button.opt');
   if (o) {
     const opt = DISEASES[s.dz].settings[s.st][o.dataset.src][+o.dataset.si].opts[+o.dataset.oi];
-    go({ dz: s.dz, st: s.st, r: opt.reg, f: (opt.focus || []).join(',') || undefined });
+    go({ dz: s.dz, st: s.st, v: s.v, r: opt.reg, f: (opt.focus || []).join(',') || undefined });
     return;
   }
   const t = e.target.closest('[data-trial]');
-  if (t) go({ dz: s.dz, st: s.st, t: t.dataset.trial });
+  if (t) go({ dz: s.dz, st: s.st, v: s.v, t: t.dataset.trial });
 });
 
 /* ---------- 検索 ---------- */
@@ -401,7 +446,7 @@ function regimenHtml(s) {
     const x = TRIALS[t], pr = x.res.find(z => z.p) || x.res[0];
     const key = pr ? `<div class="key">${esc(pr.ep)}：<b>${esc(pr.a)}</b>${pr.b ? ` vs ${esc(pr.b)}` : ''}${pr.hr ? `（${esc(pr.hr)}）` : ''}</div>` : '';
     return `<button class="tcard${f ? ' focus' : ''}" type="button" data-trial="${t}">
-      <div class="top"><b>${esc(x.name)}</b><span>${esc(x.phase)}・n=${x.n.toLocaleString()}</span></div>
+      <div class="top"><b>${esc(x.name)}</b><span>${esc(x.phase)}・n=${x.n.toLocaleString()}</span>${x.lv ? `<span class="lv">${esc(x.lv)}</span>` : ''}</div>
       <div class="t">${esc(x.title)}</div>
       <div class="s">${esc(x.summary)}</div>${key}
       <div class="more">詳しく見る ›</div></button>`;
@@ -410,6 +455,7 @@ function regimenHtml(s) {
     <div class="kicker">${esc(DISEASES[s.dz].name)}・${ST_NAME[s.st]}</div>
     <div class="big">${esc(r.name)}</div>
     <p class="lead">${esc(r.full)}</p>
+    ${r.jp ? `<div class="box jpbox"><h4>国内の承認状況</h4><div style="font-size:14px">${esc(r.jp)}</div><p class="cav">薬剤ごとの承認状況の要約です。組み合わせ・用量・前治療などの条件は添付文書・最適使用推進ガイドラインで確認してください。</p></div>` : ''}
     ${r.dose ? `<div class="box"><h4>投与法（代表例）</h4><ul>${r.dose.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
       <p class="cav">用量・スケジュールは代表的なものです。実際の投与は添付文書・プロトコールで確認してください。</p></div>` : ''}
     ${focus.length ? `<div class="sec focus">この場面の根拠となる試験</div>${focus.map(t => card(t, true)).join('')}` : ''}
@@ -437,7 +483,8 @@ function trialHtml(id) {
     <div class="big">${esc(x.name)}</div>
     <p class="lead">${esc(x.title)}</p>
     <div class="meta"><span>n = ${x.n.toLocaleString()}</span>${x.arms.map(a => `<span>${esc(a)}</span>`).join(two ? '<span style="border:0;background:none;padding:3px 0">vs</span>' : '')}</div>
-    <div class="cite">${esc(x.cite)}　<a href="https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(x.q || x.cite)}" target="_blank" rel="noopener">PubMed で探す ↗</a></div>
+    <div class="cite">${esc(x.cite)}　<a href="${x.pmid ? `https://pubmed.ncbi.nlm.nih.gov/${x.pmid}/` : `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(x.q || x.cite)}`}" target="_blank" rel="noopener">PubMed ↗</a>
+      ${!x.verified ? '<span class="vf ng">原著未照合</span>' : /抄録/.test(x.verified) ? `<span class="vf ng">抄録で照合 ${esc(x.verified.replace(/（.*）/, ''))}（原著未入手）</span>` : `<span class="vf ok">原著照合済 ${esc(x.verified)}</span>`}${x.lv ? `<span class="lv">${esc(x.lv)}</span>` : ''}</div>
     <div class="summary">${esc(x.summary)}</div>
     <div class="tabs" id="ttabs">${tabs.map(([k, n]) => `<button type="button" data-tab="${k}" class="${k === curTab ? 'on' : ''}">${n}</button>`).join('')}</div>
     <div class="pane" data-pane="ov"><div class="box"><dl class="kv">
@@ -446,13 +493,26 @@ function trialHtml(id) {
       <dt>主要評価項目</dt><dd>${esc(x.primary)}</dd>
       <dt>観察期間</dt><dd>${esc(x.fu)}</dd>
     </dl></div></div>
-    <div class="pane" data-pane="bg"><div class="box"><table class="bg">${x.bg.map(([k, v]) => `<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join('')}</table></div></div>
+    <div class="pane" data-pane="bg"><div class="box">${bgHtml(x)}</div></div>
     <div class="pane" data-pane="res"><div class="box">${head}${resRows}</div>
       ${(x.updates || []).map(u => `<div class="upd">${esc(u)}</div>`).join('')}</div>
     <div class="pane" data-pane="ae"><div class="box">${aeRows ? head + aeRows : '<div class="empty">記載なし</div>'}</div></div>
     <div class="pane" data-pane="pt"><div class="box"><ul>${(x.points || []).map(p => `<li>${esc(p)}</li>`).join('')}</ul></div>
       ${(x.updates || []).length ? `<div class="sec">長期追跡・更新解析</div>${x.updates.map(u => `<div class="upd">${esc(u)}</div>`).join('')}` : ''}</div>
-    <p class="disc">数値は原著（主に主解析）からの抜粋です。詳細・最新の追跡結果は原著で確認してください。</p>`;
+    <p class="disc">数値は原著（主に主解析）からの抜粋です。${!x.verified ? '' : /抄録/.test(x.verified) ? `原著は未入手で、PubMed の抄録と照合し、別モデル（ChatGPT）による確認を受けています。` : `原著の本文・表と照合し、別モデル（ChatGPT）による確認も受けています（${esc(x.verified)}）。`}詳細・最新の追跡結果は原著で確認してください。</p>`;
+}
+/* 患者背景：bg = { cols: [群の見出し…], rows: [[項目, 値…] | ['§見出し'] | ['・小項目', 値…]], note } または旧形式 [[項目, 値]] */
+function bgHtml(x) {
+  const b = x.bg;
+  if (Array.isArray(b)) return `<table class="bg">${b.map(([k, v]) => `<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join('')}</table>`;
+  const n = b.cols.length;
+  const rows = b.rows.map(r => {
+    if (r.length === 1 && r[0].startsWith('§')) return `<tr class="gh"><td colspan="${n + 1}">${esc(r[0].slice(1))}</td></tr>`;
+    const sub = r[0].startsWith('・');
+    return `<tr${sub ? ' class="sub"' : ''}><td>${esc(r[0])}</td>${r.slice(1).map(v => `<td>${esc(v)}</td>`).join('')}</tr>`;
+  }).join('');
+  return `<table class="bg multi c${n}"><thead><tr><th style="width:${n === 1 ? 55 : n === 3 ? 31 : 44}%"></th>${b.cols.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table>
+    ${b.note ? `<p class="bgnote">${esc(b.note)}</p>` : ''}`;
 }
 function showTab() {
   document.querySelectorAll('#ttabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === curTab));
@@ -486,14 +546,14 @@ function closeSheet() {
   if (lastSheet === 'help') { renderSheet({}); return; }   // 使い方は履歴を積まないので表示だけ閉じる
   const s = parse(), lv = (s.r ? 1 : 0) + (s.t ? 1 : 0);
   if (depth >= lv && lv > 0) { depth -= lv; history.go(-lv); }
-  else { depth = 0; replace({ dz: s.dz, st: s.st }); }
+  else { depth = 0; replace({ dz: s.dz, st: s.st, v: s.v }); }
 }
 $('close').addEventListener('click', closeSheet);
 $('sheet').addEventListener('click', e => { if (e.target.id === 'sheet') closeSheet(); });
 $('back').addEventListener('click', () => {
   const s = parse();
   if (depth > 0) { depth--; history.back(); }
-  else replace({ dz: s.dz, st: s.st, r: s.r, f: s.f });
+  else replace({ dz: s.dz, st: s.st, v: s.v, r: s.r, f: s.f });
 });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('sheet').classList.contains('show')) closeSheet(); });
 
@@ -503,8 +563,9 @@ $('helpbtn').addEventListener('click', () => {
     <div class="big">使い方</div>
     <h4>探し方</h4>
     <ul>
-      <li>上で<b>疾患</b>（DLBCL・FL）と<b>場面</b>（初発・再発・難治）を選ぶと、造血器腫瘍診療ガイドライン（JSH）と NCCN ガイドラインの推奨が状況別に並びます。</li>
-      <li>色の付いた治療名をタップすると、<b>投与法の代表例</b>と<b>根拠となる臨床試験</b>が出ます。</li>
+      <li>上で<b>疾患</b>（DLBCL・FL）と<b>場面</b>（初発・再発・難治）を選ぶと、まず<b>国内で使えるレジメン</b>の一覧が状況別に出ます。国内未承認・適応外の治療は一番下に点線の枠で参考として載せています。</li>
+      <li>「<b>ガイドライン</b>」に切り替えると、造血器腫瘍診療ガイドライン（JSH）と NCCN ガイドラインの推奨を状況別に見られます。</li>
+      <li>色の付いた治療名をタップすると、<b>国内の承認状況</b>・<b>投与法の代表例</b>・<b>根拠となる臨床試験</b>が出ます。</li>
       <li>試験をタップすると、<b>概要・患者背景・結果・有害事象・ポイント</b>をタブで切り替えて見られます。主要評価項目は黄色で示します。</li>
       <li>検索欄では、試験名（POLARIX など）や薬剤名（ポラツズマブ、CAR-T など）から直接探せます。</li>
     </ul>
@@ -512,7 +573,7 @@ $('helpbtn').addEventListener('click', () => {
     <ul>
       <li>端末の「戻る」操作で前の画面に戻れます。画面の URL をブックマーク・共有すると、その画面を直接開けます。</li>
       <li>一度開いたあとは圏外でも使えます。最後に見ていた疾患・場面を覚えています。</li>
-      <li>「PubMed で探す」から原著を検索できます。</li>
+      <li>試験の画面の「PubMed」から原著を開けます。「原著照合済」は原著の本文・表と照合し、ChatGPT による確認も受けた試験、「抄録で照合」は原著が未入手で抄録だけと照合した試験、「原著未照合」はまだ照合していない試験です。</li>
     </ul>
     <h4>注意</h4>
     <ul>
@@ -530,7 +591,7 @@ let lastMain = '';
 function render() {
   const s = parse();
   if (!s.dz || !s.st) { history.replaceState(null, '', build({ dz: s.dz || 'dlbcl', st: '1l' })); return render(); }
-  const mk = s.dz + '/' + s.st;
+  const mk = s.dz + '/' + s.st + '/' + (s.v || '');
   if (!searching && mk !== lastMain) { renderMain(s); lastMain = mk; }
   renderSheet(s);
 }

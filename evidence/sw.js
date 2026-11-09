@@ -1,6 +1,6 @@
 // ネット優先：つながれば最新版を取得して保存、圏外なら保存版を表示する
 // HTTP キャッシュ（GitHub Pages は max-age=600）を使わず、毎回サーバーに更新を確認する
-const CACHE = 'hemaevi-20261108';
+const CACHE = 'hemaevi-20261109184034';
 const FILES = ['./', './index.html', './data.js', './manifest.json', './icon.png', './icon-192.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES.map(f => new Request(f, { cache: 'no-cache' })))));
