@@ -195,7 +195,9 @@
   table.bg.multi td:first-child { width: 44%; }
   table.bg.multi.c1 td:first-child { width: 55%; }
   table.bg.multi.c3 td:first-child { width: 31%; }
-  table.bg.multi td + td { text-align: right; padding-left: 8px; }
+  table.bg.multi td + td { text-align: right; padding-left: 8px; overflow-wrap: anywhere; }
+  table.bg .par { display: inline-block; max-width: 100%; font-size: 11px; color: var(--sub); }
+  .rrow .v .par { display: inline-block; max-width: 100%; font-size: 12px; font-weight: 600; }
   table.bg.multi th { font-size: 11px; font-weight: 700; color: var(--acc); text-align: right; padding: 0 4px 6px 8px; vertical-align: bottom; line-height: 1.3; }
   table.bg.multi th + th { color: var(--sub); }
   table.bg tr.gh td { font-size: 12px; font-weight: 700; color: var(--ink); background: var(--soft); padding: 5px 8px; text-align: left; }
@@ -216,7 +218,7 @@
   .rrow.p { background: var(--hit); margin: 0 -14px; padding: 10px 14px 8px; }
   .rrow .ep { font-size: 12.5px; color: var(--sub); font-weight: 600; display: flex; align-items: center; gap: 6px; }
   .rrow .ep i { font-style: normal; font-size: 10px; color: #fff; background: #C99A1E; border-radius: 5px; padding: 1px 6px; }
-  .rrow .v { font-size: 19px; font-weight: 800; text-align: center; margin-top: 2px; line-height: 1.3; }
+  .rrow .v { font-size: 19px; font-weight: 800; text-align: center; margin-top: 2px; line-height: 1.3; overflow-wrap: anywhere; }
   .rrow .v.a { color: var(--acc); }
   .rrow .v.txt { font-size: 13.5px; font-weight: 600; }
   .rrow .hr { font-size: 12.5px; text-align: center; margin-top: 4px; color: var(--ink); }
@@ -469,7 +471,7 @@ function trialHtml(id) {
   const x = TRIALS[id];
   const two = x.arms.length > 1;
   const head = `<div class="rt${two ? '' : ' one'}">${x.arms.map((a, i) => `<div class="hd ${i ? 'b' : 'a'}">${esc(a)}</div>`).join('')}</div>`;
-  const val = (v, cls) => `<div class="v ${cls}${/[ぁ-んァ-ヶ一-龠]/.test(v || '') && !/^[\d.,%約<>≥≤〜–\- ]/.test(v || '') ? ' txt' : ''}">${esc(v || '—')}</div>`;
+  const val = (v, cls) => `<div class="v ${cls}${/[ぁ-んァ-ヶ一-龠]/.test(v || '') && !/^[\d.,%約<>≥≤〜–\- ]/.test(v || '') ? ' txt' : ''}">${v ? cellHtml(v) : '—'}</div>`;
   const resRows = x.res.map(z => `<div class="rrow${z.p ? ' p' : ''}">
       <div class="ep">${esc(z.ep)}${z.p ? '<i>主要評価項目</i>' : ''}</div>
       ${(z.a || z.b) ? `<div class="rt${two ? '' : ' one'}">${val(z.a, 'a')}${two ? val(z.b, 'b') : ''}</div>` : ''}
@@ -502,6 +504,8 @@ function trialHtml(id) {
     <p class="disc">数値は原著（主に主解析）からの抜粋です。${!x.verified ? '' : /抄録/.test(x.verified) ? `原著は未入手で、PubMed の抄録と照合し、別モデル（ChatGPT）による確認を受けています。` : `原著の本文・表と照合し、別モデル（ChatGPT）による確認も受けています（${esc(x.verified)}）。`}詳細・最新の追跡結果は原著で確認してください。</p>`;
 }
 /* 患者背景：bg = { cols: [群の見出し…], rows: [[項目, 値…] | ['§見出し'] | ['・小項目', 値…]], note } または旧形式 [[項目, 値]] */
+// 「55.8%（184/330）」の括弧部分は小さくして、狭い画面では次の行に回す（数字同士が重ならないように）
+const cellHtml = v => esc(v).replace(/（([^（）]*)）/g, '<span class="par">（$1）</span>');
 function bgHtml(x) {
   const b = x.bg;
   if (Array.isArray(b)) return `<table class="bg">${b.map(([k, v]) => `<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join('')}</table>`;
@@ -509,7 +513,7 @@ function bgHtml(x) {
   const rows = b.rows.map(r => {
     if (r.length === 1 && r[0].startsWith('§')) return `<tr class="gh"><td colspan="${n + 1}">${esc(r[0].slice(1))}</td></tr>`;
     const sub = r[0].startsWith('・');
-    return `<tr${sub ? ' class="sub"' : ''}><td>${esc(r[0])}</td>${r.slice(1).map(v => `<td>${esc(v)}</td>`).join('')}</tr>`;
+    return `<tr${sub ? ' class="sub"' : ''}><td>${esc(r[0])}</td>${r.slice(1).map(v => `<td>${cellHtml(v)}</td>`).join('')}</tr>`;
   }).join('');
   return `<table class="bg multi c${n}"><thead><tr><th style="width:${n === 1 ? 55 : n === 3 ? 31 : 44}%"></th>${b.cols.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table>
     ${b.note ? `<p class="bgnote">${esc(b.note)}</p>` : ''}`;
@@ -533,7 +537,7 @@ function renderSheet(s) {
   const key = s.t ? 't:' + s.t : s.r ? 'r:' + s.r + (s.f || '') : '';
   if (!key) { sh.classList.remove('show'); sh.setAttribute('aria-hidden', 'true'); lastSheet = ''; document.body.style.overflow = ''; return; }
   if (key !== lastSheet) {
-    if (s.t) { $('sbody').innerHTML = trialHtml(s.t); showTab(); $('sttl').textContent = s.r ? REGIMENS[s.r].name : '臨床試験'; }
+    if (s.t) { curTab = 'ov'; $('sbody').innerHTML = trialHtml(s.t); showTab(); $('sttl').textContent = s.r ? REGIMENS[s.r].name : '臨床試験'; }
     else { $('sbody').innerHTML = regimenHtml(s); $('sttl').textContent = '治療法'; }
     $('sbody').scrollTop = 0;
     lastSheet = key;
