@@ -242,6 +242,10 @@
   .dt-chips button { all: unset; flex: 1 1 0; min-width: 0; text-align: center; padding: 8px 0; border-radius: 999px; font-size: 15px;
                      background: #F4F0F6; color: var(--ink); cursor: pointer; }
   .dt-chips button.on { background: #5FA889; color: #fff; font-weight: 600; }
+  .qhits { display: flex; flex-wrap: wrap; gap: 6px; }
+  .qhits:empty { display: none; }
+  .qhits button { all: unset; padding: 6px 12px; border-radius: 999px; background: var(--tint); font-size: 14px; cursor: pointer; }
+  .qhits button small { color: var(--sub); font-size: 11px; margin-left: 4px; }
   .dt-hint { font-size: 11px; color: var(--sub); margin-top: 10px; line-height: 1.5; }
 
   /* 使い方 */
@@ -1062,16 +1066,18 @@
         <path d="M47 38v13M41.5 46l5.5 5.5 5.5-5.5" fill="none" stroke="#F2A7B5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
-    <div class="ttl"><b>減量・休薬基準</b><small>リンパ腫・骨髄腫治療薬の血球数による休薬・減量・再開（電子添文）</small></div>
+    <div class="ttl"><b>減量・休薬基準</b><small>リンパ腫・骨髄腫治療薬の血球数による休薬・減量・再開（電子添文・適正使用ガイド）</small></div>
     <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
   </button>
   <div class="body">
     <h3>薬剤・レジメン</h3>
     <div class="grid">
+      <label class="f full">薬剤名で検索 <span class="unit">商品名・一般名・レジメン（ひらがな可）</span><input type="search" id="dm-q" placeholder="例：だら、ベンダ、KRd" autocomplete="off"></label>
+      <div class="full qhits" id="dm-hits"></div>
       <label class="f full">薬剤（商品名・一般名）<select id="dm-drug"></select></label>
       <label class="f full" data-need="reg">レジメン・効能<select id="dm-reg"></select></label>
       <label class="f" data-need="lvl">現在の用量<select id="dm-lvl"></select></label>
-      <label class="f" data-need="occ">今回の発現<select id="dm-occ"><option value="1">1回目</option><option value="2">2回目</option><option value="3">3回目</option><option value="4">4回目以降</option></select></label>
+      <label class="f" data-need="occ">今回の発現<select id="dm-occ"><option value="1">1回目</option><option value="2">2回目</option><option value="3">3回目</option><option value="4">4回目</option><option value="5">5回目以降</option></select></label>
       <label class="f full" data-need="tm">評価するタイミング<select id="dm-tm"><option value="d1">サイクル開始日（1日目）</option><option value="mid">サイクル途中の投与日</option></select></label>
       <label class="f full" data-need="r7">前サイクルの骨髄抑制からの回復<select id="dm-r7"><option value="early">次サイクル予定日から7日目までに回復</option><option value="late">8日目以降に回復</option></select></label>
       <label class="f full" data-need="ph">治療の時期<select id="dm-ph"><option value="br">BR 併用中</option><option value="mt">維持療法（リツキシマブ併用）・単剤</option></select></label>
@@ -1096,9 +1102,18 @@
       <div class="res full" id="r-dm"></div>
       <div class="res full txt" id="r-dmd"></div>
     </div>
+    <div data-need="rs">
+      <h3>休薬後の再開用量（休薬期間による）</h3>
+      <div class="grid">
+        <label class="f full">休薬直前の用量<select id="dm-rprev"></select></label>
+        <label class="f full">休薬期間 <span class="unit">日（最後の投与から）</span><input type="number" inputmode="numeric" id="dm-rdays"></label>
+      </div>
+      <div class="results"><div class="res full txt" id="r-dmrs"></div></div>
+    </div>
     <div id="dm-tbl"></div>
     <p class="note" id="dm-src"></p>
-    <p class="note">各薬剤の電子添文（PMDA 掲載の最新版）の「用法及び用量に関連する注意」に記載された血液毒性の基準をまとめた目安。Grade は CTCAE に準じて、好中球 Grade 3 &lt;1,000・Grade 4 &lt;500、血小板 Grade 3 &lt;50,000・Grade 4 &lt;25,000、Grade 1 以下＝好中球 ≥1,500・血小板 ≥75,000 として判定。非血液毒性（末梢神経障害・皮疹・CRS など）の基準は含まない。併用薬はそれぞれの基準を確認する。適正使用ガイドの詳細な規定（併用療法ごとの手順など）は今後追加予定。</p>
+    <p class="note">各薬剤の電子添文（PMDA 掲載の最新版）の「用法及び用量に関連する注意」に記載された血液毒性の基準をまとめた目安。Grade は CTCAE に準じて、好中球 Grade 3 &lt;1,000・Grade 4 &lt;500、血小板 Grade 3 &lt;50,000・Grade 4 &lt;25,000、Grade 1 以下＝好中球 ≥1,500・血小板 ≥75,000 として判定。非血液毒性（末梢神経障害・皮疹・CRS など）の基準は含まない。併用薬はそれぞれの基準を確認する。<br>
+      「【ガイド】」や出典が適正使用ガイドのレジメンは、ガイドに掲載された臨床試験の規定（電子添文の基準ではない）。適正使用ガイドが PMDA の資材一覧にない薬剤（ジャイパーカ・ブルキンザ・ポテリジオ）は電子添文のみ。</p>
     <button class="reset" type="button">入力をクリア</button>
   </div>
 </section>
@@ -2211,9 +2226,144 @@ const DM = [
     f: () => [], none: true },
 ];
 
+
+/* ---------- 適正使用ガイドの規定（試験の基準）を追加 ---------- */
+const GSRC = {
+  lena: 'レブラミド 適正使用ガイド', poma: 'ポマリスト 適正使用ガイド', btz: 'ベルケイド 適正使用ガイドハンドブック',
+  cfz: 'カイプロリス 適正使用ガイド', ixa: 'ニンラーロ 適正使用ガイド', dara: 'ダラキューロ 適正使用ガイド',
+  isa: 'サークリサ 適正使用ガイド', elo: 'エムプリシティ 適正使用ガイド', tec: 'テクベイリ 適正使用ガイド',
+  elr: 'エルレフィオ 適正使用ガイド', tal: 'タービー 適正使用ガイド', benda: 'トレアキシン 適正使用ガイド',
+  pola: 'ポライビー 適正使用ガイド', bv: 'アドセトリス 適正使用のためのQ&A', ibr: 'イムブルビカ 適正使用ガイド',
+  aca: 'カルケンス 適正使用ガイド', ven: 'ベネクレクスタ 適正使用ガイド', epco: 'エプキンリ 適正使用ガイド',
+  vale: 'エザルミア 適正使用ガイド',
+};
+// 休薬期間で再開時の用量が決まる二重特異性抗体（電子添文の表）。[休薬直前の用量, [[この日数以内, 再開時の用量], ...]]
+const D1 = (a, b) => [[7, b], [1e9, a]];
+const RS = {
+  tecM: [['漸増用量1（0.06 mg/kg）', D1('漸増用量1（0.06 mg/kg）', '漸増用量2（0.3 mg/kg）')],
+         ['漸増用量2（0.3 mg/kg）', [[7, '治療用量（1.5 mg/kg）'], [28, '漸増用量2（0.3 mg/kg）'], [1e9, '漸増用量1（0.06 mg/kg）']]],
+         ['治療用量（1.5 mg/kg）', [[63, '治療用量（1.5 mg/kg）'], [112, '漸増用量2（0.3 mg/kg）'], [1e9, '漸増用量1（0.06 mg/kg）']]]],
+  tecD: [['漸増用量1（0.06 mg/kg）', D1('漸増用量1（0.06 mg/kg）', '漸増用量2（0.3 mg/kg）')],
+         ['漸増用量2（0.3 mg/kg）', [[7, '治療用量1（1.5 mg/kg）'], [28, '漸増用量2（0.3 mg/kg）'], [1e9, '漸増用量1（0.06 mg/kg）']]],
+         ['治療用量1（1.5 mg/kg）', [[63, '治療用量1（1.5 mg/kg）'], [112, '漸増用量2（0.3 mg/kg）'], [1e9, '漸増用量1（0.06 mg/kg）']]],
+         ['治療用量2（3 mg/kg）', [[63, '治療用量2（3 mg/kg）'], [112, '漸増用量2（0.3 mg/kg）'], [1e9, '漸増用量1（0.06 mg/kg）']]]],
+  tecT: [['漸増用量1（0.06 mg/kg）', D1('漸増用量1（0.06 mg/kg）', '漸増用量2（0.3 mg/kg）')],
+         ['漸増用量2（0.3 mg/kg）', [[7, '漸増用量3（1.5 mg/kg）'], [28, '漸増用量2（0.3 mg/kg）'], [1e9, '漸増用量1（0.06 mg/kg）']]],
+         ['漸増用量3（1.5 mg/kg）', [[35, '治療用量（3 mg/kg）'], [56, '漸増用量2（0.3 mg/kg）'], [1e9, '漸増用量1（0.06 mg/kg）']]],
+         ['治療用量（3 mg/kg）', [[42, '治療用量（3 mg/kg）'], [70, '漸増用量2（0.3 mg/kg）'], [1e9, '漸増用量1（0.06 mg/kg）']]]],
+  talA: [['漸増用量1（0.01 mg/kg）', D1('漸増用量1（0.01 mg/kg）', '漸増用量2（0.06 mg/kg）')],
+         ['漸増用量2（0.06 mg/kg）', [[7, '治療用量（0.4 mg/kg）'], [28, '漸増用量2（0.06 mg/kg）'], [1e9, '漸増用量1（0.01 mg/kg）']]],
+         ['治療用量（0.4 mg/kg）', [[35, '治療用量（0.4 mg/kg）'], [56, '漸増用量2（0.06 mg/kg）'], [1e9, '漸増用量1（0.01 mg/kg）']]]],
+  talB: [['漸増用量1（0.01 mg/kg）', D1('漸増用量1（0.01 mg/kg）', '漸増用量2（0.06 mg/kg）')],
+         ['漸増用量2（0.06 mg/kg）', [[7, '漸増用量3（0.4 mg/kg）'], [28, '漸増用量2（0.06 mg/kg）'], [1e9, '漸増用量1（0.01 mg/kg）']]],
+         ['漸増用量3（0.4 mg/kg）', [[7, '治療用量（0.8 mg/kg）'], [35, '漸増用量3（0.4 mg/kg）'], [56, '漸増用量2（0.06 mg/kg）'], [1e9, '漸増用量1（0.01 mg/kg）']]],
+         ['治療用量（0.8 mg/kg）', [[35, '治療用量（0.8 mg/kg）'], [56, '漸増用量3（0.4 mg/kg）'], [1e9, '漸増用量1（0.01 mg/kg）']]]],
+  talT: [['漸増用量1（0.01 mg/kg）', D1('漸増用量1（0.01 mg/kg）', '漸増用量2（0.06 mg/kg）')],
+         ['漸増用量2（0.06 mg/kg）', [[7, '漸増用量3（0.4 mg/kg）'], [28, '漸増用量2（0.06 mg/kg）'], [1e9, '漸増用量1（0.01 mg/kg）']]],
+         ['漸増用量3（0.4 mg/kg）', [[35, '治療用量（0.8 mg/kg）'], [56, '漸増用量2（0.06 mg/kg）'], [1e9, '漸増用量1（0.01 mg/kg）']]],
+         ['治療用量（0.8 mg/kg）', [[42, '治療用量（0.8 mg/kg）'], [70, '漸増用量2（0.06 mg/kg）'], [1e9, '漸増用量1（0.01 mg/kg）']]]],
+  elr: [['12 mg（1日目）', [[14, '32 mg（4日目の用量）'], [1e9, '12 mg（1日目の用量）']]],
+        ['32 mg（4日目）', [[14, '76 mg（8日目の用量）'], [28, '32 mg。忍容性があれば1週間後に 76 mg'], [1e9, '12 mg（1日目の用量）']]],
+        ['76 mg', [[84, '76 mg'], [1e9, '12 mg（1日目の用量）']]]],
+};
+const aug = (d, part, props) => DM.filter(o => o.d === d && (!part || o.r.includes(part)))
+  .forEach(o => Object.assign(o, props, { note: [o.note, props.note].filter(Boolean).join('<br>') }));
+const BSN = '【ガイド】減量は推奨されない。CRS がある間は G-CSF を避ける（試験の規定）。輸血・G-CSF など支持療法は施設の方針で行う。';
+aug('tec', '単剤', { rs: RS.tecM, note: BSN }); aug('tec', 'ダラツムマブ', { rs: RS.tecD, note: BSN }); aug('tec', 'トアルクエタマブ', { rs: RS.tecT, note: BSN });
+{ const t = DM.find(o => o.d === 'tal' && o.r.startsWith('単剤'));          // 単剤は A法・B法で再開の表が違うので分ける
+  t.r = '単剤（A法：0.4 mg/kg 毎週）'; DM.splice(DM.indexOf(t) + 1, 0, { ...t, r: '単剤（B法：0.8 mg/kg 2週ごと）' }); }
+aug('tal', '単剤（A法', { rs: RS.talA, note: BSN }); aug('tal', '単剤（B法', { rs: RS.talB, note: BSN }); aug('tal', 'テクリスタマブ', { rs: RS.talT, note: BSN });
+aug('elr', null, { rs: RS.elr, note: '【ガイド】好中球 <1,000 では G-CSF を検討（C1071003 試験の推奨。ASCO ガイドラインに準拠）。IgG <400 mg/dL では免疫グロブリン補充を検討。' });
+aug('epco', null, { note: '投与間隔が空いた場合（7.4）：0.16 → 0.8 mg が 8日超、0.8 → 48 mg（FL Grade 1–3A は 0.8 → 3 mg が 8日超、3 → 48 mg が 14日超）が 14日超、48 mg の間隔が 6週超なら、1 サイクル目の漸増投与からやり直す。' });
+aug('benda', 'Pola-BR', { note: '【ガイド：GO29365 試験】Day 1 に Grade 3/4 の好中球減少があれば全薬剤を延期（最長 14日）し G-CSF を投与。予定日の 7日目までに好中球 >1,000 なら全量、8日目以降ならベンダムスチンを減量（ポラツズマブは好中球減少で減量しない）。好中球減少の主因が骨髄浸潤なら減量しなくてもよい。' });
+aug('ibr', 'マントル', { note: '【ガイド：試験の規定】血液毒性では、Grade 2 以上の出血がなく好中球 ≥750 又は血小板 >25,000 に回復するまで中断し、1回目は同量、2回目以降は 420 mg で再開（電子添文の基準のほうが厳しい）。' });
+aug('isa', null, { note: '【ガイド】試験では最初の 3 サイクルに G-CSF の予防投与が可能とされていた。Isa-Pd のポマリドミドは「ポマリスト：Isa-Pd」を選択。' });
+aug('cfz', null, { note: 'KRd のレナリドミドは「レブラミド：KRd」、DKd のダラツムマブは「ダラキューロ：その他の MM レジメン」を選択。' });
+aug('pola', null, { note: '【ガイド】Pola-BR のベンダムスチンの扱いは「トレアキシン：Pola-BR」を参照。' });
+
+DM.push(
+  { d: 'lena', g: '骨髄腫', r: 'KRd（カルフィルゾミブ併用：ASPIRE 試験）', src: 'cfz', guide: true, sec: '2.3（表5-1〜5-3）', L: ['25 mg', '15 mg', '10 mg', '5 mg'], need: ['lvl', 'occ'],
+    t: [['血小板 <30,000（1回目）', '休薬（抗血栓薬の予防投与も中断）→ 30,000 以上で 1 段階減量'], ['血小板 <30,000（2回目以降）', '休薬 → 30,000 以上で 2 段階減量'],
+        ['好中球 <750（1回目）', '休薬・G-CSF → 750 以上で同量'], ['好中球 <750（2回目以降）', '休薬・G-CSF → 750 以上で 1 段階減量'], ['用量段階', '25 → 15 → 10 → 5 mg']],
+    note: '骨髄の骨髄腫細胞が 50% を超える患者では、血小板の基準を 20,000 未満としてもよい。',
+    f: x => [lt(x.plt, 30000) && H('休薬', pltT(x) + '（<30,000）', '血小板 30,000/μL 以上（抗血栓薬の予防投与も中断）', x.occ === 1 ? dn(x) : dn(x, 2)),
+             lt(x.anc, 750) && H('休薬', ancT(x) + '（<750）', '好中球 750/μL 以上（G-CSF を投与）', x.occ === 1 ? `同量（${x.L[x.lvl]}）` : dn(x))] },
+  { d: 'ixa', g: '骨髄腫', r: 'IRd：レナリドミドとの交互減量（C16010 試験）', guide: true, sec: '別添3', L: ['4 mg', '3 mg', '2.3 mg'], need: ['lvl', 'occ'],
+    t: [['血小板 <30,000、又は好中球 <500', '両剤とも休薬（週1回血液検査。好中球減少の 1回目は G-CSF を追加）→ 同一サイクル内で 30,000 以上／500 以上に回復したら再開'],
+        ['再開時の用量（発現回数）', '1・3・5回目：レナリドミドを 1 段階減量（25 → 15 → 10 → 5 mg）、本剤は同量。2・4回目：本剤を 1 段階減量（4 → 3 → 2.3 mg）、レナリドミドは同量']],
+    note: '電子添文（7.6）は本剤の 1回目同量・2回目以降 1 段階減量のみ。ガイドの試験規定はレナリドミドと交互に減量する。',
+    f: x => { if (!(lt(x.plt, 30000) || lt(x.anc, 500))) return [];
+      const odd = x.occ % 2 === 1;
+      return [H('休薬', [lt(x.plt, 30000) && pltT(x) + '（<30,000）', lt(x.anc, 500) && ancT(x) + '（<500）'].filter(Boolean).join('・') + '：本剤とレナリドミドを休薬',
+        `${lt(x.plt, 30000) ? '血小板 30,000/μL 以上' : ''}${lt(x.plt, 30000) && lt(x.anc, 500) ? '・' : ''}${lt(x.anc, 500) ? '好中球 500/μL 以上' + (x.occ === 1 ? '（G-CSF を追加）' : '') : ''}`,
+        odd ? `本剤は同量（${x.L[x.lvl]}）、レナリドミドを 1 段階減量` : `本剤を ${dn(x)}、レナリドミドは同量`)]; } },
+  { d: 'poma', g: '骨髄腫', r: 'Isa-Pd（ICARIA-MM 試験）', src: 'isa', guide: true, sec: '付録（臨床試験時の処置）', L: ['4 mg', '3 mg', '2 mg', '1 mg'], need: ['lvl', 'occ', 'tm', 'fn', 'inf'],
+    t: [['好中球 500〜999（Grade 3）', 'Day 1：1,000 以上まで延期し同量。サイクル内：規定どおり継続'],
+        ['好中球 <500（Grade 4）', 'Day 1：1,000 以上まで延期 → 1回目は同量、2回目以降は 1 段階減量又は G-CSF で同量。サイクル内：500 以上まで休薬 → 1 段階減量して Day 21 まで継続（2回目は第2用量レベル、3回目は中止）'],
+        ['発熱性好中球減少症・好中球減少性感染', '全薬剤を休薬し、解熱・感染回復かつ 1,000 以上まで G-CSF → 1回目：G-CSF 併用で同量又は 1 段階減量、2回目：1回目で選ばなかった方、3回目：1 段階減量、4回目：中止'],
+        ['血小板減少', 'ポマリスト電子添文の基準（<25,000 で休薬、50,000 以上で 1 mg 減量）'], ['延期の上限', 'サイクル間で最大 14日。イサツキシマブ・デキサメタゾンは減量しない']],
+    f: x => { const h = [];
+      if (x.fn || (x.inf && lt(x.anc, 1000))) h.push(H(x.occ >= 4 ? '中止' : x.tm === 'd1' ? '延期' : '休薬', x.fn ? '発熱性好中球減少症' : '好中球減少性感染', '解熱・感染の回復かつ好中球 1,000/μL 以上（G-CSF を投与）',
+        ['G-CSF 併用で同量、又は 1 段階減量（' + dn(x) + '）', '1回目で選ばなかった方（G-CSF 併用で同量／1 段階減量）', dn(x), '投与中止'][Math.min(x.occ, 4) - 1]));
+      else if (lt(x.anc, 500)) h.push(x.tm === 'd1'
+        ? H('延期', ancT(x) + '（Grade 4）', '好中球 1,000/μL 以上', x.occ === 1 ? `同量（${x.L[x.lvl]}）` : `${dn(x)}、又は G-CSF 併用で同量`)
+        : H(x.occ >= 3 ? '中止' : '休薬', ancT(x) + '（Grade 4・サイクル内）', '好中球 500/μL 以上 → Day 21 まで継続', x.occ >= 3 ? '投与中止' : x.occ === 2 ? dn(x, 2) + '（第2用量レベル）' : `${dn(x)}（次サイクルも同量、又は G-CSF 併用で元の用量）`));
+      else if (lt(x.anc, 1000) && x.tm === 'd1') h.push(H('延期', ancT(x) + '（Grade 3）', '好中球 1,000/μL 以上', `同量（${x.L[x.lvl]}）`));
+      if (lt(x.plt, 25000)) h.push(H(x.lvl === 3 ? '中止' : '休薬', pltT(x) + '（<25,000：電子添文）', '血小板 50,000/μL 以上', dn(x)));
+      return h; } },
+  { d: 'btz', g: '骨髄腫', r: 'VMP（メルファラン・プレドニゾロン併用）', guide: true, sec: '表6（海外添付文書）', L: ['1.3 mg/m²', '1.0 mg/m²', '0.7 mg/m²'], need: ['lvl', 'tm'],
+    ex: [['prev', '前サイクルで持続する Grade 4 の好中球・血小板減少、又は出血を伴う血小板減少があった'], ['skip', '本剤の投与見送りが週2回投与で3回以上（週1回投与で2回以上）あった']],
+    t: [['2サイクル目以降の開始', '血小板 ≥70,000、好中球 ≥1,000、非血液毒性 Grade 1 以下'],
+        ['Day 1 以外の投与日に血小板 ≤30,000 又は好中球 ≤750', '本剤の投与を延期'],
+        ['前サイクルで持続する Grade 4 の血球減少・出血を伴う血小板減少', '次サイクルでメルファランの 25% 減量を考慮'],
+        ['本剤の投与見送り（週2回で3回以上／週1回で2回以上）', '本剤を 1 段階減量（1.3 → 1.0 → 0.7 mg/m²）']],
+    f: x => [x.tm === 'd1' && (lt(x.plt, 70000) || lt(x.anc, 1000)) && H('延期', '次サイクル開始基準（血小板 ≥70,000・好中球 ≥1,000）を満たさない', '血小板 70,000/μL 以上かつ好中球 1,000/μL 以上', x.skip ? dn(x) : `同量（${x.L[x.lvl]}）`),
+             x.tm !== 'd1' && (lt(x.plt, 30001) || lt(x.anc, 751)) && H('延期', [lt(x.plt, 30001) && pltT(x) + '（≤30,000）', lt(x.anc, 751) && ancT(x) + '（≤750）'].filter(Boolean).join('・'), '回復を確認して次の投与', `同量（${x.L[x.lvl]}）`),
+             x.prev && H('減量して継続', '前サイクルで持続する Grade 4 の血球減少・出血を伴う血小板減少', '—', '次サイクルでメルファランを 25% 減量（本剤は同量）'),
+             x.skip && !(x.tm === 'd1' && (lt(x.plt, 70000) || lt(x.anc, 1000))) && H('減量して継続', '本剤の投与見送りが基準回数以上', '—', `本剤 ${dn(x)}`)] },
+  { d: 'dara', g: '骨髄腫', r: '高リスクくすぶり型 MM（単剤）', guide: true, sec: 'SMM3001 試験の基準', need: ['fn', 'inf'],
+    t: [['Grade 4 の血液毒性（リンパ球減少を除く）、Grade 3 の血小板減少（<50,000）、発熱性好中球減少症、感染を伴う好中球減少', 'Grade 2 以下（好中球 ≥1,000・血小板 ≥50,000）に回復するまで休薬。減量しない']],
+    f: x => [(lt(x.anc, 500) || lt(x.plt, 50000) || x.fn || (x.inf && lt(x.anc, 1500))) && H('休薬',
+      [lt(x.anc, 500) && ancT(x) + '（Grade 4）', lt(x.plt, 50000) && pltT(x) + '（Grade 3 以上）', x.fn && '発熱性好中球減少症', x.inf && lt(x.anc, 1500) && '感染を伴う好中球減少'].filter(Boolean).join('・'),
+      'Grade 2 以下（好中球 ≥1,000・血小板 ≥50,000）', '減量なし')] },
+  { d: 'dara', g: '骨髄腫', r: '全身性 AL アミロイドーシス（D-VCd）', guide: true, sec: 'AMY3001 試験の基準', need: ['fn', 'inf', 'bleed'],
+    t: [['Grade 4 の貧血・好中球減少（<500）・血小板減少（<25,000）、出血を伴う Grade 3 の血小板減少、発熱性好中球減少症、感染を伴う好中球減少', '休薬 → 毒性が Grade 2 以下（血球減少は Grade 3 以下：好中球 ≥500・血小板 ≥25,000）で再開。減量しない']],
+    f: x => [(lt(x.anc, 500) || lt(x.plt, 25000) || (lt(x.plt, 50000) && x.bleed) || x.fn || (x.inf && lt(x.anc, 1500))) && H('休薬',
+      [lt(x.anc, 500) && ancT(x) + '（Grade 4）', lt(x.plt, 25000) && pltT(x) + '（Grade 4）', lt(x.plt, 50000) && x.bleed && '出血を伴う血小板減少', x.fn && '発熱性好中球減少症', x.inf && lt(x.anc, 1500) && '感染を伴う好中球減少'].filter(Boolean).join('・'),
+      x.fn || x.inf || (x.bleed && lt(x.plt, 50000)) ? 'Grade 2 以下（好中球 ≥1,000・血小板 ≥50,000）' : '血球減少が Grade 3 以下（好中球 ≥500・血小板 ≥25,000）', '減量なし')] },
+  { d: 'aca', g: 'リンパ腫', r: '未治療 CLL：ベネトクラクス併用（AV：AMPLIFY 試験）', guide: true, sec: '1. 適正使用のお願い（AMPLIFY 試験の基準）', need: ['occ', 'bleed', 'dN'],
+    t: [['Grade 3/4 の好中球減少（<1,000）、又は 7日を超える Grade 4', '休薬（G-CSF は医師の裁量）→ Grade 1 以下又はベースラインで再開。1回目：両剤とも前回用量。2回目：本剤は前回用量、ベネトクラクスは 1 段階減量。3回目以降：個別に判断'],
+        ['Grade 3/4 の血小板減少（<50,000）・出血', '休薬（輸血は医師の裁量）→ 輸血なしで 5日連続 Grade 1 以下又はベースラインなら前回用量で再開。2回目：出血消失・回復後、本剤は前回用量、ベネトクラクスは 1 段階減量。3回目以降：両剤とも 1 段階減量']],
+    f: x => [lt(x.anc, 1000) && H('休薬', ancT(x) + '（Grade 3/4）', 'Grade 1 以下（好中球 ≥1,500）又はベースライン', ['両剤とも前回用量', 'アカラブルチニブは前回用量、ベネトクラクスは 1 段階減量', '個別に判断（試験ではメディカルモニターに相談）'][Math.min(x.occ, 3) - 1]),
+             (lt(x.plt, 50000) || x.bleed) && H('休薬', lt(x.plt, 50000) ? pltT(x) + '（Grade 3/4）' + (x.bleed ? '・出血あり' : '') : '出血', '輸血なしで 5日連続 Grade 1 以下（血小板 ≥75,000）又はベースライン（2回目以降は出血の消失も）',
+               ['両剤とも前回用量', 'アカラブルチニブは前回用量、ベネトクラクスは 1 段階減量', '両剤とも 1 段階減量'][Math.min(x.occ, 3) - 1])] },
+);
+// ダラツムマブ：「その他」を試験の基準（ガイド）で置き換える
+Object.assign(DM.find(o => o.d === 'dara' && o.r.startsWith('その他')), {
+  r: 'その他の MM レジメン（DRd・DVd・DKd・DPd・DVMP など）', guide: true, sec: '臨床試験時の休薬の基準（MMY3012・MMY3013・MMY3014 など）', need: ['fn', 'inf', 'bleed'], none: false,
+  t: [['Grade 4 の血液毒性（リンパ球減少を除く）、出血を伴う Grade 3 の血小板減少（MMY3013 は Grade 3 以上）、発熱性好中球減少症、感染を伴う好中球減少', 'Grade 2 以下（好中球 ≥1,000・血小板 ≥50,000）又はベースラインに回復するまで休薬。減量しない'],
+      ['休薬で投与日を飛ばす目安（CANDOR 試験）', '週1回の時期は 4日以上、2週ごとの時期は 8日以上、4週ごとの時期は 15日以上遅れる場合、その回は飛ばして次の予定日に投与']],
+  note: '電子添文には D-VRd とテクリスタマブ併用以外の血球数の規定はない。併用薬はそれぞれの基準で減量する。',
+  f: x => [(lt(x.anc, 500) || lt(x.plt, 25000) || (lt(x.plt, 50000) && x.bleed) || x.fn || (x.inf && lt(x.anc, 1500))) && H('休薬',
+    [lt(x.anc, 500) && ancT(x) + '（Grade 4）', lt(x.plt, 25000) && pltT(x) + '（Grade 4）', lt(x.plt, 50000) && x.bleed && '出血を伴う血小板減少', x.fn && '発熱性好中球減少症', x.inf && lt(x.anc, 1500) && '感染を伴う好中球減少'].filter(Boolean).join('・'),
+    'Grade 2 以下（好中球 ≥1,000・血小板 ≥50,000）又はベースライン', '減量なし（遅れが大きい回は飛ばして次の予定日へ）')] });
+
 // 薬剤の選択肢（骨髄腫／リンパ腫で分け、商品名（一般名）で表示）
 $('dm-drug').innerHTML = '<option value="">薬剤を選択</option>' + Object.entries(DMG).map(([g, ds]) =>
   `<optgroup label="${g}">${ds.map(d => `<option value="${g}:${d}">${DMN[d]}</option>`).join('')}</optgroup>`).join('');
+// 薬剤名の検索（ひらがなはカタカナに直して照合。レジメン名でも探せる）
+const kata = t => t.replace(/[ぁ-ゖ]/g, c => String.fromCharCode(c.charCodeAt(0) + 0x60)).replace(/[\s・（）()]/g, '').toLowerCase();
+$('dm-q').addEventListener('input', () => {
+  const q = kata($('dm-q').value);
+  const hits = q ? Object.entries(DMG).flatMap(([g, ds]) => ds.map(d => [g, d]))
+    .filter(([g, d]) => kata(DMN[d]).includes(q) || DM.some(o => o.d === d && o.g === g && kata(o.r).includes(q)))
+    .sort((a, b) => kata(DMN[b[1]]).includes(q) - kata(DMN[a[1]]).includes(q)) : [];   // 薬剤名で一致したものを先に
+  $('dm-hits').innerHTML = hits.map(([g, d]) => `<button type="button" data-v="${g}:${d}">${DMN[d]}<small>${g}</small></button>`).join('') || (q ? '<span class="unit">該当なし</span>' : '');
+});
+$('dm-hits').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  $('dm-drug').value = b.dataset.v; $('dm-q').value = ''; $('dm-hits').innerHTML = ''; calcAll();
+});
 function calcDM() {
   const [g, d] = ($('dm-drug').value || ':').split(':');
   const regs = DM.filter(o => o.d === d && o.g === g);
@@ -2224,11 +2374,13 @@ function calcDM() {
   const o = regs[+rs.value] || regs[0];
   const show = k => document.querySelectorAll(`#dm [data-need="${k}"]`).forEach(el => { el.style.display = o && (k === 'reg' ? regs.length > 1 : (o.need || []).includes(k)) ? '' : 'none'; });
   ['reg', 'lvl', 'occ', 'tm', 'r7', 'ph', 'hb', 'dN', 'dP', 'nadir', 'fn', 'inf', 'bleed'].forEach(show);
+  document.querySelectorAll('#dm [data-need="rs"]').forEach(el => { el.style.display = o && o.rs ? '' : 'none'; });
   if (!o) { box('r-dm', '判定', null, '薬剤を選択'); box('r-dmd', '詳細', null, ''); $('dm-tbl').innerHTML = ''; $('dm-src').textContent = ''; $('dm-ex').innerHTML = ''; return; }
   const ls = $('dm-lvl'), key = g + d + o.r;
   if (ls.dataset.k !== key) {                                      // レジメンが変わったら用量段階と追加項目を作り直す
     ls.dataset.k = key; ls.innerHTML = (o.L || []).map((v, i) => `<option value="${i}"${i === (o.l0 || 0) ? ' selected' : ''}>${v}</option>`).join('');
     $('dm-occ').value = '1';                                       // 発現回数は薬剤ごとに数え直す
+    $('dm-rprev').innerHTML = (o.rs || []).map(([p], i) => `<option value="${i}">${p}</option>`).join('');
     $('dm-ex').innerHTML = (o.ex || []).map(([id, lab]) => `<label class="chk"><input type="checkbox" id="dm-x-${id}"><span>${lab}</span></label>`).join('');
   }
   const x = { anc: num('dm-anc'), plt: num('dm-plt'), hb: num('dm-hb'), fn: chk('dm-fn'), inf: chk('dm-inf'), bleed: chk('dm-bleed'),
@@ -2236,7 +2388,14 @@ function calcDM() {
     tm: $('dm-tm').value, r7: $('dm-r7').value, ph: $('dm-ph').value };
   (o.ex || []).forEach(([id]) => { x[id] = chk('dm-x-' + id); });
   $('dm-tbl').innerHTML = `<table class="tier"><tr><th>条件</th><th>処置</th></tr>${o.t.map(([a, b]) => `<tr><td style="white-space:normal;width:42%">${a}</td><td>${b}</td></tr>`).join('')}</table>`;
-  $('dm-src').innerHTML = `出典：${SRC[o.src || o.d]} ${o.sec}${o.note ? '<br>' + o.note : ''}`;
+  $('dm-src').innerHTML = (o.guide ? `出典：${GSRC[o.src || o.d]} ${o.sec}（ガイドに掲載された臨床試験の規定）`
+      : `出典：${SRC[o.src || o.d]} ${o.sec}${GSRC[o.d] ? `／${GSRC[o.d]}も確認済み` : ''}`) + (o.note ? '<br>' + o.note : '');
+  if (o.rs) {                                                      // 休薬期間による再開用量
+    const [pv, rows] = o.rs[+$('dm-rprev').value] || o.rs[0], days = num('dm-rdays');
+    if (days === null) box('r-dmrs', '再開時の用量', null, '休薬期間（日）を入力');
+    else { const r = rows.find(([lim]) => days <= lim)[1], step = /漸増|1日目/.test(r);
+      box('r-dmrs', `休薬直前 ${pv}・休薬 ${days}日`, r, (step ? '漸増用量から再開：投与開始1〜3時間前に前投与（副腎皮質ホルモン・抗ヒスタミン薬・解熱鎮痛薬）を行い、以降は用法・用量のスケジュールに従う' : '同じ用量で再開') + `<br>${SRC[o.d]} 7.4・7.5 など（休薬後に再開する場合の用量）`, 'txt'); }
+  }
   if (o.none) { box('r-dm', DMN[d], '規定なし', '血球数による休薬・減量の規定は電子添文にない'); box('r-dmd', '詳細', '—', o.t[0][1]); return; }
   if (x.anc === null && x.plt === null && x.hb === null && x.nanc === null && x.nplt === null) { box('r-dm', DMN[d], null, '好中球・血小板を入力'); box('r-dmd', '詳細', null, ''); return; }
   const hits = o.f(x).filter(Boolean);
