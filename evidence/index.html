@@ -27,6 +27,7 @@
   }
   body[data-dz="dlbcl"] { --acc: #6C63C7; --tint: #ECEAFB; }
   body[data-dz="fl"]    { --acc: #4E9A63; --tint: #E3F3E6; }
+  body[data-dz="mm"]    { --acc: #2F7FA8; --tint: #E2F0F7; }
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html { -webkit-text-size-adjust: 100%; }
@@ -343,7 +344,7 @@ function renderMain(s) {
 
   const used = [];
   const srcHtml = key => {
-    const src = SOURCES[key], sits = set[key] || [];
+    const src = { ...SOURCES[key], ...(d.src?.[key] || {}) }, sits = set[key] || [];
     return `<section class="src ${key}" id="src-${key}">
       ${key === 'jp' ? '' : `<div class="src-h"><span class="bdg">${src.short}</span><div><b>${esc(src.name)}</b><small>${esc(src.ver)}</small>${src.checked ? `<span class="vf ok">原典と照合済 ${esc(src.checked)}</span>` : '<span class="vf ng">原典未照合</span>'}</div></div>`}
       ${sits.map((sit, si) => `<div class="sit${sit.off ? ' off' : ''}"><h3>${esc(sit.sit)}</h3>${sit.gn ? `<div class="gn">${esc(sit.gn)}</div>` : ''}${sit.opts.map((o, oi) => {
@@ -568,7 +569,7 @@ $('helpbtn').addEventListener('click', () => {
     <div class="big">使い方</div>
     <h4>探し方</h4>
     <ul>
-      <li>上で<b>疾患</b>（DLBCL・FL）と<b>場面</b>（初発・再発・難治）を選ぶと、まず<b>国内で使えるレジメン</b>の一覧が状況別に出ます。国内未承認・適応外の治療は一番下に点線の枠で参考として載せています。</li>
+      <li>上で<b>疾患</b>（DLBCL・FL・多発性骨髄腫）と<b>場面</b>（初発・再発・難治）を選ぶと、まず<b>国内で使えるレジメン</b>の一覧が状況別に出ます。国内未承認・適応外の治療は一番下に点線の枠で参考として載せています。</li>
       <li>「<b>ガイドライン</b>」に切り替えると、造血器腫瘍診療ガイドライン（JSH）と NCCN ガイドラインの推奨を状況別に見られます。</li>
       <li>色の付いた治療名をタップすると、<b>国内の承認状況</b>・<b>投与法の代表例</b>・<b>根拠となる臨床試験</b>が出ます。</li>
       <li>試験をタップすると、<b>概要・患者背景・結果・有害事象・ポイント</b>をタブで切り替えて見られます。主要評価項目は黄色で示します。</li>
