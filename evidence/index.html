@@ -502,7 +502,7 @@ function trialHtml(id) {
     <div class="pane" data-pane="ae"><div class="box">${aeRows ? head + aeRows : '<div class="empty">記載なし</div>'}</div></div>
     <div class="pane" data-pane="pt"><div class="box"><ul>${(x.points || []).map(p => `<li>${esc(p)}</li>`).join('')}</ul></div>
       ${(x.updates || []).length ? `<div class="sec">長期追跡・更新解析</div>${x.updates.map(u => `<div class="upd">${esc(u)}</div>`).join('')}` : ''}</div>
-    <p class="disc">数値は原著（主に主解析）からの抜粋です。${!x.verified ? '' : /抄録/.test(x.verified) ? `原著は未入手で、PubMed の抄録と照合し、別モデル（ChatGPT）による確認を受けています。` : `原著の本文・表と照合し、別モデル（ChatGPT）による確認も受けています（${esc(x.verified)}）。`}詳細・最新の追跡結果は原著で確認してください。</p>`;
+    <p class="disc">数値は原著（主に主解析）からの抜粋です。${!x.verified ? '' : /抄録/.test(x.verified) ? `原著は未入手で、PubMed の抄録と照合し、別モデル（OpenAI の GPT）による確認を受けています。` : `原著の本文・表と照合し、別モデル（OpenAI の GPT）による確認も受けています（${esc(x.verified)}）。`}詳細・最新の追跡結果は原著で確認してください。</p>`;
 }
 /* 患者背景：bg = { cols: [群の見出し…], rows: [[項目, 値…] | ['§見出し'] | ['・小項目', 値…]], note } または旧形式 [[項目, 値]] */
 // 「55.8%（184/330）」の括弧部分は小さくして、狭い画面では次の行に回す（数字同士が重ならないように）
@@ -578,7 +578,7 @@ $('helpbtn').addEventListener('click', () => {
     <ul>
       <li>端末の「戻る」操作で前の画面に戻れます。画面の URL をブックマーク・共有すると、その画面を直接開けます。</li>
       <li>一度開いたあとは圏外でも使えます。最後に見ていた疾患・場面を覚えています。</li>
-      <li>試験の画面の「PubMed」から原著を開けます。「原著照合済」は原著の本文・表と照合し、ChatGPT による確認も受けた試験、「抄録で照合」は原著が未入手で抄録だけと照合した試験、「原著未照合」はまだ照合していない試験です。AI/LLM での使用が禁止されている文献（NCCN ガイドラインなど）については、アプリ開発者による照合を実施しています。</li>
+      <li>試験の画面の「PubMed」から原著を開けます。「原著照合済」は原著の本文・表と照合し、別モデル（OpenAI の GPT）による確認も受けた試験、「抄録で照合」は原著が未入手で抄録だけと照合した試験、「原著未照合」はまだ照合していない試験です。AI/LLM での使用が禁止されている文献（NCCN ガイドラインなど）については、アプリ開発者による照合を実施しています。</li>
     </ul>
     <h4>注意</h4>
     <ul>
