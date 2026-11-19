@@ -94,6 +94,7 @@
   .src-h .bdg { flex: none; font-size: 11px; font-weight: 700; color: #fff; padding: 3px 8px; border-radius: 7px; letter-spacing: .04em; }
   .src-h b { display: block; font-size: 16px; line-height: 1.3; }
   .src-h small { display: block; font-size: 11.5px; color: var(--sub); }
+  .src-h .vf { margin: 3px 0 0; }
   .src.jsh .bdg { background: var(--jsh); }
   .src.nccn .bdg { background: var(--nccn); }
 
@@ -344,7 +345,7 @@ function renderMain(s) {
   const srcHtml = key => {
     const src = SOURCES[key], sits = set[key] || [];
     return `<section class="src ${key}" id="src-${key}">
-      ${key === 'jp' ? '' : `<div class="src-h"><span class="bdg">${src.short}</span><div><b>${esc(src.name)}</b><small>${esc(src.ver)}</small></div></div>`}
+      ${key === 'jp' ? '' : `<div class="src-h"><span class="bdg">${src.short}</span><div><b>${esc(src.name)}</b><small>${esc(src.ver)}</small>${src.checked ? `<span class="vf ok">原典と照合済 ${esc(src.checked)}</span>` : '<span class="vf ng">原典未照合</span>'}</div></div>`}
       ${sits.map((sit, si) => `<div class="sit${sit.off ? ' off' : ''}"><h3>${esc(sit.sit)}</h3>${sit.gn ? `<div class="gn">${esc(sit.gn)}</div>` : ''}${sit.opts.map((o, oi) => {
         const inner = `<div class="tx"><div class="lb">${esc(o.label)}</div>${o.note ? `<div class="nt">${esc(o.note)}</div>` : ''}`;
         if (!o.reg || !REGIMENS[o.reg]) return `<div class="opt">${inner}</div></div>`;
@@ -577,7 +578,7 @@ $('helpbtn').addEventListener('click', () => {
     <ul>
       <li>端末の「戻る」操作で前の画面に戻れます。画面の URL をブックマーク・共有すると、その画面を直接開けます。</li>
       <li>一度開いたあとは圏外でも使えます。最後に見ていた疾患・場面を覚えています。</li>
-      <li>試験の画面の「PubMed」から原著を開けます。「原著照合済」は原著の本文・表と照合し、ChatGPT による確認も受けた試験、「抄録で照合」は原著が未入手で抄録だけと照合した試験、「原著未照合」はまだ照合していない試験です。</li>
+      <li>試験の画面の「PubMed」から原著を開けます。「原著照合済」は原著の本文・表と照合し、ChatGPT による確認も受けた試験、「抄録で照合」は原著が未入手で抄録だけと照合した試験、「原著未照合」はまだ照合していない試験です。AI/LLM での使用が禁止されている文献（NCCN ガイドラインなど）については、アプリ開発者による照合を実施しています。</li>
     </ul>
     <h4>注意</h4>
     <ul>
