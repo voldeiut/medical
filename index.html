@@ -266,18 +266,29 @@
   #viewbtn .v-list { display: none; }
   body.tiles #viewbtn .v-grid { display: none; }
   body.tiles #viewbtn .v-list { display: block; }
-  body.tiles:not(.focus):not(.sorting) main { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; padding-top: 12px; }
-  @media (max-width: 340px) { body.tiles:not(.focus):not(.sorting) main { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-  body.tiles:not(.focus):not(.sorting) .card { margin: 0; border-radius: 18px; }
-  body.tiles:not(.focus):not(.sorting) .card > button.head { flex-direction: column; gap: 6px; padding: 10px 4px 9px; text-align: center; }
-  body.tiles:not(.focus):not(.sorting) .card .ico { width: 56px; height: 56px; border-radius: 16px; }
-  body.tiles:not(.focus):not(.sorting) .card .ico svg { width: 44px; height: 44px; }
-  body.tiles:not(.focus):not(.sorting) .card .ttl b { font-size: 10.5px; line-height: 1.3; font-weight: 600; word-break: keep-all; overflow-wrap: anywhere; }
-  body.tiles:not(.focus):not(.sorting) .card > button.head { padding-left: 2px; padding-right: 2px; }
-  body.tiles:not(.focus):not(.sorting) .card .ttl small,
-  body.tiles:not(.focus):not(.sorting) .card .chev,
-  body.tiles:not(.focus):not(.sorting) .card .body { display: none; }
+  body.tiles:not(.focus) main { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; padding-top: 12px; }
+  @media (max-width: 340px) { body.tiles:not(.focus) main { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  body.tiles:not(.focus) .card { margin: 0; border-radius: 18px; }
+  body.tiles:not(.focus) .card > button.head { flex-direction: column; gap: 6px; padding: 10px 4px 9px; text-align: center; }
+  body.tiles:not(.focus) .card .ico { width: 56px; height: 56px; border-radius: 16px; }
+  body.tiles:not(.focus) .card .ico svg { width: 44px; height: 44px; }
+  body.tiles:not(.focus) .card .ttl b { font-size: 10.5px; line-height: 1.3; font-weight: 600; word-break: keep-all; overflow-wrap: anywhere; }
+  body.tiles:not(.focus) .card > button.head { padding-left: 2px; padding-right: 2px; }
+  body.tiles:not(.focus) .card .ttl small,
+  body.tiles:not(.focus) .card .chev,
+  body.tiles:not(.focus) .card .body { display: none; }
   body.tiles.focus .card:not(.focused) { display: none; }
+  /* 並べ替え・ドラッグ */
+  body.tiles.sorting .mv { display: none; }
+  body.tiles.sorting .card > button.head { padding-right: 2px; }
+  body.tiles.sorting .card:not(.dragging) { animation: wiggle .28s ease-in-out infinite alternate; }
+  body.tiles.sorting .card:nth-child(2n):not(.dragging) { animation-delay: -.14s; }
+  @keyframes wiggle { from { transform: rotate(-1.2deg); } to { transform: rotate(1.2deg); } }
+  .card > button.head { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+  .card.dragging { z-index: 30; box-shadow: 0 12px 30px rgba(74, 68, 88, .28); opacity: .96; transition: none; }
+  body.dragging, body.dragging * { -webkit-user-select: none; user-select: none; cursor: grabbing; }
+  #sorthint { display: none; margin: 4px 20px 0; font-size: 12px; color: var(--sub); }
+  body.sorting #sorthint { display: block; }
   .backbar { all: unset; display: none; margin: 6px 14px 0; padding: 9px 16px; border-radius: 999px; background: #fff; font-size: 14px; color: var(--ink);
              box-shadow: 0 1px 6px rgba(120, 100, 140, .12); cursor: pointer; }
   body.tiles.focus .backbar { display: inline-block; }
@@ -329,6 +340,7 @@
     </div>
   </div>
   <p class="cur" id="curcase"></p>
+  <p id="sorthint">長押しして、そのままドラッグで移動できます（リスト表示では ▲▼ でも移動可）</p>
   <button class="reset" id="sortreset" type="button">初期の並び順に戻す</button>
 </header>
 <button type="button" class="backbar" id="backbtn">← 一覧に戻る</button>
@@ -1183,13 +1195,16 @@
             <option value="elr">エルレフィオ（エルラナタマブ）</option><option value="epco">エプキンリ（エプコリタマブ）</option>
             <option value="lun">ルンスミオ（モスネツズマブ）</option>
           </optgroup>
-          <optgroup label="CAR-T 細胞療法（一般的な目安を表示）">
+          <optgroup label="CAR-T 細胞療法（適正使用ガイドに準拠）">
             <option value="kym">キムリア（チサゲンレクルユーセル）</option><option value="yes">イエスカルタ（アキシカブタゲン シロルユーセル）</option>
             <option value="bre">ブレヤンジ（リソカブタゲン マラルユーセル）</option><option value="abe">アベクマ（イデカブタゲン ビクルユーセル）</option>
             <option value="car">カービクティ（シルタカブタゲン オートルユーセル）</option>
           </optgroup>
         </select>
       </label>
+    </div>
+    <div class="checks sub" id="ct-h72w">
+      <label class="chk"><input type="checkbox" id="ct-h72"><span>本品投与後72時間未満</span></label>
     </div>
     <div class="checks sub" id="ct-recurw">
       <label class="chk"><input type="checkbox" id="ct-recur"><span>同じ Grade 3 の再発（2回目）</span></label>
@@ -1361,12 +1376,12 @@
 
     <h4>表示の切り替え</h4>
     <ul>
-      <li>「並べ替え」の左のタイルのボタンで、カードをアイコンだけの一覧（1行に4個）に切り替えます。アイコンをタップするとそのカードだけが開き、「← 一覧に戻る」かカードの見出しで一覧に戻ります。もう一度押すと元のリスト表示に戻ります。選んだ表示はこの端末に保存されます。</li>
+      <li>「並べ替え」の左のタイルのボタンで、カードをアイコンだけの一覧（1行に4個）に切り替えます。アイコンをタップするとそのカードだけが開き、「← 一覧に戻る」かカードの見出しで一覧に戻ります。もう一度押すと元のリスト表示に戻ります。アプリを開いたときはアイコン表示から始まります。</li>
     </ul>
 
     <h4>並べ替え</h4>
     <ul>
-      <li>「並べ替え」を押すと各カードに ▲▼ が出ます。順番はこの端末に保存されます。「完了」で終了、「初期の並び順に戻す」で元に戻ります。</li>
+      <li>カード（アイコン）を長押しすると持ち上がるので、そのままドラッグして好きな位置で離します。「並べ替え」を押すとアイコンが揺れ、短い長押しで動かせます（リスト表示では ▲▼ でも移動可）。順番はこの端末に保存されます。「完了」で終了、「初期の並び順に戻す」で元に戻ります。</li>
     </ul>
 
     <h4>カードごとのポイント</h4>
@@ -2544,7 +2559,8 @@ function calcCT() {
   $('ct-recurw').style.display = D && D.act ? '' : 'none';
   $('ct-longl').textContent = D && D.longL ? D.longL : 'Grade 3 が長く続いている';
   $('ct-long').parentElement.style.display = D && D.longL ? '' : 'none';
-  if (!D || !D.crs) {                                              // 一般的な目安（CAR-T を含む）
+  $('ct-h72w').style.display = D && D.h72 ? '' : 'none';
+  if (!D || !D.crs) {                                              // 一般的な目安
     const m = [crsM, icM].filter(Boolean);
     box('r-ctm', '対応の目安' + (D ? `｜${D.n}` : ''), m.length ? m.join('<br><br>') : '経過観察',
       (m.length ? 'CRS と ICANS が併存する場合、ICANS には CRS 改善後もステロイドを継続・漸減' : '発熱・バイタル・ICE を定期評価（目安 1日2回以上）')
@@ -2552,11 +2568,12 @@ function calcCT() {
     return;
   }
   const tz = wt ? `トシリズマブ ${Math.min(Math.round(wt * (wt >= 30 ? 8 : 12)), 800)} mg（${wt >= 30 ? 8 : 12} mg/kg${wt >= 30 && wt * 8 > 800 ? '・上限 800 mg' : ''}）` : 'トシリズマブ 8 mg/kg（最大 800 mg）';
-  const T = x => x.replace(/TOCI/g, tz);
-  const icTxt = icans ? (D.icC ? (crs ? D.icC[icans] : D.icN[icans]) : D.ic[icans]) : '';
+  const cx = { h72: chk('ct-h72') }, V = v => typeof v === 'function' ? v(cx) : v;
+  const T = x => V(x).replace(/TOCI/g, tz);
+  const icTxt = icans ? (D.icC ? (crs ? D.icC[icans] : D.icN[icans]) : D.ic ? D.ic[icans] : '（ガイドに神経系事象の管理表なし：一般的な目安）' + icM.replace(/^ICANS G\d：/, '')) : '';
   const lines = [crs && `<b>CRS Grade ${crs}</b>：${T(D.crs[crs])}`,
-                 icans && `<b>ICANS Grade ${icans}</b>${D.icC ? (crs ? '（CRS 併発あり）' : '（CRS 併発なし）') : ''}：${T(icTxt)}`].filter(Boolean);
-  const act = D.act(crs, icans, chk('ct-recur'), chk('ct-long')).filter(Boolean);
+                 icans && `<b>${D.neuroL || 'ICANS'} Grade ${icans}</b>${D.icC ? (crs ? '（CRS 併発あり）' : '（CRS 併発なし）') : ''}：${T(icTxt)}`].filter(Boolean);
+  const act = D.act ? D.act(crs, icans, chk('ct-recur'), chk('ct-long')).filter(Boolean) : [];
   box('r-ctm', `対応の目安｜${D.n}`, lines.length ? lines.join('<br><br>') : '経過観察',
     (act.length ? '<b>本剤の扱い（電子添文）</b>：' + act.join('／') + '<br>' : '')
     + (lines.length ? '' : '発熱・バイタル・神経症状を定期評価。') + `出典：${D.src}` + (D.note ? '<br>' + D.note : ''), 'txt');
@@ -2637,8 +2654,70 @@ const CRSD = {
         : 'ICANS：中断し、Grade 1 まで回復して72時間以上たてば再開可')],
     note: '点滴の速度の規定は点滴静注製剤のもの。皮下注製剤はその電子添文を確認する。' },
 };
-const CART = '日本語の適正使用ガイドは一般公開されておらず（メーカーの会員向け資材）、未反映。一般的な目安（ASCO・NCCN）を表示。製品ごとの管理は適正使用ガイド・施設プロトコルを優先する。';
-['kym', 'yes', 'bre', 'abe', 'car'].forEach(k => { CRSD[k] = { n: $('ct-drug').querySelector(`option[value="${k}"]`).textContent.replace(/（.*/, ''), note: CART }; });
+const LEE_NOTE = 'ガイドの CRS Grade は Lee 2014 基準、神経系事象は CTCAE（ASTCT の Grade とは定義が少し異なる。アプリでは ASTCT の Grade に当てはめて表示）。CRS と神経系事象が同時に起きたら、より強いステロイド治療を選び、トシリズマブは CRS の Grade に従う。';
+const MP2 = 'メチルプレドニゾロン（2 mg/kg 投与後、2 mg/kg を1日4回に分割、7日以内に漸減）';
+Object.assign(CRSD, {
+  yes: { n: 'イエスカルタ', src: 'イエスカルタ 適正使用ガイド（CRS・神経系事象管理アルゴリズム：ZUMA-1 試験 安全性管理コホート4）', neuroL: '神経系事象',
+    crs: [null,
+      '施設の標準治療で対症療法、神経状態を注意深く観察。24時間で改善しなければ Grade 2 と同様に管理（トシリズマブ）。3日で改善しなければデキサメタゾン 10 mg を1回静注',
+      '心電図・SpO₂ モニター。低血圧には等張液 0.5–1.0 L の補液（反応しなければ昇圧薬）、酸素。TOCI を1時間で（輸液・酸素の増量に反応しなければ8時間ごとに反復。24時間で3回まで、改善がなければ計4回まで）。デキサメタゾン 10 mg 1日1回。改善すれば Grade 1 以下まで続けて速やかに漸減、改善しなければ Grade 3 に準じる',
+      '管理治療室又は ICU。TOCI（Grade 2 と同様）。デキサメタゾン 10 mg 1日3回。改善すれば Grade 1 以下まで続けて漸減、改善しなければ Grade 4 に準じる',
+      'Grade 3 に準じて管理（人工呼吸・腎代替療法を要することがある）。TOCI（Grade 2 と同様）。メチルプレドニゾロン 1,000 mg 1日1回を3日間。改善しなければメチルプレドニゾロン 1,000 mg 1日2–3回、又は別の治療（IVIG・抗胸腺細胞グロブリンなど）'],
+    icC: [null,
+      '対症療法・神経状態の観察。トシリズマブは24時間で改善しなければ Grade 2 と同様に。デキサメタゾン 10 mg を1回静注し、2日で改善しなければもう1回。レベチラセタムなど非鎮静性抗痙攣薬を考慮',
+      '心電図・SpO₂、眼底・GCS を含む神経学的検査、神経内科の診察を考慮。禁忌がなければ MRI・脳波・腰椎穿刺（初圧）。痙攣には抗痙攣薬。TOCI（反復は CRS と同じ）。デキサメタゾン 10 mg 1日4回、改善すれば Grade 1 以下まで続けて漸減、改善しなければ Grade 3 に準じる',
+      '管理治療室又は ICU。TOCI（Grade 2 と同様）。メチルプレドニゾロン 1,000 mg 1日1回、改善すれば漸減、改善しなければ Grade 4 に準じる。抗痙攣薬を考慮',
+      'Grade 3 に準じ、人工呼吸を要することがある。TOCI（Grade 2 と同様）。メチルプレドニゾロン 1,000 mg 1日2回、改善しなければ 1日3回、又は別の治療（IVIG・抗胸腺細胞グロブリンなど）'],
+    icN: [null,
+      '対症療法・神経状態の観察。トシリズマブは投与しない。デキサメタゾン 10 mg を1回静注し、2日で改善しなければもう1回。レベチラセタムなど非鎮静性抗痙攣薬を考慮',
+      '心電図・SpO₂、眼底・GCS を含む神経学的検査、神経内科の診察を考慮。禁忌がなければ MRI・脳波・腰椎穿刺（初圧）。痙攣には抗痙攣薬。トシリズマブは投与しない。デキサメタゾン 10 mg 1日4回、改善すれば Grade 1 以下まで続けて漸減、改善しなければ Grade 3 に準じる',
+      '管理治療室又は ICU。トシリズマブは投与しない。メチルプレドニゾロン 1,000 mg 1日1回、改善すれば漸減、改善しなければ Grade 4 に準じる。抗痙攣薬を考慮',
+      'Grade 3 に準じ、人工呼吸を要することがある。トシリズマブは投与しない。メチルプレドニゾロン 1,000 mg 1日2回、改善しなければ 1日3回、又は別の治療'],
+    note: '神経系事象の Grade は CTCAE v5.0（ASTCT の ICANS Grade とは定義が異なる）。本邦承認外の用法が一部含まれる。' },
+  bre: { n: 'ブレヤンジ', src: 'ブレヤンジ 適正使用ガイド（CRS 管理アルゴリズム・神経系事象管理アルゴリズム）', h72: true, neuroL: '神経系事象',
+    crs: [null,
+      c => c.h72 ? '投与後72時間未満：必要に応じて TOCI。デキサメタゾン 10 mg 24時間ごとの併用も考慮' : '投与後72時間以上：対症療法',
+      c => `TOCI＋デキサメタゾン 10 mg 12–24時間ごと（${c.h72 ? '投与後72時間未満のため投与する' : '投与後72時間以上なので併用を考慮'}）。24時間で改善しない・急速に悪化する場合はトシリズマブを再投与し、デキサメタゾンを 10–20 mg 6–12時間ごとに増量、他の原因（敗血症・副腎不全など）も検討。それでも改善しなければデキサメタゾン最大量（20 mg 6時間ごと）、必要なら${MP2}。トシリズマブ2回後も続けば他の免疫抑制薬。トシリズマブは24時間で3回・計4回まで`,
+      'TOCI＋デキサメタゾン 10 mg 12時間ごと。24時間で改善しない・急速に悪化すれば Grade 2 の後半（トシリズマブ再投与・デキサメタゾン増量・メチルプレドニゾロン）に従う。ICU でモニタリング。HLH を除外（フェリチン・トリグリセリド・フィブリノゲン、骨髄穿刺で感染も検討）',
+      'TOCI＋デキサメタゾン 20 mg 6時間ごと。24時間で改善しない・急速に悪化すれば Grade 2 の後半に従う。ICU、人工呼吸器サポート'],
+    ic: [null,
+      c => c.h72 ? '投与後72時間未満：デキサメタゾン 10 mg 12–24時間ごとに2–3日間を考慮' : '投与後72時間以上：経過観察',
+      `デキサメタゾン 10 mg 12時間ごとに2–3日間（続けばそれ以上）、ステロイドが計3日を超えれば漸減を考慮。24時間で改善しない・悪化すればデキサメタゾンを最大 20 mg 6時間ごとまで増量。さらに24時間改善しない・急速に進行・生命を脅かす合併症があれば${MP2}`,
+      'デキサメタゾン 10–20 mg 8–12時間ごと（孤発性の頭痛にはステロイドを推奨しない）。24時間で改善しない・悪化すればメチルプレドニゾロン（Grade 2 と同じ）。脳浮腫が疑わしければメチルプレドニゾロン 1–2 g（必要なら24時間ごと）＋シクロホスファミド 1.5 g/m²、過換気・高浸透圧療法を考慮',
+      'デキサメタゾン 20 mg 6時間ごと。24時間で改善しない・悪化すればメチルプレドニゾロン（Grade 2 と同じ）。脳浮腫が疑わしければメチルプレドニゾロン 1–2 g（必要なら24時間ごと）＋シクロホスファミド 1.5 g/m²、過換気・高浸透圧療法を考慮'],
+    note: 'デキサメタゾンを始めたら少なくとも3回、又は CRS と神経症状が消えるまで続けて漸減。' + LEE_NOTE },
+  abe: { n: 'アベクマ', src: 'アベクマ 適正使用ガイド（CRS 管理アルゴリズム・神経系事象管理アルゴリズム）', h72: true, neuroL: '神経系事象',
+    crs: [null,
+      c => c.h72 ? '投与後72時間未満：必要に応じて TOCI（ステロイドは該当なし）' : '投与後72時間以上：対症療法',
+      `TOCI。デキサメタゾン 10 mg 12–24時間ごとを考慮。24時間で改善しない・急速に悪化すればトシリズマブを再投与し、デキサメタゾンを 20 mg 6–12時間ごとに増量。それでも24時間で改善しなければ${MP2.replace('、7日以内に漸減', '')}に切り替え。ステロイドは始めたら少なくとも3回続け、最大7日かけて漸減。トシリズマブは24時間で3回・計4回まで`,
+      `TOCI＋デキサメタゾン（例：10 mg 12時間ごと）。24時間で改善しない・急速に悪化すればトシリズマブを再投与し、デキサメタゾン 20 mg 6–12時間ごと。それでも改善しなければ${MP2.replace('、7日以内に漸減', '')}に切り替え`,
+      'TOCI＋デキサメタゾン 20 mg 6時間ごと。24時間で改善しない・急速に悪化すればトシリズマブを再投与（24時間で3回・計4回まで）。それでも改善しなければメチルプレドニゾロン 1–2 g（必要なら24時間ごと）又は抗 T 細胞療法（シクロホスファミド 1.5 g/m² など）'],
+    ic: [null,
+      c => c.h72 ? '投与後72時間未満：デキサメタゾン 10 mg 12–24時間ごとに2–3日間を考慮' : '投与後72時間以上：経過観察',
+      'デキサメタゾン 10 mg 12時間ごとに2–3日間（続けばそれ以上）、ステロイドが計3日を超えれば漸減を考慮。孤発性の頭痛にはステロイドを推奨しない。24時間で改善しない・悪化すればデキサメタゾンを最大 20 mg 6時間ごとまで増量',
+      `デキサメタゾン 10–20 mg 8–12時間ごと（孤発性の頭痛には推奨しない）。24時間で改善しない・悪化すれば${MP2}に切り替え。脳浮腫が疑わしければ過換気・高浸透圧療法、メチルプレドニゾロン 1–2 g（必要なら24時間ごと）＋シクロホスファミド 1.5 g/m²`,
+      'デキサメタゾン 20 mg 6時間ごと。24時間で改善しない・悪化すれば高用量メチルプレドニゾロン 1–2 g（必要なら24時間ごと）、シクロホスファミド 1.5 g/m² も考慮。脳浮腫が疑わしければ過換気・高浸透圧療法'],
+    note: '投与後72時間以内の CRS で、持続する発熱・臓器毒性・HLH が一次治療後12時間で改善しなければ、早めに次の治療へ移ることが推奨される。' + LEE_NOTE },
+  car: { n: 'カービクティ', src: 'カービクティ 適正使用ガイド（CRS 管理アルゴリズム・神経系事象管理アルゴリズム）',
+    crs: [null,
+      'TOCI を検討してもよい（ステロイドは該当なし）',
+      'TOCI。輸液（1 L まで）・酸素の増量で奏効しなければ8時間ごとに再投与。メチルプレドニゾロン 1 mg/kg 1日2回、又はデキサメタゾン（例：10 mg 6時間ごと）を検討。24時間で改善しない・急速に悪化すればトシリズマブを再投与し、デキサメタゾンを 20 mg 6–12時間ごとに増量。トシリズマブ2回後は別の抗サイトカイン薬を検討。トシリズマブは24時間で3回・計4回まで',
+      'トシリズマブは Grade 2 と同様。メチルプレドニゾロン 1 mg/kg 1日2回、又はデキサメタゾン（例：10 mg 6時間ごと）。24時間で改善しない・急速に悪化すればトシリズマブを再投与し、デキサメタゾン 20 mg 6–12時間ごと。それでも改善しなければメチルプレドニゾロン 2 mg/kg 12時間ごとに切り替え',
+      'トシリズマブは Grade 2 と同様。デキサメタゾン 20 mg 6時間ごと。24時間で改善しなければメチルプレドニゾロン 1–2 g（必要なら24時間ごと。医師の判断で24時間を待たずにパルスも可）、又は他の免疫抑制薬（抗 T 細胞療法など）'],
+    ic: [null,
+      'デキサメタゾン 10 mg 6–12時間ごとに2–3日間を検討。レベチラセタムなど非鎮静性抗痙攣薬を検討',
+      'デキサメタゾン 10 mg 6–12時間ごとに2–3日間（続けばそれ以上）、ステロイドが計3日を超えれば漸減を検討。抗痙攣薬を検討',
+      'デキサメタゾン 10–20 mg 6時間ごと。48時間で改善しない・悪化すればデキサメタゾン 20 mg 以上 6時間ごと（7日以内に漸減）、又は高用量メチルプレドニゾロン 1 g/日（必要なら24時間ごと）。抗痙攣薬を検討',
+      'デキサメタゾン 10–20 mg 6時間ごと。24時間で改善しない・悪化すれば高用量メチルプレドニゾロン 1–2 g/日（必要なら24時間ごと）。抗痙攣薬を検討。頭蓋内圧亢進・脳浮腫が疑わしければ過換気・高浸透圧療法、高用量メチルプレドニゾロン、神経内科・脳外科の診察'],
+    note: 'ステロイドは Grade 1 以下まで続け、計3日を超えれば漸減。CRS と ICANS が併存したら、より積極的なステロイドを選び、トシリズマブは CRS の Grade、抗痙攣薬は神経系の Grade に従う。遅発性のパーキンソニズムなど（高腫瘍量・Grade 2 以上の CRS・ICANS がリスク）に注意し、CRS・ICANS には早めに積極的に介入する。' },
+  kym: { n: 'キムリア', src: 'キムリア 適正使用ガイド（2026年1月版）別添1 サイトカイン放出症候群管理アルゴリズム',
+    crs: [null,
+      '軽度（対症療法のみが必要な微熱・疲労・食欲不振など）：感染症など他の原因を除外してから、解熱薬・制吐薬・鎮痛薬で対症療法。好中球減少があれば抗菌薬',
+      '中等度（高熱・低酸素・軽度の血圧低下）：解熱薬・酸素・輸液、必要なら低用量の昇圧薬。対症療法で改善しなければ TOCI を1時間以上かけて（改善しなければ8時間以上あけて追加、計4回まで）。トシリズマブ後12–18時間で改善しなければ、昇圧薬と酸素が不要になるまでメチルプレドニゾロン 2 mg/kg/日（又は等価のステロイド）を連日、その後漸減',
+      '積極的な介入が必要（高流量酸素・高用量／複数の昇圧薬）：高流量酸素、輸液と高用量の昇圧薬、標準的な方法で臓器障害を治療。トシリズマブ・ステロイドは中等度と同じ',
+      '生命を脅かす（輸液・昇圧薬でも不安定な循環、呼吸状態の悪化、急激な悪化）：人工呼吸、輸液と高用量の昇圧薬、臓器障害の治療。トシリズマブ・ステロイドは中等度と同じ'],
+    note: 'ガイドの CRS 重症度は独自の4段階（軽度・中等度・積極的な介入・生命を脅かす）で、ASTCT Grade 1–4 にほぼ対応させて表示。神経系事象はガイドに管理表がなく「医療施設・学会の管理ガイドラインを参照」とされている。' },
+});
 
 /* ---------- TLS ---------- */
 const RISK = ['', '低リスク（LRD）', '中間リスク（IRD）', '高リスク（HRD）'];
@@ -2753,7 +2832,7 @@ document.addEventListener('change', calcAll);
 
 /* ---------- 開閉 ---------- */
 document.querySelectorAll('.card > .head').forEach(h => h.addEventListener('click', () => {
-  if (document.body.classList.contains('sorting')) return;
+  if (document.body.classList.contains('sorting') || dragJustEnded) return;
   const card = h.parentElement;
   if (document.body.classList.contains('tiles')) {                 // アイコン表示：タップしたカードだけを開く／見出しで一覧に戻る
     if (document.body.classList.contains('focus')) leaveFocus(); else enterFocus(card);
@@ -2802,6 +2881,62 @@ $('sortbtn').addEventListener('click', () => {
   $('sortbtn').textContent = on ? '完了' : '並べ替え';
 });
 $('sortreset').addEventListener('click', () => { setOrder(DEFAULT_ORDER); saveOrder(); });
+
+/* ---------- 長押しドラッグで並べ替え（タイル・リストとも） ---------- */
+let press = null, drag = null, dragJustEnded = false;
+const LIFT = { sort: 180, normal: 450 };                          // 長押しと判定するまでの時間（ms）
+function placeDragged() {                                         // 指の位置にカードを合わせる（DOM の位置が変わっても追従）
+  const c = drag.card; c.style.transform = 'none';
+  const r = c.getBoundingClientRect();
+  c.style.transform = `translate(${drag.x - drag.ox - r.left}px, ${drag.y - drag.oy - r.top}px) scale(1.04)`;
+}
+function reorderAt(x, y) {
+  const c = drag.card; c.style.pointerEvents = 'none';
+  const t = document.elementFromPoint(x, y)?.closest('main > .card');
+  c.style.pointerEvents = '';
+  if (!t || t === c || t.classList.contains('dragging')) return;
+  const all = cards();
+  main.insertBefore(c, all.indexOf(c) < all.indexOf(t) ? t.nextSibling : t);
+}
+function dragLoop() {                                             // 画面の上下端では自動でスクロール
+  if (!drag) return;
+  const edge = 70, v = drag.y < edge ? -10 : drag.y > innerHeight - edge ? 10 : 0;
+  if (v) { window.scrollBy(0, v); reorderAt(drag.x, drag.y); placeDragged(); }
+  drag.raf = requestAnimationFrame(dragLoop);
+}
+function startDrag(card, x, y) {
+  press = null;
+  const r = card.getBoundingClientRect();
+  drag = { card, x, y, ox: x - r.left, oy: y - r.top };
+  card.classList.add('dragging'); document.body.classList.add('dragging');
+  placeDragged(); drag.raf = requestAnimationFrame(dragLoop);
+}
+function endDrag() {
+  if (press) { clearTimeout(press.t); press = null; }
+  if (!drag) return;
+  cancelAnimationFrame(drag.raf);
+  drag.card.style.transform = ''; drag.card.classList.remove('dragging'); document.body.classList.remove('dragging');
+  drag = null; saveOrder();
+  dragJustEnded = true; setTimeout(() => { dragJustEnded = false; }, 350);
+}
+main.addEventListener('pointerdown', e => {
+  const head = e.target.closest('main > .card > .head');
+  if (!head || document.body.classList.contains('focus') || (e.pointerType === 'mouse' && e.button !== 0)) return;
+  const card = head.parentElement, x = e.clientX, y = e.clientY;
+  press = { x, y, t: setTimeout(() => startDrag(card, press ? press.x : x, press ? press.y : y),
+                                document.body.classList.contains('sorting') ? LIFT.sort : LIFT.normal) };
+});
+window.addEventListener('pointermove', e => {
+  if (press && !drag) { if (Math.hypot(e.clientX - press.x, e.clientY - press.y) > 10) { clearTimeout(press.t); press = null; } return; }
+  if (!drag) return;
+  drag.x = e.clientX; drag.y = e.clientY;
+  reorderAt(drag.x, drag.y); placeDragged();
+});
+window.addEventListener('pointerup', endDrag);
+window.addEventListener('pointercancel', endDrag);
+// ドラッグ中はページのスクロールを止める（iOS は touchmove を止める必要がある）
+document.addEventListener('touchmove', e => { if (drag) e.preventDefault(); }, { passive: false });
+document.addEventListener('contextmenu', e => { if (drag || press) e.preventDefault(); });
 
 /* ---------- 電卓 ---------- */
 let cx = '', justEq = false;                                       // 入力中の式（表示用の記号のまま持つ）、= 直後か
@@ -3026,7 +3161,6 @@ $('help-close').addEventListener('click', () => openHelp(false));
 $('help').addEventListener('click', e => { if (e.target.id === 'help') openHelp(false); });
 
 /* ---------- 表示の切り替え（リスト／アイコン） ---------- */
-const VIEW_KEY = 'medical-view';
 function enterFocus(card) {
   document.querySelectorAll('main > .card.focused').forEach(c => c.classList.remove('focused', 'open'));
   card.classList.add('focused', 'open'); document.body.classList.add('focus');
@@ -3043,11 +3177,10 @@ function setView(grid) {
   document.body.classList.toggle('tiles', grid);
   if (grid) document.querySelectorAll('main > .card.open').forEach(c => c.classList.remove('open'));
   $('viewbtn').setAttribute('aria-label', grid ? 'リスト表示に切り替え' : 'アイコン表示に切り替え');
-  try { localStorage.setItem(VIEW_KEY, grid ? 'grid' : 'list'); } catch (e) {}
 }
 $('viewbtn').addEventListener('click', () => setView(!document.body.classList.contains('tiles')));
 $('backbtn').addEventListener('click', leaveFocus);
-try { if (localStorage.getItem(VIEW_KEY) === 'grid') setView(true); } catch (e) {}
+setView(true);                                                   // アプリを開いたときは常にアイコン（タイル）表示
 
 /* ---------- 新しい版への切り替え ---------- */
 // アプリに戻ったときに更新を確認し、新しい版が届いたら入力中の値を保ったまま読み込み直す
