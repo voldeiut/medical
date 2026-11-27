@@ -15,7 +15,7 @@
  */
 
 const SOURCES = {
-  jsh: { name: '造血器腫瘍診療ガイドライン', ver: '日本血液学会 2023年版', short: 'JSH' },
+  jsh: { name: '造血器腫瘍診療ガイドライン', ver: '日本血液学会 第3.1版（2024年版）Web 版。2026年版（書籍）は未照合。2025年以降の国内承認は未反映', short: 'JSH', checked: '2026-11-27' },
   nccn: { name: 'NCCN ガイドライン', ver: 'B-Cell Lymphomas Version 4.2026（2026年5月20日）', short: 'NCCN', checked: '2026-11-19' },
   jp: { name: '国内で使えるレジメン', ver: '2026年11月', short: '国内' },
 };
@@ -58,32 +58,58 @@ const DISEASES = {
         ],
         jsh: [
           {
-            sit: '限局期（I・II期）',
+            sit: '限局期（I期・連続性II期）・bulky なし（CQ1）',
+            gn: 'bulky＝最大径 10 cm 超、または縦隔病変の横径が胸郭内径の1/3以上',
             opts: [
-              { reg: 'r-chop-rt', label: 'R-CHOP 3〜4コース + 放射線（IS/IFRT）', note: '短縮化学療法＋放射線。PET 陰性なら放射線を省略する方法もある', focus: ['s1001', 'lysa0203'] },
-              { reg: 'r-chop', label: 'R-CHOP 6コース（± 放射線）', note: 'バルキー病変では放射線の追加を考慮' },
-              { reg: 'r-chop4', label: 'R-CHOP 4コース + R 2回', note: '60歳以下・IPI 0・非バルキー（<7.5 cm）の予後良好例' },
+              { reg: 'r-chop', label: 'R-CHOP 6コース（± R 2コース ± ISRT）（カテゴリー1）', note: '現在の診療ではこちらが一般的', focus: ['mint'] },
+              { reg: 'r-chop-rt', label: 'R-CHOP 3コース + ISRT（カテゴリー2A）', note: 'combined modality therapy。R-CHOP 3〜4コース後に PET 陰性なら R-CHOP 4コースで十分な可能性', focus: ['s1001', 'lysa0203'] },
+              { reg: 'r-chop4', label: 'R-CHOP 4コース + R 2コース（カテゴリー1）', note: '60歳以下・年齢調整 IPI 0・7.5 cm を超える腫瘤なし', focus: ['flyer'] },
+              { reg: 'pola-r-chp', label: 'Pola-R-CHP 6コース + R 2コース（カテゴリー1）', note: '18〜80歳・IPI 2以上', focus: ['polarix'] },
             ],
           },
           {
-            sit: '進行期（III・IV期）',
+            sit: '限局期（I期・連続性II期）・bulky あり（CQ1）',
             opts: [
-              { reg: 'r-chop', label: 'R-CHOP 6コース', note: '標準治療', focus: ['lnh985', 'mint'] },
-              { reg: 'pola-r-chp', label: 'Pola-R-CHP 6コース + R 2回', note: 'IPI 2以上で選択肢（PFS を改善、OS は差なし）' },
+              { reg: 'r-chop', label: 'R-CHOP 6コース（± R 2コース ± ISRT）', note: 'bulky 例は6コースが推奨（3コース＋放射線の CMT は推奨されない）' },
+              { reg: 'pola-r-chp', label: 'Pola-R-CHP 6コース + R 2コース', note: '18〜80歳・IPI 2以上', focus: ['polarix'] },
+              { label: '化学療法が困難な限局期', note: 'ISRT を行う（アルゴリズム）' },
             ],
           },
           {
-            sit: '高齢者（80歳超）・フレイル',
+            sit: '進行期（III・IV期）（CQ2、カテゴリー1）',
             opts: [
-              { reg: 'r-minichop', label: 'R-miniCHOP', note: '減量 R-CHOP。全身状態・併存症で選ぶ' },
+              { reg: 'r-chop', label: 'R-CHOP 6〜8コース（± ISRT）', note: '6コースと8コースを比べた前向き試験はない。CR 後は経過観察（治療前の bulky には局所照射を考慮）。PR で残存病変が1標的体積に限局し救援療法が難しければ局所照射', focus: ['lnh985'] },
+              { reg: 'pola-r-chp', label: 'Pola-R-CHP 6コース + R 2コース', note: '18〜80歳・IPI 2以上。PFS を改善、OS は差なし', focus: ['polarix'] },
+              { label: '第一寛解期の自家移植（地固め）', note: '若年・IPI 高リスクで予後改善の可能性はあるが、一般診療として推奨できる根拠は不十分（臨床試験で）' },
+            ],
+          },
+          {
+            sit: '高齢者（CQ5）',
+            opts: [
+              { reg: 'r-chop', label: '80歳未満：標準量の R-CHOP（カテゴリー1）', note: 'PS・臓器機能が保たれていれば若年者と同じ。IPI 2以上は Pola-R-CHP も' },
+              { reg: 'r-minichop', label: '80歳以上：減量 R-CHOP（R-miniCHOP など）（カテゴリー2A）', note: '用量またはコース数を減らした R-CHOP', focus: ['rminichop'] },
+              { reg: 'r-thp-cop', label: 'R-THP-COP', note: '減量 R-CHOP ができない場合の選択肢（第III相で R-CHOP に非劣性と記載）。R-CEOP（エピルビシン）、減量 EPOCH-R も同じ位置づけ', focus: ['hara-thpcop', 'kasahara-thpcop'] },
+              { label: 'R-COMP・BR・R-GemOx', note: '報告はあるが、国内では初発へのベンダムスチン、リポソーマル・ドキソルビシン、オキサリプラチンは保険適用外' },
+            ],
+          },
+          {
+            sit: '心機能の低下が予想される（CQ4、カテゴリー2A）',
+            opts: [
+              { label: 'ドキソルビシンの減量・中止・持続投与への変更', note: '他剤に替えた治療（R-COMP、R-GCVP、R-CEOP など）は代替になりうるが有用性は未証明。R-THP-COP は心毒性で CHOP と差がなく代替の根拠にならない' },
+            ],
+          },
+          {
+            sit: '中枢神経系再発の予防（CQ3）',
+            opts: [
+              { label: '精巣原発：R-CHOP に予防的髄注（カテゴリー2A）', note: '対側精巣への照射も併用（CQ8）' },
+              { label: 'CNS-IPI 高リスク・特定の節外病変・CD5 陽性（カテゴリー2B）', note: '髄注や大量メトトレキサートで再発が減る可能性はあるが、有用性は確立していない' },
             ],
           },
           {
             sit: '参考',
             opts: [
-              { reg: 'da-epoch-r', label: 'DA-EPOCH-R', note: 'DLBCL 全体では R-CHOP より優れず、毒性が強い' },
-              { label: 'R-CHOP-14', note: 'R-CHOP-21 に対する優越性は示されていない' },
-              { label: 'CNS 予防', note: 'CNS-IPI 高リスク・精巣・腎/副腎浸潤などで検討。大量 MTX などの有効性は確立していない' },
+              { reg: 'da-epoch-r', label: 'DA-EPOCH-R', note: 'R-CHOP と PFS・OS に差がなく毒性が強い（CQ2）。PMBL では第II相で良好な成績（CQ8）', focus: ['calgb50303'] },
+              { label: '特別な配慮が必要な病型（CQ8）', note: '原発性中枢神経系 DLBCL・精巣原発・PMBL は病型に応じた治療が有効な可能性（カテゴリー2B）。IVLBCL・CD5 陽性 DLBCL も第II相で病型に応じた治療の有効性が示されている' },
             ],
           },
         ],
@@ -195,34 +221,45 @@ const DISEASES = {
         ],
         jsh: [
           {
-            sit: '初回治療抵抗性・12か月以内の再発（移植適応）',
+            sit: '初回治療不応・CR 後12か月以内の再発（CQ6・CQ9、カテゴリー1）',
+            gn: 'axi-cel・liso-cel で自家移植併用大量化学療法より予後の改善が期待できる（tisa-cel は BELINDA で優越性を示せず）',
             opts: [
-              { reg: 'axi-cel', label: 'アキシカブタゲン シロルユーセル（axi-cel）', note: '2次治療としての CAR-T', focus: ['zuma7'] },
-              { reg: 'liso-cel', label: 'リソカブタゲン マラルユーセル（liso-cel）', note: '2次治療としての CAR-T', focus: ['transform'] },
+              { reg: 'axi-cel', label: 'アキシカブタゲン シロルユーセル（axi-cel）', focus: ['zuma7'] },
+              { reg: 'liso-cel', label: 'リソカブタゲン マラルユーセル（liso-cel）', focus: ['transform'] },
             ],
           },
           {
-            sit: '12か月以降の再発（移植適応）',
+            sit: '大量化学療法の適応あり（CQ6、カテゴリー1）',
             opts: [
-              { reg: 'salvage-asct', label: '救援化学療法 → 自家移植', note: 'R-DHAP・R-ICE・R-GDP・R-ESHAP など。化学療法感受性例に大量化学療法＋自家移植' },
+              { reg: 'salvage-asct', label: '救援化学療法 → 奏効例に自家移植併用大量化学療法', note: '救援療法の優劣は明らかでない：DHAP（＋R）、(R-)ESHAP、(R-)ICE、CHASE(R)、DA-EPOCH(-R)、MINE、GDP', focus: ['coral', 'parma'] },
+              { label: '救援療法で奏効しない（SD・PD）', note: 'CAR-T、別の救援化学療法、緩和的放射線療法、best supportive care（CQ9）' },
             ],
           },
           {
-            sit: '移植非適応',
+            sit: '大量化学療法の適応なし',
             opts: [
-              { reg: 'pola-br', label: 'Pola-BR', note: 'ポラツズマブ ベドチン＋ベンダムスチン＋リツキシマブ' },
-              { label: 'R-GDP / R-GemOx などの救援療法', note: '全身状態に応じて' },
+              { reg: 'pola-br', label: 'Pola-BR', focus: ['go29365'] },
+              { label: 'BR、その他の救援化学療法', note: 'BR・Pola-BR は大量化学療法の適応がない場合の救援療法。高齢者では R-GCVP、分割 ICE なども選択肢（CQ5）。奏効しなければ CAR-T も（CQ9）' },
             ],
           },
           {
-            sit: '3次治療以降',
+            sit: '自家移植後の再発・自家移植の適応がない（CQ9）',
             opts: [
               { reg: 'axi-cel', label: 'CAR-T：axi-cel', focus: ['zuma1'] },
               { reg: 'liso-cel', label: 'CAR-T：liso-cel', focus: ['transcend'] },
               { reg: 'tisa-cel', label: 'CAR-T：チサゲンレクルユーセル（tisa-cel）', focus: ['juliet'] },
-              { reg: 'epcoritamab', label: 'エプコリタマブ', note: '二重特異性抗体（CD20×CD3）' },
-              { reg: 'glofitamab', label: 'グロフィタマブ', note: '二重特異性抗体（CD20×CD3）' },
-              { label: '同種造血幹細胞移植', note: '若年・CAR-T 後再発などで考慮' },
+            ],
+          },
+          {
+            sit: '抗CD20抗体を含む2つ以上の治療後',
+            opts: [
+              { reg: 'epcoritamab', label: 'エプコリタマブ（カテゴリー2A）', note: '二重特異性抗体（CD20×CD3）。アルゴリズムの節に記載（2023年9月承認）', focus: ['epcore-lbcl'] },
+            ],
+          },
+          {
+            sit: '同種移植（CQ7、カテゴリー2B）',
+            opts: [
+              { label: '同種造血幹細胞移植', note: '難治例・自家移植後の再発例で考慮する選択肢の一つ。治療関連死亡が多く、臨床試験での実施が推奨される' },
             ],
           },
         ],
@@ -347,39 +384,41 @@ const DISEASES = {
         ],
         jsh: [
           {
-            sit: '限局期（I・II期）',
+            sit: '限局期（I期・連続性II期）（CQ3）',
             opts: [
-              { reg: 'isrt', label: '放射線療法（24 Gy）', note: '根治を目指せる。抗CD20抗体（±化学療法）の追加で PFS が延長した報告あり' },
+              { reg: 'isrt', label: '病巣部放射線療法 24〜30 Gy（カテゴリー2A）', note: 'PET/CT・骨髄生検で進行期を除外してから。一部で治癒が期待できる。放射線後の化学療法の追加は PFS を改善したが OS は差なし（有用性は明らかでない）', focus: ['trog9903'] },
+              { label: '放射線のリスクが上回る場合：進行期に準じる（カテゴリー2B）', note: '巨大病変・腹部腸間膜病変の I期、遠隔病変の II期など' },
             ],
           },
           {
-            sit: '進行期・低腫瘍量（GELF 規準を満たさない）',
+            sit: '進行期・低腫瘍量（CQ2）',
             opts: [
-              { reg: 'ww', label: '無治療経過観察（watch and wait）', note: '早期治療で OS は改善しない' },
-              { reg: 'r-mono', label: 'リツキシマブ単剤', note: '次治療までの期間を延長' },
+              { reg: 'ww', label: '無治療経過観察（カテゴリー1）', note: '直ちに治療を始めても OS は改善しない' },
+              { reg: 'r-mono', label: 'リツキシマブ単剤（カテゴリー2A）', note: '英国の試験では R 導入＋R 維持で次治療開始までの期間が延長したが、OS の改善はない。R 単剤後の R 維持は推奨されない（CQ4：維持と再燃時の再投与で差がなかった）' },
             ],
           },
           {
-            sit: '進行期・高腫瘍量（GELF 規準を満たす）',
+            sit: '進行期・高腫瘍量（CQ1、カテゴリー1）',
+            gn: '抗CD20抗体（リツキシマブまたはオビヌツズマブ）併用化学療法。化学療法の選択にコンセンサスはない',
             opts: [
-              { reg: 'g-chemo', label: 'オビヌツズマブ併用化学療法（G-B / G-CHOP / G-CVP）', note: 'R-化学療法より PFS 延長、毒性はやや多い' },
-              { reg: 'br', label: 'BR（ベンダムスチン＋リツキシマブ）' },
-              { reg: 'r-chop', label: 'R-CHOP' },
+              { reg: 'g-chemo', label: 'オビヌツズマブ併用化学療法（G-B / G-CHOP / G-CVP）', note: 'R-化学療法より PFS 延長。輸注反応・好中球減少・感染症が多く、OS は同様', focus: ['gallium'] },
+              { reg: 'br', label: 'BR（ベンダムスチン＋リツキシマブ）', note: 'R-CHOP・R-CVP より PFS が優れ、OS は同等', focus: ['stil', 'bright'] },
+              { reg: 'r-chop', label: 'R-CHOP', note: 'R-CVP より治療成功期間が長いが毒性が多く、8年 OS は差なし' },
               { reg: 'r-cvp', label: 'R-CVP' },
             ],
           },
           {
-            sit: '寛解後の維持療法',
+            sit: '寛解後の維持療法（CQ4、カテゴリー1）',
             opts: [
-              { reg: 'r-maint', label: 'リツキシマブ維持療法（2年）', note: 'PFS 延長、OS は差なし' },
-              { reg: 'g-maint', label: 'オビヌツズマブ維持療法（2年）', note: 'G-化学療法の後に続けて行う' },
+              { reg: 'r-maint', label: 'リツキシマブ維持療法（2年）', note: '高腫瘍量で抗CD20抗体併用化学療法に奏効した例。PFS 延長、OS は差なし。BR 後の有用性は不明', focus: ['prima'] },
+              { reg: 'g-maint', label: 'オビヌツズマブ維持療法', note: 'GALLIUM では G-化学療法に維持が組み込まれていた（維持単独の有用性は未検証）', focus: ['gallium'] },
             ],
           },
           {
             sit: '参考',
             opts: [
-              { label: 'Grade 3B（ICC：FL 3B）', note: 'DLBCL に準じて治療する' },
-              { label: '治療開始の判断', note: 'GELF・BNLI 規準を参考に、症状・臓器障害・腫瘍量で判断' },
+              { label: 'グレード3B', note: '通常アグレッシブリンパ腫として治療する（総論）' },
+              { label: '治療開始の判断', note: 'GELF 高腫瘍量規準・BNLI 規準を参考にする（総論）' },
             ],
           },
         ],
@@ -481,40 +520,40 @@ const DISEASES = {
         ],
         jsh: [
           {
-            sit: '再発時にまず行うこと',
+            sit: '再発時の治療（CQ5、カテゴリー2）',
+            gn: '選択肢の優劣は明らかでない。前治療の内容と再発までの期間、病変の広がり、形質転換の有無、全身状態、希望で選ぶ。抗CD20抗体抵抗性（PR 未満、または奏効後6か月以内の再燃）でなければ R 単剤または抗CD20抗体併用化学療法',
             opts: [
-              { label: '組織学的形質転換の除外', note: '急速な増大・LDH 上昇・PET で SUVmax が高い病変は再生検を考慮' },
-              { label: '治療開始の判断', note: '低腫瘍量なら無治療経過観察やリツキシマブ単剤も選択肢' },
+              { label: '組織学的形質転換の除外', note: '形質転換していればアグレッシブリンパ腫と同様の治療（CQ7）' },
+              { reg: 'ww', label: '無治療経過観察', note: '無症状・低腫瘍量ならしばしば行われる（意義をみた研究はない）' },
+              { reg: 'r-mono', label: 'リツキシマブ単剤' },
+              { reg: 'r2', label: 'R2（レナリドミド＋リツキシマブ）', note: 'R 単剤より PFS を改善', focus: ['augment'] },
+              { reg: 'g-b', label: 'ベンダムスチン単剤、または R/オビヌツズマブ＋ベンダムスチン', note: 'R 抵抗性例で G-B（→ G 維持）が PFS・OS を改善', focus: ['gadolin'] },
+              { reg: 'taz', label: 'タゼメトスタット（EZH2 変異陽性、3次治療以降）', note: '国内では 2026年3月に販売中止（ガイドライン発行後）', focus: ['e7438'] },
+              { reg: 'tisa-cel', label: 'CAR-T：チサゲンレクルユーセル', note: '2ライン以上の治療歴', focus: ['elara'] },
+              { label: 'その他', note: 'フルダラビン±R、R-CHOP（前治療がアントラサイクリンを含まない場合）、DLBCL と同様の救援化学療法、放射線療法、放射免疫療法（イブリツモマブ チウキセタン）' },
             ],
           },
           {
-            sit: '化学免疫療法',
+            sit: '造血幹細胞移植（CQ6）',
             opts: [
-              { reg: 'br', label: 'BR / R-CHOP など', note: '前治療の内容と奏効期間で選ぶ' },
-              { reg: 'g-b', label: 'G-B → G 維持', note: 'リツキシマブ不応例' },
+              { label: '自家移植併用大量化学療法（カテゴリー2A）', note: '高リスク（初回の抗CD20抗体併用化学療法の奏効期間が短い、形質転換など）の若年者' },
+              { label: '同種造血幹細胞移植（カテゴリー3）', note: '一部の若年者（高リスク例、自家移植後の再発例など）' },
             ],
           },
           {
-            sit: '化学療法を含まない治療',
+            sit: '組織学的形質転換（CQ7）',
             opts: [
-              { reg: 'r2', label: 'R2（レナリドミド＋リツキシマブ）', focus: ['augment'] },
-              { reg: 'taz', label: 'タゼメトスタット', note: 'EZH2 遺伝子変異陽性。国内では 2026年3月に販売中止（ガイドライン発行後）' },
-              { label: '放射免疫療法（イブリツモマブ チウキセタン）', note: '' },
+              { reg: 'r-chop', label: 'R-CHOP（カテゴリー2B）', note: '未治療、またはアントラサイクリンの治療歴がない場合' },
+              { label: '救援化学療法 → 奏効した若年者は自家移植（カテゴリー2B）', note: 'R-CHOP 後に形質転換した場合' },
+              { label: 'CAR-T・CD20×CD3 二重特異性抗体（カテゴリー2A）', note: '形質転換後の化学療法で CR が得られない、または再発した場合' },
             ],
           },
           {
-            sit: '複数回再発・早期再発（POD24）',
+            sit: '第3.1版（2024年版）に FL への記載がない国内承認薬',
             opts: [
-              { reg: 'tisa-cel', label: 'CAR-T：tisa-cel', focus: ['elara'] },
-              { label: '自家造血幹細胞移植', note: '化学療法感受性の早期再発例で考慮' },
-              { label: '同種造血幹細胞移植', note: '若年・複数回再発例で考慮' },
-            ],
-          },
-          {
-            sit: '2023年版刊行後に国内承認された薬剤',
-            opts: [
+              { reg: 'liso-cel', label: 'CAR-T：リソカブタゲン マラルユーセル', note: '2024年8月に FL（grade 1・2・3A）へ適応追加', focus: ['transcend-fl'] },
               { reg: 'epcoritamab', label: 'エプコリタマブ', note: '二重特異性抗体（CD20×CD3）', focus: ['epcore-fl'] },
-              { reg: 'mosun', label: 'モスネツズマブ', note: '二重特異性抗体（CD20×CD3）' },
+              { reg: 'mosun', label: 'モスネツズマブ', note: '二重特異性抗体（CD20×CD3）', focus: ['go29781'] },
             ],
           },
         ],
@@ -1056,7 +1095,7 @@ const DISEASES = {
             sit: 'BTK 阻害薬の治療後（抵抗性・不耐容）',
             opts: [
               { reg: 'pirtobrutinib', label: 'ピルトブルチニブ', note: '2024年6月承認（他の BTK 阻害剤に抵抗性又は不耐容）。PFS 中央値 7.4か月（BRUIN）', focus: ['bruin-mcl'] },
-              { reg: 'liso-cel', label: 'liso-cel（ブレヤンジ）', note: '2026年3〜4月に MCL を追加。CD19 CAR-T 歴がなく、抗 CD20 抗体を含む多剤併用療法の治療歴がある例', focus: ['transcend-mcl'] },
+              { reg: 'liso-cel', label: 'liso-cel（ブレヤンジ）', note: '2026年4月3日に MCL を追加。CD19 CAR-T 歴がなく、抗 CD20 抗体を含む多剤併用療法の治療歴がある例', focus: ['transcend-mcl'] },
             ],
           },
           {
@@ -1210,7 +1249,7 @@ const REGIMENS = {
   'liso-cel': {
     name: 'liso-cel',
     full: 'リソカブタゲン マラルユーセル（CD19 CAR-T、4-1BB 共刺激、CD4:CD8 = 1:1）',
-    jp: '国内承認：再発・難治の大細胞型B細胞リンパ腫（2次治療［初回抵抗性・早期再発］にも適応拡大。条件の詳細は添付文書・最適使用推進ガイドラインで確認）、2024年8月に再発・難治の濾胞性リンパ腫（grade 1・2・3A）を追加、2026年3〜4月に再発・難治のマントル細胞リンパ腫を追加（抗 CD20 抗体を含む多剤併用療法の治療歴が必要）。CD19 標的 CAR-T の治療歴がない患者に限る',
+    jp: '国内承認：再発・難治の大細胞型B細胞リンパ腫（2次治療［初回抵抗性・早期再発］にも適応拡大。条件の詳細は添付文書・最適使用推進ガイドラインで確認）、2024年8月に再発・難治の濾胞性リンパ腫（grade 1・2・3A）を追加、2026年4月3日に再発・難治のマントル細胞リンパ腫を追加（抗 CD20 抗体を含む多剤併用療法の治療歴が必要）。CD19 標的 CAR-T の治療歴がない患者に限る',
     dose: ['白血球アフェレーシス → ブリッジング治療 → リンパ球除去化学療法（フルダラビン＋シクロホスファミド）→ 単回静注'],
     trials: ['transform', 'pilot', 'transcend', 'transcend-fl', 'transcend-mcl'],
   },
@@ -9972,7 +10011,7 @@ const TRIALS = {
       { k: 'Grade 5 の有害事象', a: '2例（前処置による器質化肺炎、前処置と KTE-X19 によるブドウ球菌菌血症）' },
     ],
     points: [
-      '国内では未承認（2026年8月に承認申請。2026-11-24 時点で承認は確認できていない）。NCCN は cBTKi 後の増悪で Useful in certain circumstances',
+      '国内未承認（2026年8月に承認申請）。NCCN は cBTKi 後の増悪で Useful in certain circumstances',
       '比較群のない単群試験で、主要解析は先に投与された 60例が対象。製造を要するため、登録から投与までに脱落があった（74例中 68例に投与）',
       'ブリッジング後に腫瘍量が増えた例が多く、ブリッジングは病勢の安定が目的とされた',
       '5年追跡（Munoz J, et al. J Hematol Oncol 2026）が NCCN に引用されている（本エントリには数値を載せていない）',
@@ -10037,7 +10076,7 @@ const TRIALS = {
       { k: 'Grade 5 の有害事象', a: '4例（liso-cel 関連 3：クリプトコックス髄膜脳炎、COVID-19 肺炎、腫瘍崩壊症候群）' },
     ],
     points: [
-      '国内で liso-cel が再発・難治 MCL に適応追加された根拠（2026年3〜4月。最適使用推進ガイドラインでは CD19 CAR-T の治療歴がないこと、抗 CD20 抗体を含む多剤併用療法の治療歴があることが条件）',
+      '国内で liso-cel が再発・難治 MCL に適応追加された根拠（2026年4月3日承認。最適使用推進ガイドラインでは CD19 CAR-T の治療歴がないこと、抗 CD20 抗体を含む多剤併用療法の治療歴があることが条件）',
       '主要解析集団（74例）・有効性解析（83例）・投与例（88例）・アフェレーシス例（104例）で数値が異なる。最適使用推進ガイドラインは主要解析集団の数値（奏効率 86.5%・CR 74.3%）を記載',
       'ピルトブルチニブやベネトクラクスの既治療例、中枢神経浸潤例も含まれる',
       'NCCN は cBTKi 後の増悪で Useful in certain circumstances',
