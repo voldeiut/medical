@@ -250,6 +250,8 @@
   .dt-chips button.on { background: #5FA889; color: #fff; font-weight: 600; }
   .qhits { display: flex; flex-wrap: wrap; gap: 6px; }
   .qhits:empty { display: none; }
+  .dm h3.dmh { font-size: 15px; color: var(--ink); letter-spacing: 0; margin-top: 22px; padding-top: 12px; border-top: 1px solid var(--line); }
+  .dm h3.dmh small { font-size: 12px; color: var(--sub); font-weight: 500; margin-left: 6px; }
   .qhits button { all: unset; padding: 6px 12px; border-radius: 999px; background: var(--tint); font-size: 14px; cursor: pointer; }
   .qhits button small { color: var(--sub); font-size: 11px; margin-left: 4px; }
   .dt-hint { font-size: 11px; color: var(--sub); margin-top: 10px; line-height: 1.5; }
@@ -1122,13 +1124,16 @@
     <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
   </button>
   <div class="body">
-    <h3>薬剤・レジメン</h3>
+    <h3>レジメン</h3>
     <div class="grid">
-      <label class="f full">薬剤名で検索 <span class="unit">商品名・一般名・レジメン（ひらがな可）</span><input type="search" id="dm-q" placeholder="例：だら、ベンダ、KRd" autocomplete="off"></label>
+      <label class="f full">検索 <span class="unit">レジメン・商品名・一般名（ひらがな可）</span><input type="search" id="dm-q" placeholder="例：krd、べるけいど、ベンダ" autocomplete="off"></label>
       <div class="full qhits" id="dm-hits"></div>
-      <label class="f full">薬剤（商品名・一般名）<select id="dm-drug"></select></label>
-      <label class="f full" data-need="reg">レジメン・効能<select id="dm-reg"></select></label>
-      <label class="f" data-need="lvl">現在の用量<select id="dm-lvl"></select></label>
+      <label class="f full">疾患・レジメン<select id="dm-reg"></select></label>
+    </div>
+    <p class="note" id="dm-mem"></p>
+    <div id="dm-cfg"></div>
+    <h3 data-need="cond">投与の状況</h3>
+    <div class="grid">
       <label class="f" data-need="occ">今回の発現<select id="dm-occ"><option value="1">1回目</option><option value="2">2回目</option><option value="3">3回目</option><option value="4">4回目</option><option value="5">5回目以降</option></select></label>
       <label class="f full" data-need="tm">評価するタイミング<select id="dm-tm"><option value="d1">サイクル開始日（1日目）</option><option value="mid">サイクル途中の投与日</option></select></label>
       <label class="f full" data-need="r7">前サイクルの骨髄抑制からの回復<select id="dm-r7"><option value="early">次サイクル予定日から7日目までに回復</option><option value="late">8日目以降に回復</option></select></label>
@@ -1151,20 +1156,17 @@
       <span id="dm-ex" style="display:contents"></span>
     </div>
     <div class="results">
-      <div class="res full" id="r-dm"></div>
-      <div class="res full txt" id="r-dmd"></div>
+      <div class="res full txt" id="r-dm"></div>
     </div>
+    <div id="dm-out"></div>
     <div data-need="rs">
       <h3>休薬後の再開用量（休薬期間による）</h3>
       <div class="grid">
-        <label class="f full">休薬直前の用量<select id="dm-rprev"></select></label>
         <label class="f full">休薬期間 <span class="unit">日（最後の投与から）</span><input type="number" inputmode="numeric" id="dm-rdays"></label>
+        <span id="dm-rsx" style="display:contents"></span>
       </div>
-      <div class="results"><div class="res full txt" id="r-dmrs"></div></div>
     </div>
-    <div id="dm-tbl"></div>
-    <p class="note" id="dm-src"></p>
-    <p class="note">各薬剤の電子添文（PMDA 掲載の最新版）の「用法及び用量に関連する注意」に記載された血液毒性の基準をまとめた目安。Grade は CTCAE に準じて、好中球 Grade 3 &lt;1,000・Grade 4 &lt;500、血小板 Grade 3 &lt;50,000・Grade 4 &lt;25,000、Grade 1 以下＝好中球 ≥1,500・血小板 ≥75,000 として判定。非血液毒性（末梢神経障害・皮疹・CRS など）の基準は含まない。併用薬はそれぞれの基準を確認する。<br>
+    <p class="note">各薬剤の電子添文（PMDA 掲載の最新版）の「用法及び用量に関連する注意」に記載された血液毒性の基準をまとめた目安。Grade は CTCAE に準じて、好中球 Grade 3 &lt;1,000・Grade 4 &lt;500、血小板 Grade 3 &lt;50,000・Grade 4 &lt;25,000、Grade 1 以下＝好中球 ≥1,500・血小板 ≥75,000 として判定。非血液毒性（末梢神経障害・皮疹・CRS など）の基準は含まない。レジメンを選ぶと、このカードに基準を収載している構成薬をまとめて判定する（未収載の併用薬はレジメン名の下に表示。その基準は別途確認）。収載しているのは上記の薬剤を含むレジメンだけで、R-CHOP など従来の化学療法だけのレジメンは未収載。<br>
       「【ガイド】」や出典が適正使用ガイドのレジメンは、ガイドに掲載された臨床試験の規定（電子添文の基準ではない）。適正使用ガイドが PMDA の資材一覧にない薬剤（ジャイパーカ・ブルキンザ・ポテリジオ）は電子添文のみ。</p>
     <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
@@ -1399,7 +1401,7 @@
       <li><b>腎機能</b>：eCCr（Cr+0.2）は、日本の酵素法 Cr を CG 式の作成時の測定法（Jaffe 法）に近づけた値です。Cr が低い高齢者ほど差が大きくなります。</li>
       <li><b>薬剤投与量</b>：院内推奨（作成者の所属施設の院内推奨）がある薬剤はそれを先頭に表示し、<b>左右にスライド（またはタブ）で一般的な推奨</b>に切り替えます。判定に使う腎機能の値も選べます。</li>
       <li><b>バンコマイシンTDM</b>：母集団モデルによる初期設計の目安です。希釈量（生食 100／250／500 mL）・点滴時間と、初回の採血日時（通常は3日目）も表示します。必ず実測濃度で再設計してください。透析・CRRT 中は対象外です。</li>
-      <li><b>減量・休薬基準</b>：薬剤（商品名・一般名）とレジメンを選び、好中球・血小板などを入れると、電子添文の血液毒性の基準に沿って「継続可／休薬／延期／減量／中止」と、再開の目安・再開時の用量を表示します。休薬回数で用量が変わる薬剤は「今回の発現」を選んでください。</li>
+      <li><b>減量・休薬基準</b>：疾患ごとに並んだレジメン（D-VRd、KRd、Pola-BR など）を選び、好中球・血小板などを入れると、そのレジメンの構成薬それぞれについて、電子添文の血液毒性の基準に沿った「継続可／休薬／延期／減量／中止」と再開の目安・再開時の用量をまとめて表示します。一番上の判定はレジメン全体で最も重い対応です。薬剤ごとの「現在の用量」と、電子添文と【ガイド】（適正使用ガイドの試験規定）の切り替えは「薬剤ごとの基準・現在の用量」で選びます。検索欄に薬剤名を入れると、その薬剤を含むレジメンが出ます。休薬回数で用量が変わる薬剤は「今回の発現」を選んでください。</li>
       <li><b>CRS / ICANS</b>：原因薬剤を選ぶと、二重特異性抗体（テクベイリ・タービー・エルレフィオ・エプキンリ・ルンスミオ）は各薬剤の適正使用ガイドの管理ガイダンスと、電子添文の本剤の休薬・中止基準を表示します。CAR-T（キムリア・イエスカルタ・ブレヤンジ・アベクマ・カービクティ）は各製品の適正使用ガイドの管理アルゴリズムを表示します（グレードの判定基準は製品ごとに異なります。ブレヤンジ・アベクマは「本品投与後72時間未満」で対応が変わります）。「覚醒せず ICE 評価不能」は ICANS Grade 4 になります（誤タップに注意）。CRS と診断後に解熱薬・トシリズマブ・ステロイドを投与した場合は、発熱欄でそれを選ぶと、発熱がなくても血圧低下・低酸素でグレードを判定します。</li>
       <li><b>TLS</b>：疾患を選ぶと、その疾患で使う項目だけが表示されます。腎機能障害は Cr と基準上限（性別で自動）から自動判定します。</li>
     </ul>
@@ -2047,8 +2049,6 @@ const DMN = {
   pirto: 'ジャイパーカ（ピルトブルチニブ）', ven: 'ベネクレクスタ（ベネトクラクス）', epco: 'エプキンリ（エプコリタマブ）',
   vale: 'エザルミア（バレメトスタット）', moga: 'ポテリジオ（モガムリズマブ）',
 };
-const DMG = { 骨髄腫: ['lena', 'poma', 'btz', 'cfz', 'ixa', 'dara', 'isa', 'elo', 'tec', 'elr', 'tal'],
-              リンパ腫: ['lena', 'btz', 'benda', 'pola', 'bv', 'ibr', 'aca', 'zanu', 'pirto', 'ven', 'epco', 'vale', 'moga'] };
 const SRC = {
   lena: 'レブラミドカプセル 電子添文（2026年6月版）', poma: 'ポマリストカプセル 電子添文（2026年8月版）',
   btz: 'ベルケイド注射用 電子添文（2023年9月版）', cfz: 'カイプロリス点滴静注用 電子添文（2026年10月版）',
@@ -2166,7 +2166,6 @@ const DM = [
   /* ===== ダラツムマブ ===== */
   { d: 'dara', g: '骨髄腫', r: '未治療 MM：D-VRd', sec: '7.6', need: ['fn', 'inf', 'bleed'],
     t: [['Grade 4 の骨髄抑制（好中球 <500、血小板 <25,000 など。リンパ球減少を除く）、出血を伴う血小板 <50,000、発熱性好中球減少症、感染を伴う好中球減少', '他に明らかな要因がなければ、ベースライン又は Grade 2 以下（好中球 ≥1,000・血小板 ≥50,000）に回復するまで休薬。減量はしない']],
-    note: 'レナリドミドの減量は「レブラミド D-VRd」を選択。',
     f: x => [(lt(x.anc, 500) || lt(x.plt, 25000) || (lt(x.plt, 50000) && x.bleed) || x.fn || (x.inf && lt(x.anc, 1500))) && H('休薬',
       [lt(x.anc, 500) && ancT(x) + '（Grade 4）', lt(x.plt, 25000) && pltT(x) + '（Grade 4）', lt(x.plt, 50000) && x.bleed && '出血を伴う血小板減少', x.fn && '発熱性好中球減少症', x.inf && lt(x.anc, 1500) && '感染を伴う好中球減少'].filter(Boolean).join('・'),
       'ベースライン又は Grade 2 以下（好中球 ≥1,000・血小板 ≥50,000）', '減量なし（同量）')] },
@@ -2394,9 +2393,7 @@ aug('elr', null, { rs: RS.elr, note: '【ガイド】好中球 <1,000 では G-C
 aug('epco', null, { note: '投与間隔が空いた場合（7.4）：0.16 → 0.8 mg が 8日超、0.8 → 48 mg（FL Grade 1–3A は 0.8 → 3 mg が 8日超、3 → 48 mg が 14日超）が 14日超、48 mg の間隔が 6週超なら、1 サイクル目の漸増投与からやり直す。' });
 aug('benda', 'Pola-BR', { note: '【ガイド：GO29365 試験】Day 1 に Grade 3/4 の好中球減少があれば全薬剤を延期（最長 14日）し G-CSF を投与。予定日の 7日目までに好中球 >1,000 なら全量、8日目以降ならベンダムスチンを減量（ポラツズマブは好中球減少で減量しない）。好中球減少の主因が骨髄浸潤なら減量しなくてもよい。' });
 aug('ibr', 'マントル', { note: '【ガイド：試験の規定】血液毒性では、Grade 2 以上の出血がなく好中球 ≥750 又は血小板 >25,000 に回復するまで中断し、1回目は同量、2回目以降は 420 mg で再開（電子添文の基準のほうが厳しい）。' });
-aug('isa', null, { note: '【ガイド】試験では最初の 3 サイクルに G-CSF の予防投与が可能とされていた。Isa-Pd のポマリドミドは「ポマリスト：Isa-Pd」を選択。' });
-aug('cfz', null, { note: 'KRd のレナリドミドは「レブラミド：KRd」、DKd のダラツムマブは「ダラキューロ：その他の MM レジメン」を選択。' });
-aug('pola', null, { note: '【ガイド】Pola-BR のベンダムスチンの扱いは「トレアキシン：Pola-BR」を参照。' });
+aug('isa', null, { note: '【ガイド】試験では最初の 3 サイクルに G-CSF の予防投与が可能とされていた。' });
 
 DM.push(
   { d: 'lena', g: '骨髄腫', r: 'KRd（カルフィルゾミブ併用：ASPIRE 試験）', src: 'cfz', guide: true, sec: '2.3（表5-1〜5-3）', L: ['25 mg', '15 mg', '10 mg', '5 mg'], need: ['lvl', 'occ'],
@@ -2465,66 +2462,211 @@ Object.assign(DM.find(o => o.d === 'dara' && o.r.startsWith('その他')), {
     [lt(x.anc, 500) && ancT(x) + '（Grade 4）', lt(x.plt, 25000) && pltT(x) + '（Grade 4）', lt(x.plt, 50000) && x.bleed && '出血を伴う血小板減少', x.fn && '発熱性好中球減少症', x.inf && lt(x.anc, 1500) && '感染を伴う好中球減少'].filter(Boolean).join('・'),
     'Grade 2 以下（好中球 ≥1,000・血小板 ≥50,000）又はベースライン', '減量なし（遅れが大きい回は飛ばして次の予定日へ）')] });
 
-// 薬剤の選択肢（骨髄腫／リンパ腫で分け、商品名（一般名）で表示）
-$('dm-drug').innerHTML = '<option value="">薬剤を選択</option>' + Object.entries(DMG).map(([g, ds]) =>
-  `<optgroup label="${g}">${ds.map(d => `<option value="${g}:${d}">${DMN[d]}</option>`).join('')}</optgroup>`).join('');
-// 薬剤名の検索（ひらがなはカタカナに直して照合。レジメン名でも探せる）
-const kata = t => t.replace(/[ぁ-ゖ]/g, c => String.fromCharCode(c.charCodeAt(0) + 0x60)).replace(/[\s・（）()]/g, '').toLowerCase();
+/* ---------- 減量・休薬基準：疾患ごとのレジメン ---------- */
+// [レジメン名, 構成薬, このカードに基準を収載していない併用薬, 注記]
+// 構成薬は [薬剤id, DM の r に含まれる文字列…]。文字列が複数なら画面で選べる（先頭が初期値。電子添文を先、【ガイド】を後に）。文字列なしはその薬剤の全レジメン
+const DEX = 'デキサメタゾン', RTX = 'リツキシマブ';
+const DMRG = {
+  '多発性骨髄腫（未治療）': [
+    ['D-VRd（導入・地固め）', [['dara', '未治療 MM'], ['btz', '多発性骨髄腫・'], ['lena', 'D-VRd（導入']], DEX],
+    ['VRd', [['btz', '多発性骨髄腫・'], ['lena', '未治療の多発性']], DEX],
+    ['Isa-VRd', [['isa'], ['btz', '多発性骨髄腫・'], ['lena', '未治療の多発性']], DEX],
+    ['DRd（未治療）', [['dara', 'その他'], ['lena', '未治療の多発性']], DEX],
+    ['Rd（未治療）', [['lena', '未治療の多発性']], DEX],
+    ['D-VMP', [['dara', 'その他'], ['btz', '多発性骨髄腫・', 'VMP']], 'メルファラン・プレドニゾロン',
+      'ベルケイドの【ガイド】は VMP（ダラツムマブなし）の規定（海外添付文書）。D-VMP 固有の基準ではない。'],
+    ['VMP', [['btz', '多発性骨髄腫・', 'VMP']], 'メルファラン・プレドニゾロン'],
+  ],
+  '多発性骨髄腫（維持療法）': [
+    ['DR 維持（D-VRd 後）', [['dara', '未治療 MM'], ['lena', 'DR 維持']]],
+    ['イキサゾミブ維持療法', [['ixa', '1〜4', '5 サイクル']]],
+  ],
+  '多発性骨髄腫（再発・難治）': [
+    ['DRd', [['dara', 'その他'], ['lena', '再発又は難治性の多発']], DEX],
+    ['DVd', [['dara', 'その他'], ['btz', '多発性骨髄腫・']], DEX],
+    ['DKd', [['dara', 'その他'], ['cfz', '週2回', '週1回']], DEX],
+    ['DPd', [['dara', 'その他'], ['poma', 'Pd・PVd']], DEX],
+    ['KRd', [['cfz', 'KRd'], ['lena', '再発又は難治性の多発', 'KRd（']], DEX],
+    ['Kd', [['cfz', '週2回', '週1回']], DEX],
+    ['Isa-Kd', [['isa'], ['cfz', '週2回', '週1回']], DEX],
+    ['Isa-Pd', [['isa'], ['poma', 'Pd・PVd', 'Isa-Pd']], DEX],
+    ['Pd', [['poma', 'Pd・PVd']], DEX],
+    ['PVd', [['poma', 'Pd・PVd'], ['btz', '多発性骨髄腫・']], DEX],
+    ['IRd', [['ixa', '再発又は難治性（IRd', '交互'], ['lena', '再発又は難治性の多発']], DEX],
+    ['ELd', [['elo'], ['lena', '再発又は難治性の多発']], DEX],
+    ['EPd', [['elo'], ['poma', 'Pd・PVd']], DEX],
+    ['Rd（再発・難治）', [['lena', '再発又は難治性の多発']], DEX],
+    ['Bd（ボルテゾミブ）', [['btz', '多発性骨髄腫・']], DEX],
+    ['テクリスタマブ単剤', [['tec', '単剤']]],
+    ['テクリスタマブ＋ダラツムマブ', [['tec', 'ダラツムマブ併用'], ['dara', 'テクリスタマブ併用']]],
+    ['テクリスタマブ＋トアルクエタマブ', [['tec', 'トアルクエタマブ併用'], ['tal', 'テクリスタマブ併用']]],
+    ['エルラナタマブ単剤', [['elr']]],
+    ['トアルクエタマブ単剤', [['tal', '単剤（A法', '単剤（B法']]],
+  ],
+  'くすぶり型骨髄腫': [
+    ['ダラツムマブ単剤（高リスク）', [['dara', 'くすぶり']]],
+  ],
+  'AL アミロイドーシス': [
+    ['D-VCd', [['dara', 'AL アミロイドーシス'], ['btz', '多発性骨髄腫・']], 'シクロホスファミド・デキサメタゾン'],
+  ],
+  'DLBCL・大細胞型 B 細胞リンパ腫': [
+    ['Pola-R-CHP', [['pola']], 'R-CHP の各薬剤'],
+    ['Pola-BR', [['pola'], ['benda', 'Pola-BR']], RTX],
+    ['BR（再発・難治：120 mg/m²）', [['benda', 'DLBCL（BR 120']], RTX],
+    ['エプコリタマブ単剤', [['epco', '単剤']]],
+  ],
+  '濾胞性・辺縁帯リンパ腫': [
+    ['R²（リツキシマブ＋レナリドミド）', [['lena', '濾胞性']], RTX],
+    ['エプコリタマブ＋R²（FL）', [['epco', 'レナリドミド併用'], ['lena', '濾胞性']], RTX],
+    ['BR・ベンダムスチン単剤', [['benda', '低悪性度']], 'リツキシマブ（BR のとき）'],
+    ['エプコリタマブ単剤', [['epco', '単剤']]],
+  ],
+  'マントル細胞リンパ腫': [
+    ['VR-CAP', [['btz', 'VR-CAP']], 'リツキシマブ・シクロホスファミド・ドキソルビシン・プレドニゾロン'],
+    ['BR・ベンダムスチン単剤', [['benda', '低悪性度']], 'リツキシマブ（BR のとき）'],
+    ['アカラブルチニブ＋BR（未治療）', [['aca', 'BR 併用'], ['benda', 'アカラブルチニブ']], RTX],
+    ['イブルチニブ単剤', [['ibr', '560']]],
+    ['イブルチニブ＋ベネトクラクス', [['ibr', '560'], ['ven', 'イブルチニブ併用']]],
+    ['アカラブルチニブ単剤（再発・難治）', [['aca', 'CLL・再発']]],
+    ['ピルトブルチニブ', [['pirto']]],
+  ],
+  'CLL・SLL': [
+    ['イブルチニブ', [['ibr', '420']]],
+    ['アカラブルチニブ', [['aca', 'CLL・再発']]],
+    ['アカラブルチニブ＋ベネトクラクス（AV）', [['aca', 'CLL・再発', 'AMPLIFY'], ['ven', '慢性リンパ性']]],
+    ['ザヌブルチニブ', [['zanu']]],
+    ['ピルトブルチニブ', [['pirto']]],
+    ['ベネトクラクス（抗 CD20 抗体併用など）', [['ven', '慢性リンパ性']], '抗 CD20 抗体'],
+    ['BR・ベンダムスチン（100 mg/m²）', [['benda', '慢性リンパ性']], 'リツキシマブ（BR のとき）'],
+  ],
+  'WM・LPL': [
+    ['イブルチニブ', [['ibr', '420']]],
+    ['ザヌブルチニブ', [['zanu']]],
+    ['BR・ベンダムスチン単剤', [['benda', '低悪性度']], 'リツキシマブ（BR のとき）'],
+    ['ボルテゾミブを含むレジメン', [['btz', '多発性骨髄腫・']], 'ボルテゾミブ以外の併用薬'],
+  ],
+  'ホジキンリンパ腫': [
+    ['A-AVD', [['bv']], 'ドキソルビシン・ビンブラスチン・ダカルバジン'],
+    ['ブレンツキシマブ ベドチン単剤', [['bv']]],
+  ],
+  'PTCL・CTCL': [
+    ['BV-CHP（PTCL）', [['bv']], 'シクロホスファミド・ドキソルビシン・プレドニゾロン'],
+    ['バレメトスタット（PTCL）', [['vale', '末梢性']]],
+    ['モガムリズマブ', [['moga']]],
+  ],
+  '成人T細胞白血病リンパ腫': [
+    ['レナリドミド単剤', [['lena', '成人T']]],
+    ['バレメトスタット', [['vale', '成人T']]],
+    ['モガムリズマブ（単剤・化学療法併用）', [['moga']], '併用化学療法（mLSG15 など）の各薬剤'],
+  ],
+  'その他': [
+    ['慢性 GVHD：イブルチニブ', [['ibr', '420']]],
+  ],
+};
+const brand = d => DMN[d].split('（')[0];
+// 両剤の休薬・減量をまとめて決める【ガイド】の規定（選ぶと相手薬の欄もこの規定に従う）
+DM.find(o => o.d === 'ixa' && o.r.includes('交互')).cov = 'lena';
+DM.find(o => o.d === 'aca' && o.r.includes('AMPLIFY')).cov = 'ven';
+const DMR_BAD = [];                                                // 構成薬の指定が DM のレジメンと一対一に対応しないもの（テストで確認）
+const DMR = Object.entries(DMRG).flatMap(([g, rs]) => rs.map(([n, ps, oth, note]) => ({ g, n, k: g + '｜' + n, oth, note,
+  parts: ps.map(([d, ...subs]) => ({ d, os: subs.length ? subs.map(t => {
+    const m = DM.filter(o => o.d === d && o.r.includes(t));
+    if (m.length !== 1) DMR_BAD.push(`${g}｜${n}：${d}「${t}」が ${m.length} 件`);
+    return m[0];
+  }).filter(Boolean) : DM.filter(o => o.d === d) })) })));
+$('dm-reg').innerHTML = '<option value="">レジメンを選択</option>' + Object.keys(DMRG).map(g =>
+  `<optgroup label="${g}">${DMR.filter(R => R.g === g).map(R => `<option value="${R.k}">${R.n}</option>`).join('')}</optgroup>`).join('');
+// 検索（ひらがなはカタカナに直して照合）：レジメン名・疾患名・構成薬の商品名／一般名・併用薬で探す
+const kata = t => t.replace(/[ぁ-ゖ]/g, c => String.fromCharCode(c.charCodeAt(0) + 0x60)).replace(/[\s・（）()＋+：]/g, '').toLowerCase();
 $('dm-q').addEventListener('input', () => {
   const q = kata($('dm-q').value);
-  const hits = q ? Object.entries(DMG).flatMap(([g, ds]) => ds.map(d => [g, d]))
-    .filter(([g, d]) => kata(DMN[d]).includes(q) || DM.some(o => o.d === d && o.g === g && kata(o.r).includes(q)))
-    .sort((a, b) => kata(DMN[b[1]]).includes(q) - kata(DMN[a[1]]).includes(q)) : [];   // 薬剤名で一致したものを先に
-  $('dm-hits').innerHTML = hits.map(([g, d]) => `<button type="button" data-v="${g}:${d}">${DMN[d]}<small>${g}</small></button>`).join('') || (q ? '<span class="unit">該当なし</span>' : '');
+  const hits = q ? DMR.filter(R => kata(R.n + R.g + (R.oth || '')).includes(q) || R.parts.some(P => kata(DMN[P.d]).includes(q) || P.os.some(o => kata(o.r).includes(q))))
+    .sort((a, b) => kata(b.n).includes(q) - kata(a.n).includes(q)) : [];   // レジメン名で一致したものを先に
+  $('dm-hits').innerHTML = hits.slice(0, 30).map(R => `<button type="button" data-v="${R.k}">${R.n}<small>${R.g}</small></button>`).join('') || (q ? '<span class="unit">該当なし</span>' : '');
 });
 $('dm-hits').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
-  $('dm-drug').value = b.dataset.v; $('dm-q').value = ''; $('dm-hits').innerHTML = ''; calcAll();
+  $('dm-reg').value = b.dataset.v; $('dm-q').value = ''; $('dm-hits').innerHTML = ''; calcAll();
 });
-function calcDM() {
-  const [g, d] = ($('dm-drug').value || ':').split(':');
-  const regs = DM.filter(o => o.d === d && o.g === g);
-  const rs = $('dm-reg');
-  if (rs.dataset.k !== g + d) {                                    // 薬剤が変わったらレジメンを作り直す
-    rs.dataset.k = g + d; rs.innerHTML = regs.map((o, i) => `<option value="${i}">${o.r}</option>`).join('');
-  }
-  const o = regs[+rs.value] || regs[0];
-  const show = k => document.querySelectorAll(`#dm [data-need="${k}"]`).forEach(el => { el.style.display = o && (k === 'reg' ? regs.length > 1 : (o.need || []).includes(k)) ? '' : 'none'; });
-  ['reg', 'lvl', 'occ', 'tm', 'r7', 'ph', 'hb', 'dN', 'dP', 'nadir', 'fn', 'inf', 'bleed'].forEach(show);
-  document.querySelectorAll('#dm [data-need="rs"]').forEach(el => { el.style.display = o && o.rs ? '' : 'none'; });
-  if (!o) { box('r-dm', '判定', null, '薬剤を選択'); box('r-dmd', '詳細', null, ''); $('dm-tbl').innerHTML = ''; $('dm-src').textContent = ''; $('dm-ex').innerHTML = ''; return; }
-  const ls = $('dm-lvl'), key = g + d + o.r;
-  if (ls.dataset.k !== key) {                                      // レジメンが変わったら用量段階と追加項目を作り直す
-    ls.dataset.k = key; ls.innerHTML = (o.L || []).map((v, i) => `<option value="${i}"${i === (o.l0 || 0) ? ' selected' : ''}>${v}</option>`).join('');
-    $('dm-occ').value = '1';                                       // 発現回数は薬剤ごとに数え直す
-    $('dm-rprev').innerHTML = (o.rs || []).map(([p], i) => `<option value="${i}">${p}</option>`).join('');
-    $('dm-ex').innerHTML = (o.ex || []).map(([id, lab]) => `<label class="chk"><input type="checkbox" id="dm-x-${id}"><span>${lab}</span></label>`).join('');
-  }
-  const x = { anc: num('dm-anc'), plt: num('dm-plt'), hb: num('dm-hb'), fn: chk('dm-fn'), inf: chk('dm-inf'), bleed: chk('dm-bleed'),
-    dN: num('dm-dn') ?? 0, dP: num('dm-dp') ?? 0, nanc: num('dm-nanc'), nplt: num('dm-nplt'), occ: +$('dm-occ').value, lvl: +ls.value || 0, L: o.L || [],
-    tm: $('dm-tm').value, r7: $('dm-r7').value, ph: $('dm-ph').value };
-  (o.ex || []).forEach(([id]) => { x[id] = chk('dm-x-' + id); });
-  $('dm-tbl').innerHTML = `<table class="tier"><tr><th>条件</th><th>処置</th></tr>${o.t.map(([a, b]) => `<tr><td style="white-space:normal;width:42%">${a}</td><td>${b}</td></tr>`).join('')}</table>`;
-  $('dm-src').innerHTML = (o.guide ? `出典：${GSRC[o.src || o.d]} ${o.sec}（ガイドに掲載された臨床試験の規定）`
+const DM_PRI = ['中止', '休薬', '延期', '減量して継続'];
+// 1剤の判定：入力 x と基準 o から、結果の箱・基準表・出典を書き、対応（act）と再開時の用量を返す
+function dmOne(d, o, x) {
+  const id = 'r-dm-' + d, key = (o.guide ? '【ガイド】' : '') + o.r;
+  $('dm-tbl-' + d).innerHTML = `<table class="tier"><tr><th>条件</th><th>処置</th></tr>${o.t.map(([a, b]) => `<tr><td style="white-space:normal;width:42%">${a}</td><td>${b}</td></tr>`).join('')}</table>`;
+  $('dm-src-' + d).innerHTML = (o.guide ? `出典：${GSRC[o.src || o.d]} ${o.sec}（ガイドに掲載された臨床試験の規定）`
       : `出典：${SRC[o.src || o.d]} ${o.sec}${GSRC[o.d] ? `／${GSRC[o.d]}も確認済み` : ''}`) + (o.note ? '<br>' + o.note : '');
-  if (o.rs) {                                                      // 休薬期間による再開用量
-    const [pv, rows] = o.rs[+$('dm-rprev').value] || o.rs[0], days = num('dm-rdays');
-    if (days === null) box('r-dmrs', '再開時の用量', null, '休薬期間（日）を入力');
-    else { const r = rows.find(([lim]) => days <= lim)[1], step = /漸増|1日目/.test(r);
-      box('r-dmrs', `休薬直前 ${pv}・休薬 ${days}日`, r, (step ? '漸増用量から再開：投与開始1〜3時間前に前投与（副腎皮質ホルモン・抗ヒスタミン薬・解熱鎮痛薬）を行い、以降は用法・用量のスケジュールに従う' : '同じ用量で再開') + `<br>${SRC[o.d]} 7.4・7.5 など（休薬後に再開する場合の用量）`, 'txt'); }
-  }
-  if (o.none) { box('r-dm', DMN[d], '規定なし', '血球数による休薬・減量の規定は電子添文にない'); box('r-dmd', '詳細', '—', o.t[0][1]); return; }
-  if (x.anc === null && x.plt === null && x.hb === null && x.nanc === null && x.nplt === null) { box('r-dm', DMN[d], null, '好中球・血小板を入力'); box('r-dmd', '詳細', null, ''); return; }
+  if (o.none) { box(id, key, '規定なし', o.t[0][1]); return { act: '規定なし' }; }
+  if (x.anc === null && x.plt === null && x.hb === null && x.nanc === null && x.nplt === null) { box(id, key, null, '好中球・血小板を入力'); return { act: null }; }
   const hits = o.f(x).filter(Boolean);
   const gr = [x.anc !== null && `好中球 Grade ${x.anc < 500 ? 4 : x.anc < 1000 ? 3 : x.anc < 1500 ? 2 : '1以下'}`, x.plt !== null && `血小板 Grade ${x.plt < 25000 ? 4 : x.plt < 50000 ? 3 : x.plt < 75000 ? 2 : '1以下'}`].filter(Boolean).join('・');
   const g4a = o.t.some(([a]) => a.includes('Grade 4 の貧血'))         // CTCAE の Grade 4 の貧血は Hb の値では決まらないため自動判定しない
     ? '<br>Grade 4 の貧血（生命を脅かし緊急の処置を要する）も休薬の基準。Hb の値だけでは判定できないため臨床的に判断' : '';
-  if (!hits.length) { box('r-dm', DMN[d], '継続可', `休薬・減量基準に該当なし（${gr}）`); box('r-dmd', '詳細', '—', '入力した値では、電子添文の血液毒性の基準に該当しない' + g4a); return; }
-  const pri = ['中止', '休薬', '延期', '減量して継続'], act = pri.find(a => hits.some(h => h.act === a)) || hits[0].act;
-  box('r-dm', DMN[d], act, `${o.r}｜${gr}`, act === '中止' || act === '休薬' ? 'alert' : '');
-  box('r-dmd', '該当した基準と再開の目安', `${hits.length}件`, '<ul>' + hits.map(h => `<li><b>${h.why}</b>：${h.act}<br>再開の目安：${h.until}<br>再開時の用量：${h.dose}</li>`).join('') + '</ul>'
-    + (hits.length > 1 ? '複数該当する場合は、すべての再開条件を満たしてから、より低い用量で再開する' : '') + g4a, 'txt');
+  if (!hits.length) { box(id, key, '継続可', `休薬・減量基準に該当なし（${gr}）` + g4a); return { act: '継続可' }; }
+  const act = DM_PRI.find(a => hits.some(h => h.act === a)) || hits[0].act;
+  box(id, key, act, gr + '<ul>' + hits.map(h => `<li><b>${h.why}</b>：${h.act}<br>再開の目安：${h.until}<br>再開時の用量：${h.dose}</li>`).join('') + '</ul>'
+    + (hits.length > 1 ? '複数該当する場合は、すべての再開条件を満たしてから、より低い用量で再開する' : '') + g4a, act === '中止' || act === '休薬' ? 'alert' : '');
+  return { act, dose: [...new Set(hits.map(h => h.dose))].join('／') };
 }
+function calcDM() {
+  const R = DMR.find(R => R.k === $('dm-reg').value), cfg = $('dm-cfg');
+  if (cfg.dataset.k !== (R ? R.k : '')) {                         // レジメンが変わったら薬剤ごとの欄と結果の枠を作り直す
+    cfg.dataset.k = R ? R.k : '';
+    const ps = R ? R.parts : [], sel = ps.filter(P => P.os.length > 1 || P.os.some(o => o.L));
+    cfg.innerHTML = sel.length ? `<h3>薬剤ごとの基準・現在の用量</h3><div class="grid">${sel.map(P =>
+      (P.os.length > 1 ? `<label class="f full">${brand(P.d)}：基準<select id="dm-v-${P.d}">${P.os.map((o, i) => `<option value="${i}">${o.guide ? '【ガイド】' : '電子添文：'}${o.r}</option>`).join('')}</select></label>` : '')
+      + (P.os.some(o => o.L) ? `<label class="f full" id="dm-lw-${P.d}">${brand(P.d)}：現在の用量<select id="dm-lvl-${P.d}"></select></label>` : '')).join('')}</div>` : '';
+    $('dm-out').innerHTML = ps.map(P => `<h3 class="dmh">${DMN[P.d]}</h3><div class="results"><div class="res full txt" id="r-dm-${P.d}"></div></div><div id="dm-tbl-${P.d}"></div><p class="note" id="dm-src-${P.d}"></p>`).join('');
+    $('dm-rsx').innerHTML = ps.filter(P => P.os.some(o => o.rs)).map(P => `<label class="f full" id="dm-rw-${P.d}">${brand(P.d)}：休薬直前の用量<select id="dm-rprev-${P.d}"></select></label><div class="res full txt" id="r-dmrs-${P.d}"></div>`).join('');
+    $('dm-ex').innerHTML = ''; $('dm-ex').dataset.k = '';
+    $('dm-occ').value = '1';                                       // 発現回数はレジメンごとに数え直す
+    $('dm-mem').innerHTML = R ? `${R.g}｜構成：` + ps.map(P => DMN[P.d]).join('＋') + (R.oth ? `<br>このカードに未収載の併用薬：${R.oth}。骨髄抑制による休薬・減量は各薬剤の電子添文・レジメンの規定で別途確認する` : '') + (R.note ? '<br>' + R.note : '') : '';
+  }
+  // 薬剤ごとに、選んでいる基準（電子添文／【ガイド】・時期）
+  const cur = (R ? R.parts : []).map(P => ({ d: P.d, o: P.os[$('dm-v-' + P.d) ? +$('dm-v-' + P.d).value || 0 : 0] }));
+  cur.forEach(({ d, o }) => {
+    const ls = $('dm-lvl-' + d), rp = $('dm-rprev-' + d);
+    if (ls && ls.dataset.k !== o.r) {                               // 基準が変わったら用量段階を作り直す
+      ls.dataset.k = o.r; ls.innerHTML = (o.L || []).map((v, i) => `<option value="${i}"${i === (o.l0 || 0) ? ' selected' : ''}>${v}</option>`).join('');
+      $('dm-lw-' + d).style.display = o.L ? '' : 'none';
+    }
+    if (rp && rp.dataset.k !== o.r) { rp.dataset.k = o.r; rp.innerHTML = (o.rs || []).map(([p], i) => `<option value="${i}">${p}</option>`).join(''); }
+  });
+  // 追加のチェック項目（同じ id は1つにまとめる）
+  const ex = [...new Map(cur.flatMap(({ o }) => o.ex || []).map(e => [e[0], e])).values()], exk = ex.map(e => e[0]).join();
+  if ($('dm-ex').dataset.k !== exk) { $('dm-ex').dataset.k = exk; $('dm-ex').innerHTML = ex.map(([id, lab]) => `<label class="chk"><input type="checkbox" id="dm-x-${id}"><span>${lab}</span></label>`).join(''); }
+  const need = new Set(cur.flatMap(({ o }) => o.need || []));
+  ['occ', 'tm', 'r7', 'ph', 'hb', 'dN', 'dP', 'nadir', 'fn', 'inf', 'bleed'].forEach(k => document.querySelectorAll(`#dm [data-need="${k}"]`).forEach(el => { el.style.display = need.has(k) ? '' : 'none'; }));
+  document.querySelectorAll('#dm [data-need="cond"]').forEach(el => { el.style.display = ['occ', 'tm', 'r7', 'ph'].some(k => need.has(k)) ? '' : 'none'; });
+  document.querySelectorAll('#dm [data-need="rs"]').forEach(el => { el.style.display = cur.some(({ o }) => o.rs) ? '' : 'none'; });
+  if (!R) { box('r-dm', '判定', null, '疾患・レジメンを選択'); return; }
+  const x0 = { anc: num('dm-anc'), plt: num('dm-plt'), hb: num('dm-hb'), fn: chk('dm-fn'), inf: chk('dm-inf'), bleed: chk('dm-bleed'),
+    dN: num('dm-dn') ?? 0, dP: num('dm-dp') ?? 0, nanc: num('dm-nanc'), nplt: num('dm-nplt'), occ: +$('dm-occ').value,
+    tm: $('dm-tm').value, r7: $('dm-r7').value, ph: $('dm-ph').value };
+  ex.forEach(([id]) => { x0[id] = chk('dm-x-' + id); });
+  const res = cur.map(({ d, o }) => ({ d, ...dmOne(d, o, { ...x0, lvl: $('dm-lvl-' + d) ? +$('dm-lvl-' + d).value || 0 : 0, L: o.L || [] }) }));
+  cur.forEach(({ d, o }) => {                                     // 相手薬の欄を【ガイド】の規定に連動
+    if (!o.cov || !cur.some(c => c.d === o.cov)) return;
+    const r0 = res.find(r => r.d === d), r1 = res.find(r => r.d === o.cov), id = 'r-dm-' + o.cov;
+    r1.act = r0.act; r1.dose = r0.dose;
+    box(id, `【ガイド】${o.r} に従う`, r0.act, `${brand(d)}で【ガイド】（${o.r}）を選んでいるため、${brand(o.cov)}の休薬・減量もその規定で判定する（${brand(d)}の欄を参照）`
+      + (r0.dose ? `<br>再開時の用量：${r0.dose}` : '') + `<br>下の基準表は${brand(o.cov)}の電子添文（参考）`, r0.act === '中止' || r0.act === '休薬' ? 'alert' : '');
+  });
+  // 休薬期間による再開用量（二重特異性抗体）
+  const days = num('dm-rdays');
+  cur.filter(({ o }) => o.rs).forEach(({ d, o }) => {
+    const [pv, rows] = o.rs[+$('dm-rprev-' + d).value] || o.rs[0], id = 'r-dmrs-' + d;
+    if (days === null) { box(id, brand(d) + '：再開時の用量', null, '休薬期間（日）を入力'); return; }
+    const r = rows.find(([lim]) => days <= lim)[1], step = /漸増|1日目/.test(r);
+    box(id, `${brand(d)}：休薬直前 ${pv}・休薬 ${days}日`, r, (step ? '漸増用量から再開：投与開始1〜3時間前に前投与（副腎皮質ホルモン・抗ヒスタミン薬・解熱鎮痛薬）を行い、以降は用法・用量のスケジュールに従う' : '同じ用量で再開') + `<br>${SRC[d]} 7.4・7.5 など（休薬後に再開する場合の用量）`);
+  });
+  // レジメン全体：最も重い対応
+  const acts = res.map(r => r.act);
+  if (acts.every(a => a === null || a === '規定なし') && acts.includes(null)) { box('r-dm', R.n, null, '好中球・血小板を入力'); return; }
+  const top = [...DM_PRI, '継続可', '規定なし'].find(a => acts.includes(a));
+  box('r-dm', `${R.n}：レジメン全体`, top, res.map(r => `${brand(r.d)}：${r.act || '—'}${r.dose ? `（再開時の用量：${r.dose}）` : ''}`).join('<br>')
+    + '<br>薬剤ごとの基準・再開の目安は下に表示', top === '中止' || top === '休薬' ? 'alert' : '');
+}
+
 /* ---------- ガンマ計算 ---------- */
 const GM = [
   { n: 'カスタム（組成を手入力）' },
@@ -3045,16 +3187,20 @@ const MIGRATE = { 'mm-17p': 'mm-f17p', 'mm-414': 'mm-f414', 'mm-1416': 'mm-f1416
 const restore = ({ data, edited }) => {                          // 保存にない項目（後から増えた欄など）は初期値に戻す
   data = { ...data };
   for (const [o, n] of Object.entries(MIGRATE)) if (o in data && !(n in data)) data[n] = data[o] === true ? '1' : '';
-  fields().forEach(el => {
+  const put = el => {
     const k = fkey(el), has_ = k in data;
     if (el.type === 'radio') el.checked = has_ ? data[k] === el.value : el.defaultChecked;
     else if (el.type === 'checkbox') el.checked = has_ ? !!data[k] : el.defaultChecked;
     else if (el.tagName === 'SELECT') { if (has_) el.value = data[k]; else { const i = [...el.options].findIndex(o => o.defaultSelected); el.selectedIndex = i < 0 ? 0 : i; } }
     else el.value = has_ ? data[k] : el.defaultValue;
     delete el.dataset.edited;
-  });
+  };
+  // 減量・休薬の薬剤ごとの用量など、計算時に作られる欄があるので、保存値と一致するまで最大3回当て直す
+  for (let i = 0; i < 3; i++) {
+    fields().forEach(put); calcAll();
+    if (fields().every(el => { const k = fkey(el); return !(k in data) || (el.type === 'radio' ? true : el.type === 'checkbox' ? el.checked === !!data[k] : el.value === data[k]); })) break;
+  }
   (edited || []).forEach(id => { if ($(id)) $(id).dataset.edited = '1'; });
-  calcAll();
 };
 const showCur = () => {
   const c = loadCases().find(x => x.id === curCase);
