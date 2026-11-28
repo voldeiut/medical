@@ -141,6 +141,10 @@
   #r-ctm .v b { font-weight: 700; color: var(--acc); }
   .res.alert { background: #FFE1DE; }
   .res.alert .v { color: #C0473B; }
+  .res.warn { background: #FFF1D6; }
+  .res.warn .v { color: #A0660A; }
+  .resets { display: flex; flex-wrap: wrap; gap: 4px 20px; }
+  .reset.all { color: #9A8FA3; }
   .res .d b { font-weight: 600; }
   .checks.sub { margin-top: 8px; }
   .sublbl { font-size: 12px; color: var(--sub); margin: 10px 0 4px; }
@@ -387,7 +391,7 @@
     <p class="note">eGFRcr＝194×Cr<sup>−1.094</sup>×年齢<sup>−0.287</sup>（女性×0.739）。eGFRcys＝104×Cys<sup>−1.019</sup>×0.996<sup>年齢</sup>（女性×0.929）−8。<br>
       個別化＝標準化eGFR×BSA/1.73（BSAはDuBois式）。<br>
       eCCr＝Cockcroft-Gault（(140−年齢)×体重/(72×Cr)、女性×0.85）。日本の酵素法Crは Jaffe 法より約0.2 mg/dL低いため、Cr+0.2 で計算した値も併記。</p>
-    <button class="reset" type="button">入力をクリア</button>
+    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -443,7 +447,7 @@
     <div class="pages" id="rx-pages"></div>
     <p class="note" id="rx-note"></p>
     <p class="note">セフェピム・タゾバクタム/ピペラシリン・メロペネムは院内推奨（作成者の所属施設の院内推奨）を先頭に表示し、左右にスライドすると一般的な推奨を表示する。一般的な推奨は 添付文書・Sanford Guide・日本腎臓病薬物療法学会の腎機能別投与量一覧などを参考にした成人の目安。添付文書の CCr は Cockcroft-Gault 式（実測Cr）を前提とするものが多い。eGFR を使う場合は体表面積補正を外した個別化 eGFR を用いる。るい痩・高齢者では Cr が低く過大評価になりやすい。必ず最新の添付文書・施設基準で確認する。</p>
-    <button class="reset" type="button">入力をクリア</button>
+    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -508,7 +512,7 @@
     <p class="note">目標は 抗菌薬TDM臨床実践ガイドライン2022（日本化学療法学会・日本TDM学会）に準拠：AUC<sub>24</sub> 400–600 μg·h/mL（MIC 1 を前提）。AUC &gt;600 で腎障害リスクが上がる。トラフ値のみで管理する場合の目安は 10–15 μg/mL（トラフ &gt;20 は腎障害リスク）。重症例・腎機能が変動する例は AUC での管理が望ましい。初回 TDM は通常運用として投与開始3日目（開始48時間以降の最初の投与直前。q12h なら5回目、q24h なら3回目）に設定。重症例・腎機能が不安定な例では、ベイズ推定を前提に2日目の早期評価も選択肢になる。<br>
       予測は Matzke/Bauer の1-コンパートメント母集団モデル（消失速度定数 k＝0.00083×CCr＋0.0044 /時、分布容積 V＝0.7 L/kg 実体重）による初期設計の目安で、実測濃度にもとづくベイズ推定（PAT・Practical AUC-guided TDM など）とは一致しない。負荷投与は 25–30 mg/kg（実体重、上限の目安 3 g）。希釈は添付文書のとおり 0.5 g あたり 100 mL 以上（5 mg/mL 以下、生食または 5% ブドウ糖）。点滴時間は添付文書の 60 分以上を満たしたうえで、投与時反応（red neck 症候群）を避けるため 10 mg/分以下を目安に 30 分単位で切り上げて表示（0.5 g 60分、1 g 120分、1.5 g 150分）。施設の標準がある場合はそちらを優先する。<br>
       肥満（BMI ≥30）・浮腫・低栄養高齢者（Cr 低値）では CCr の推定誤差が大きい。血液透析・CRRT 中の患者には使わない。必ず実測濃度で再設計する。</p>
-    <button class="reset" type="button">入力をクリア</button>
+    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -575,7 +579,7 @@
       Harris-Benedict：男性 66.47+13.75W+5.0H−6.76A、女性 655.1+9.56W+1.85H−4.68A（W kg、H cm、A 歳）。TEE＝BEE×活動係数×ストレス係数。<br>
       タンパク質（静脈栄養ではアミノ酸量としてほぼ同量）：実体重で計算。BMI ≥25 と CKD・透析では標準体重で計算（肥満の体重の扱いは指針により標準体重・調整体重などで異なる）。一般 1.0–1.2、がん・侵襲・高齢者 1.2–1.5（ESPEN がんガイドライン 1.0–1.5）、重症 1.2–2.0 g/kg/日。CKD は日本腎臓学会の食事療法基準（G3b 以降 0.6–0.8、透析 0.9–1.2 g/kg 標準体重。KDIGO 2024 は 0.8）。低栄養・サルコペニア・急性期の異化亢進では制限を自動的に当てはめない。重症例は病期に応じて段階的に増やす。<br>
       脂質：総エネルギーの 20–30%（日本人の食事摂取基準）、1 g＝9 kcal。静脈栄養の脂肪乳剤は 1.0 g/kg/日以下、投与速度 0.1 g/kg/時以下が保守的な目安（製剤・病態で異なる。プロポフォール由来の脂質も合算する）。</p>
-    <button class="reset" type="button">入力をクリア</button>
+    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -624,7 +628,7 @@
     </div>
     <p class="note">mL/時 ＝ 投与量（μg/kg/min）× 体重 × 60 ÷ 濃度（μg/mL）。<br>
       組成は代表例。施設の標準希釈と異なる場合は薬剤量・全量を書き換えて使う。用量範囲は目安。</p>
-    <button class="reset" type="button">入力をクリア</button>
+    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -710,7 +714,7 @@
     <p class="note">Laboratory TLS（Cairo-Bishop）：尿酸 ≥8.0 mg/dL、K ≥6.0 mEq/L、P ≥4.5 mg/dL、補正Ca ≤7.0 mg/dL のうち2項目以上（または治療前から25%の変化）。Clinical TLS：LTLS＋Cr ≥1.5×基準上限・不整脈/突然死・痙攣のいずれか。Cr 基準上限は男性 1.07、女性 0.79（JCCLS）。<br>
       リスク分類は Cairo MS, et al. Br J Haematol 2010 と日本臨床腫瘍学会 TLS 診療ガイダンスに準拠。中間リスクで腎機能障害（Cr &gt;基準上限、自動判定）・腎浸潤、または尿酸・K・P が基準上限超（尿酸 &gt;7.0、K &gt;5.0、P &gt;4.5）なら高リスクへ。Burkitt・リンパ芽球性リンパ腫は、進行期（III/IV）・白血病型（Burkitt 白血病など）または LDH ≥2×基準上限なら高リスク、それ以外は中間リスク。バルキーは中高悪性度リンパ腫（LDH 高値例）と固形腫瘍で使う。ベネトクラクスは添付文書の腫瘍量分類（低：全リンパ節 &lt;5 cm かつ ALC &lt;25,000、高：リンパ節 ≥10 cm または ALC ≥25,000 かつリンパ節 ≥5 cm、他は中）。<br>
       輸液は 2,500–3,000 mL/m²/日、尿量 80–100 mL/m²/時を目標（心不全・腎不全では調整）。尿のアルカリ化はルーチンでは推奨されない。</p>
-    <button class="reset" type="button">入力をクリア</button>
+    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -745,8 +749,10 @@
       <label class="f">節外病変の部位数<input type="number" inputmode="numeric" id="ml-en" placeholder="0"></label>
     </div>
     <h3>節外病変の部位</h3>
+    <div class="grid" style="margin-bottom:8px">
+      <label class="f">骨髄浸潤<select id="ml-bms"><option value="">未検査</option><option value="0">なし</option><option value="1">あり</option></select></label>
+    </div>
     <div class="checks">
-      <label class="chk"><input type="checkbox" id="ml-bm"><span>骨髄</span></label>
       <label class="chk"><input type="checkbox" id="ml-cns"><span>CNS</span></label>
       <label class="chk"><input type="checkbox" id="ml-liver"><span>肝・消化管</span></label>
       <label class="chk"><input type="checkbox" id="ml-lung"><span>肺</span></label>
@@ -762,7 +768,7 @@
       <label class="f">Hb <span class="unit">g/dL</span><input type="number" inputmode="decimal" id="ml-hb" data-sync="hb"></label>
       <label class="f">リンパ節領域数 <span class="unit">FLIPI 領域</span><input type="number" inputmode="numeric" id="ml-nodes"></label>
       <label class="f">最大リンパ節の長径 <span class="unit">cm</span><input type="number" inputmode="decimal" id="ml-lnmax" data-sync="lnmax"></label>
-      <div class="f" style="align-self:end"><label class="chk"><input type="checkbox" id="ml-b2m"><span>β2MG &gt;基準上限</span></label></div>
+      <label class="f">β2MG<select id="ml-b2ms"><option value="">未測定</option><option value="0">基準上限以下</option><option value="1">&gt;基準上限</option></select></label>
     </div>
     <div class="results">
       <div class="res" id="r-flipi"></div>
@@ -784,7 +790,7 @@
       FLIPI2：年齢 &gt;60、β2MG &gt;基準上限、Hb &lt;12、骨髄浸潤、最大の罹患リンパ節の長径 &gt;6 cm。0 低、1–2 中、3–5 高（Federico M, et al. J Clin Oncol 2009）。<br>
       MIPI＝0.03535×年齢＋0.6978（PS &gt;1）＋1.367×log<sub>10</sub>(LDH/基準上限)＋0.9393×log<sub>10</sub>(WBC /μL)。&lt;5.7 低、5.7–6.2 未満 中、≥6.2 高（Hoster E, et al. Blood 2008）。<br>
       MIPI-c：MIPI 区分と Ki-67（≥30% を高値）の組み合わせ。低＋Ki-67低 → 低、低＋高 または 中＋低 → 低中、中＋高 または 高＋低 → 高中、高＋高 → 高（Hoster E, et al. J Clin Oncol 2016）。</p>
-    <button class="reset" type="button">入力をクリア</button>
+    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -836,7 +842,7 @@
     <p class="note">GELF（高腫瘍量）：最大腫瘤 ≥7 cm、長径 ≥3 cm の節性病変が3領域以上、B症状、脾腫、胸水・腹水、臓器圧迫（またはそのおそれ）、血球減少（好中球または白血球 &lt;1,000/μL、または血小板 &lt;10万/μL）、白血化（腫瘍細胞 &gt;5,000/μL）のいずれか（NCCN の記載に準拠。原著 Brice P, et al. J Clin Oncol 1997 では「&gt;7 cm」「&gt;3 cm」と記載）。血球減少・白血化はリンパ腫によるものに限る。<br>
       BNLI：3か月以内の急速な全身性進行、生命を脅かす臓器浸潤、腎・肝浸潤、骨病変、全身症状または掻痒、骨髄浸潤による血球減少（Hb &lt;10 g/dL、WBC &lt;3,000/μL、または血小板 &lt;10万/μL）のいずれか（Ardeshna KM, et al. Lancet 2003）。<br>
       いずれも満たさなければ低腫瘍量として無治療経過観察（watch and wait）が選択肢になる。</p>
-    <button class="reset" type="button">入力をクリア</button>
+    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -898,7 +904,7 @@
     <p class="note">改訂 Rai：0＝リンパ球増多のみ（低リスク）、I＝リンパ節腫大、II＝脾腫・肝腫大（I–II 中間リスク）、III＝Hb &lt;11 g/dL、IV＝血小板 &lt;10万/μL（III–IV 高リスク）。<br>
       Binet の領域は5つ：頸部・腋窩・鼠径のリンパ節（それぞれ片側でも両側でも1領域。右腋窩と左腋窩は合わせて1領域）、脾、肝。リンパ節の個数ではなく領域で数え、身体診察（触診）で判定する（Binet JL, et al. Cancer 1981）。Rai の I はこれ以外の部位を含め、触知するリンパ節腫大があれば該当。A＝Hb ≥10・血小板 ≥10万・2領域以下、B＝3領域以上、C＝Hb &lt;10 または血小板 &lt;10万。Rai・Binet とも自己免疫性の貧血・血小板減少は病期判定に用いない。<br>
       iwCLL 2018（Hallek M, et al. Blood 2018）：①進行性の骨髄不全（Hb &lt;10 g/dL・血小板 &lt;10万/μL が目安。ただし血小板減少が長期安定なら必須ではない）、②巨大（左肋骨弓下 ≥6 cm）・進行性・症候性の脾腫、③巨大（長径 ≥10 cm）・進行性・症候性のリンパ節腫大、④進行性リンパ球増多（2か月で ≥50% 増加、または倍加時間 &lt;6か月。初回リンパ球数 &lt;3万/μL では倍加時間だけで判断しない）、⑤ステロイド反応不良の自己免疫性血球減少、⑥症候性・機能障害のある節外病変、⑦病勢による症状（体重減少・倦怠感・発熱・盗汗）。いずれか1つで治療適応。早期・無症状なら経過観察。</p>
-    <button class="reset" type="button">入力をクリア</button>
+    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -927,13 +933,12 @@
       <label class="f">LDH <span class="unit">U/L</span><input type="number" inputmode="decimal" id="mm-ldh" data-sync="ldh"></label>
       <label class="f">LDH 基準上限 <span class="unit">U/L</span><input type="number" inputmode="decimal" id="mm-uln" data-sync="uln" value="222"></label>
     </div>
-    <h3>FISH（該当を選択）</h3>
-    <div class="checks">
-      <label class="chk"><input type="checkbox" id="mm-17p"><span>del(17p)</span></label>
-      <label class="chk"><input type="checkbox" id="mm-414"><span>t(4;14)</span></label>
-      <label class="chk"><input type="checkbox" id="mm-1416"><span>t(14;16)</span></label>
-      <label class="chk"><input type="checkbox" id="mm-1q"><span>1q gain/amp</span></label>
-      <label class="chk"><input type="checkbox" id="mm-nofish"><span>FISH未検査</span></label>
+    <h3>FISH（項目ごとに選択）</h3>
+    <div class="grid">
+      <label class="f">del(17p)<select id="mm-f17p"><option value="">未検査</option><option value="0">陰性</option><option value="1">陽性</option></select></label>
+      <label class="f">t(4;14)<select id="mm-f414"><option value="">未検査</option><option value="0">陰性</option><option value="1">陽性</option></select></label>
+      <label class="f">t(14;16)<select id="mm-f1416"><option value="">未検査</option><option value="0">陰性</option><option value="1">陽性</option></select></label>
+      <label class="f">1q gain/amp<select id="mm-f1q"><option value="">未検査</option><option value="0">陰性</option><option value="1">陽性</option></select></label>
     </div>
     <h3>Durie &amp; Salmon</h3>
     <div class="grid">
@@ -958,8 +963,8 @@
     <p class="note">ISS：β2MG&lt;3.5 かつ Alb≥3.5 → I、β2MG≥5.5 → III、他 II。<br>
       R-ISS：高リスク染色体異常＝del(17p)・t(4;14)・t(14;16)。<br>
       R2-ISS：ISS II 1点、ISS III 1.5点、del(17p) 1点、LDH高値 1点、t(4;14) 1点、1q+ 0.5点（0 I、0.5–1 II、1.5–2.5 III、3–5 IV）。<br>
-      D&amp;S：I＝Hb&gt;10・Ca≤12・骨正常/孤立性・低M蛋白（IgG&lt;5、IgA&lt;3、BJ&lt;4）をすべて満たす。III＝Hb&lt;8.5・Ca&gt;12・進行した溶骨病変・高M蛋白（IgG&gt;7、IgA&gt;5、BJ&gt;12）のいずれか。A：Cr&lt;2.0、B：Cr≥2.0。FISHは未選択の項目を「陰性」として計算するため、未検査なら「FISH未検査」を選ぶ。</p>
-    <button class="reset" type="button">入力をクリア</button>
+      D&amp;S：I＝Hb&gt;10・Ca≤12・骨正常/孤立性・低M蛋白（IgG&lt;5、IgA&lt;3、BJ&lt;4）をすべて満たす。III＝Hb&lt;8.5・Ca&gt;12・進行した溶骨病変・高M蛋白（IgG&gt;7、IgA&gt;5、BJ&gt;12）のいずれか。A：Cr&lt;2.0、B：Cr≥2.0。FISH は項目ごとに未検査・陰性・陽性を選ぶ。未検査が残り、陰性・陽性で病期が変わりうる場合は範囲で表示する（判定保留）。t(14;16) は R-ISS には入るが R2-ISS の配点には入らない。</p>
+    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -989,23 +994,23 @@
       <label class="f">尿M蛋白 <span class="unit">mg/24h</span><input type="number" inputmode="decimal" id="mt-um"></label>
       <label class="f">病的 FLC <span class="unit">mg/L</span><input type="number" inputmode="decimal" id="mt-ifl"></label>
       <label class="f">非病的 FLC <span class="unit">mg/L</span><input type="number" inputmode="decimal" id="mt-ufl"></label>
+      <label class="f full">非病変 Ig が2種以上低下（免疫不全）<select id="mt-ips"><option value="">未検査</option><option value="0">なし</option><option value="1">あり</option></select></label>
     </div>
     <div class="checks sub">
       <label class="chk"><input type="checkbox" id="mt-pct"><span>生検で形質細胞腫を確認</span></label>
-      <label class="chk"><input type="checkbox" id="mt-ip"><span>非病変 Ig が2種以上低下</span></label>
       <label class="chk"><input type="checkbox" id="mt-5y"><span>SMM 診断から5年超</span></label>
     </div>
     <h3>SLiM-CRAB</h3>
     <div class="grid">
-      <label class="f">MRI 局所病変（≥5 mm） <span class="unit">個</span><input type="number" inputmode="numeric" id="mt-mri"></label>
+      <label class="f">MRI 局所病変（≥5 mm） <span class="unit">個（未検査は空欄）</span><input type="number" inputmode="numeric" id="mt-mri"></label>
       <label class="f">補正Ca <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="mt-ca" data-sync="ca"></label>
       <label class="f">Ca 基準上限 <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="mt-caU" value="10.1"></label>
       <label class="f">Cr <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="mt-cr" data-sync="cr"></label>
       <label class="f">Hb <span class="unit">g/dL</span><input type="number" inputmode="decimal" id="mt-hb" data-sync="hb"></label>
       <label class="f">Hb 基準下限 <span class="unit">g/dL（任意）</span><input type="number" inputmode="decimal" id="mt-hbL"></label>
     </div>
-    <div class="checks sub">
-      <label class="chk"><input type="checkbox" id="mt-bone"><span>溶骨性病変 ≥1（CT・PET-CT・X線）</span></label>
+    <div class="grid" style="margin-top:10px">
+      <label class="f full">溶骨性病変 ≥1（CT・PET-CT・X線）<select id="mt-bones"><option value="">未検査</option><option value="0">なし</option><option value="1">あり</option></select></label>
     </div>
     <div class="results">
       <div class="res full" id="r-mtdx"></div>
@@ -1020,7 +1025,7 @@
       SMM：血清M ≥3 g/dL（IgG・IgA）または尿M ≥500 mg/24h、かつ／または骨髄クローナル形質細胞 10–59%、かつ MDE・アミロイドーシスなし。<br>
       Mayo 2/20/20（Lakshman A, et al. Blood Cancer J 2018）：血清M &gt;2 g/dL、FLC 比 &gt;20、骨髄形質細胞 &gt;20%。0 低、1 中、≥2 高リスク。<br>
       ダラツムマブ単剤（ダラキューロ配合皮下注、本邦 2025年11月承認）の対象＝AQUILA 試験の高リスク SMM：骨髄クローナル形質細胞 ≥10% かつ、①血清M ≥3 g/dL、②IgA 型、③非病変 Ig のうち2種以上の低下（免疫不全）、④FLC 比 ≥8 かつ &lt;100、⑤骨髄クローナル形質細胞 &gt;50% かつ &lt;60%（測定可能病変あり）のうち1つ以上。試験の対象は SMM 診断から5年以内で、測定可能病変を有すること（Dimopoulos MA, et al. N Engl J Med 2025）。最新の添付文書・最適使用推進ガイドラインで確認する。</p>
-    <button class="reset" type="button">入力をクリア</button>
+    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -1093,8 +1098,8 @@
       <b>PR</b>：血清M ≥50%減少＋尿M ≥90%減少または &lt;200 mg/24h。M蛋白測定不能なら dFLC ≥50%減少、FLCも測定不能なら骨髄形質細胞 ≥50%減少（治療前 ≥30%）。形質細胞腫があれば ≥50%縮小。<br>
       <b>MR</b>：血清M 25–49%減少＋尿M 50–89%減少。<br>
       <b>PD</b>：最良値から ≥25%増加 かつ 血清M 絶対値 +0.5 g/dL 以上（最良値 ≥5 g/dL なら +1 g/dL）、尿M +200 mg/24h 以上、dFLC +100 mg/L 超（M蛋白測定不能例）、骨髄形質細胞 +10%以上、または新規病変・形質細胞腫の増大・末梢血形質細胞増加。<br>
-      最良値が空欄なら治療前値を基準にする。判定には2回連続の評価で確認が必要（Kumar S, et al. Lancet Oncol 2016）。</p>
-    <button class="reset" type="button">入力をクリア</button>
+      最良値（各項目の最低値）が空欄の場合、治療前値からの増加で基準を満たせば PD（最良値は治療前値以下のため）。満たさなければ奏効後の再増悪を否定できないため「PD 判定保留」とする。判定には2回連続の評価で確認が必要（Kumar S, et al. Lancet Oncol 2016）。</p>
+    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -1161,7 +1166,7 @@
     <p class="note" id="dm-src"></p>
     <p class="note">各薬剤の電子添文（PMDA 掲載の最新版）の「用法及び用量に関連する注意」に記載された血液毒性の基準をまとめた目安。Grade は CTCAE に準じて、好中球 Grade 3 &lt;1,000・Grade 4 &lt;500、血小板 Grade 3 &lt;50,000・Grade 4 &lt;25,000、Grade 1 以下＝好中球 ≥1,500・血小板 ≥75,000 として判定。非血液毒性（末梢神経障害・皮疹・CRS など）の基準は含まない。併用薬はそれぞれの基準を確認する。<br>
       「【ガイド】」や出典が適正使用ガイドのレジメンは、ガイドに掲載された臨床試験の規定（電子添文の基準ではない）。適正使用ガイドが PMDA の資材一覧にない薬剤（ジャイパーカ・ブルキンザ・ポテリジオ）は電子添文のみ。</p>
-    <button class="reset" type="button">入力をクリア</button>
+    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -1213,7 +1218,7 @@
     <h3>CRS</h3>
     <div class="grid">
       <label class="f full">発熱（≥38.0℃）
-        <select id="ct-fever"><option value="0">なし</option><option value="1">あり</option><option value="2">解熱薬・トシリズマブ・ステロイドで消失</option></select>
+        <select id="ct-fever"><option value="0">なし</option><option value="1">あり</option><option value="2">CRS と診断後、解熱薬・トシリズマブ・ステロイドを投与し発熱なし</option></select>
       </label>
       <label class="f full">血圧低下
         <select id="ct-bp"><option value="0">なし</option><option value="2">あり（昇圧薬不要）</option>
@@ -1272,9 +1277,9 @@
       <div class="res" id="r-icans"></div>
       <div class="res full txt" id="r-ctm"></div>
     </div>
-    <p class="note">CRS は発熱が必須で、血圧低下・低酸素のうち重いほうで判定（他の原因によるものは除く）。ICANS は ICE スコア・意識・痙攣・運動所見・脳浮腫のうち最も重いもので判定（Lee DW, et al. Biol Blood Marrow Transplant 2019）。<br>
+    <p class="note">CRS は発熱（≥38.0℃）があり、血圧低下・低酸素のうち重いほうで判定（いずれも他の原因によるものは除く）。CRS と診断された後に解熱薬・トシリズマブ・ステロイドなどを投与した場合、その後のグレード判定に発熱は不要で、血圧低下・低酸素で判定する（発熱欄で選択）。ICANS は ICE スコア・意識・痙攣・運動所見・脳浮腫のうち最も重いもので判定（Lee DW, et al. Biol Blood Marrow Transplant 2019）。<br>
       対応は ASCO・NCCN ガイドラインなどを参考にした一般的な目安。製品ごとの適正使用ガイド・施設プロトコルを優先する。トシリズマブは本邦では体重 30 kg 以上 8 mg/kg、30 kg 未満 12 mg/kg。</p>
-    <button class="reset" type="button">入力をクリア</button>
+    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -1338,7 +1343,8 @@
     <ul>
       <li>カードをタップすると開き、入力した時点で結果が出ます。計算ボタンはありません。</li>
       <li>年齢・性別・身長・体重・Cr・LDH・Hb・血小板・WBC など<b>共通の項目は、1か所に入れると全カードに入ります</b>。</li>
-      <li>各カードの「入力をクリア」は、そのカードの入力と、共通の項目（全カード分）を消します。</li>
+      <li>各カードの下の「このカードだけクリア」は、そのカード固有の入力だけを消します（年齢・体重・Cr など共通の項目は残ります）。「症例全体をクリア」は全カードの入力を消します（確認あり。保存した症例は消えません）。</li>
+      <li>検査項目は「未検査」と「陰性・なし」を区別します。未検査のままで結果が変わりうるときは、範囲（例：II〜III）や「判定保留」を<b>黄色</b>で表示します。</li>
       <li>赤い背景・赤字の結果は、注意が必要な判定（高リスク・治療適応・目標範囲外など）です。</li>
       <li>カードの下の小さな文字に、判定基準と出典を書いています。</li>
     </ul>
@@ -1349,7 +1355,7 @@
     <ul>
       <li>「今の入力を保存」で、全カードの入力をまとめて保存します。名前は自動で「症例1」「症例2」…になり、保存日時が付きます。</li>
       <li>名前はタップして変更できます。<b>患者名・ID など個人が特定できる情報は入れないでください。</b></li>
-      <li>「呼び出す」で入力を復元、「今の入力で上書き」で更新、「新しい症例（全クリア）」で全カードを空にします。</li>
+      <li>「呼び出す」で入力を復元、「今の入力で上書き」で更新、「新しい症例（全クリア）」（各カードの「症例全体をクリア」と同じ）で全カードを空にします。</li>
       <li>呼び出し中の症例名は画面上部に表示されます。</li>
     </ul>
 
@@ -1387,14 +1393,14 @@
     <h4>カードごとのポイント</h4>
     <ul>
       <li><b>MLリスク分類</b>：IPI 系は上の欄、FLIPI・MIPI は下の欄を追加で入れます（年齢・LDH・病期などは共用）。</li>
-      <li><b>MMリスク分類</b>：FISH は未選択の項目を「陰性」として計算します。未検査なら「FISH未検査」を選んでください。</li>
-      <li><b>MM治療開始規準</b>：SLiM-CRAB から MM／SMM を判定し、SMM なら Mayo 2/20/20 とダラツムマブ単剤の対象（AQUILA 基準）を表示します。</li>
-      <li><b>MM治療効果判定</b>：最良値が空欄のときは治療前値を基準に PD を判定します。</li>
+      <li><b>MMリスク分類</b>：FISH は項目ごとに「未検査／陰性／陽性」を選びます。未検査が残っていて病期が変わりうるときは範囲で表示し、判定保留にします。</li>
+      <li><b>MM治療開始規準</b>：SLiM-CRAB から MM／SMM を判定し、SMM なら Mayo 2/20/20 とダラツムマブ単剤の対象（AQUILA 基準）を表示します。MRI・骨病変の画像・FLC などが未評価のままだと、SMM と断定せず「MDE 未確定」と表示します。</li>
+      <li><b>MM治療効果判定</b>：最良値（最低値）が空欄のときは、治療前値からの増加で基準を満たせば PD、満たさなければ「PD 判定保留」と表示します（奏効後の再増悪を見落とさないため）。現在が最良なら最良値に同じ値を入れてください。</li>
       <li><b>腎機能</b>：eCCr（Cr+0.2）は、日本の酵素法 Cr を CG 式の作成時の測定法（Jaffe 法）に近づけた値です。Cr が低い高齢者ほど差が大きくなります。</li>
       <li><b>薬剤投与量</b>：院内推奨（作成者の所属施設の院内推奨）がある薬剤はそれを先頭に表示し、<b>左右にスライド（またはタブ）で一般的な推奨</b>に切り替えます。判定に使う腎機能の値も選べます。</li>
       <li><b>バンコマイシンTDM</b>：母集団モデルによる初期設計の目安です。希釈量（生食 100／250／500 mL）・点滴時間と、初回の採血日時（通常は3日目）も表示します。必ず実測濃度で再設計してください。透析・CRRT 中は対象外です。</li>
       <li><b>減量・休薬基準</b>：薬剤（商品名・一般名）とレジメンを選び、好中球・血小板などを入れると、電子添文の血液毒性の基準に沿って「継続可／休薬／延期／減量／中止」と、再開の目安・再開時の用量を表示します。休薬回数で用量が変わる薬剤は「今回の発現」を選んでください。</li>
-      <li><b>CRS / ICANS</b>：原因薬剤を選ぶと、二重特異性抗体（テクベイリ・タービー・エルレフィオ・エプキンリ・ルンスミオ）は各薬剤の適正使用ガイドの管理ガイダンスと、電子添文の本剤の休薬・中止基準を表示します。CAR-T（キムリア・イエスカルタ・ブレヤンジ・アベクマ・カービクティ）は各製品の適正使用ガイドの管理アルゴリズムを表示します（グレードの判定基準は製品ごとに異なります。ブレヤンジ・アベクマは「本品投与後72時間未満」で対応が変わります）。「覚醒せず ICE 評価不能」は ICANS Grade 4 になります（誤タップに注意）。</li>
+      <li><b>CRS / ICANS</b>：原因薬剤を選ぶと、二重特異性抗体（テクベイリ・タービー・エルレフィオ・エプキンリ・ルンスミオ）は各薬剤の適正使用ガイドの管理ガイダンスと、電子添文の本剤の休薬・中止基準を表示します。CAR-T（キムリア・イエスカルタ・ブレヤンジ・アベクマ・カービクティ）は各製品の適正使用ガイドの管理アルゴリズムを表示します（グレードの判定基準は製品ごとに異なります。ブレヤンジ・アベクマは「本品投与後72時間未満」で対応が変わります）。「覚醒せず ICE 評価不能」は ICANS Grade 4 になります（誤タップに注意）。CRS と診断後に解熱薬・トシリズマブ・ステロイドを投与した場合は、発熱欄でそれを選ぶと、発熱がなくても血圧低下・低酸素でグレードを判定します。</li>
       <li><b>TLS</b>：疾患を選ぶと、その疾患で使う項目だけが表示されます。腎機能障害は Cr と基準上限（性別で自動）から自動判定します。</li>
     </ul>
 
@@ -1442,10 +1448,14 @@ function calcML() {
     const ipi = [fAge, fLdh, fPs, fSt, fEn].filter(Boolean).length;
     box('r-ipi', 'IPI', `${ipi}<small> / 5点</small>`, RISK4[ipi <= 1 ? 0 : Math.min(ipi - 1, 3)]);
 
-    const major = chk('ml-bm') || chk('ml-cns') || chk('ml-liver') || chk('ml-lung');
-    const n = (age > 75 ? 3 : age > 60 ? 2 : age > 40 ? 1 : 0) + (lr > 3 ? 2 : lr > 1 ? 1 : 0)
-            + (fSt ? 1 : 0) + (major ? 1 : 0) + (fPs ? 1 : 0);
-    box('r-nccn', 'NCCN-IPI', `${n}<small> / 8点</small>`, `${RISK4[n <= 1 ? 0 : n <= 3 ? 1 : n <= 5 ? 2 : 3]}（LDH比 ${fmt(lr, 2)}）`);
+    // 主要節外病変（骨髄・CNS・肝/消化管・肺）。骨髄が未検査で他の部位もなければ 0〜1点の範囲で計算
+    const bmv = $('ml-bms').value, majO = chk('ml-cns') || chk('ml-liver') || chk('ml-lung');
+    const n0 = (age > 75 ? 3 : age > 60 ? 2 : age > 40 ? 1 : 0) + (lr > 3 ? 2 : lr > 1 ? 1 : 0)
+             + (fSt ? 1 : 0) + (majO || bmv === '1' ? 1 : 0) + (fPs ? 1 : 0);
+    const n1 = n0 + (!majO && bmv === '' ? 1 : 0), nG = n => RISK4[n <= 1 ? 0 : n <= 3 ? 1 : n <= 5 ? 2 : 3];
+    if (n0 === n1) box('r-nccn', 'NCCN-IPI', `${n0}<small> / 8点</small>`, `${nG(n0)}（LDH比 ${fmt(lr, 2)}）`);
+    else if (nG(n0) === nG(n1)) box('r-nccn', 'NCCN-IPI', `${n0}〜${n1}<small> / 8点</small>`, `${nG(n0)}（骨髄未検査でも同じ群。LDH比 ${fmt(lr, 2)}）`);
+    else box('r-nccn', 'NCCN-IPI', `${n0}〜${n1}<small> / 8点</small>`, `判定保留：${nG(n0)}〜${nG(n1)}（骨髄浸潤が未検査）`, 'warn');
 
     const c = ipi + (chk('ml-kid') ? 1 : 0);
     box('r-cns', 'CNS-IPI', `${c}<small> / 6点</small>`, c <= 1 ? 'Low' : c <= 3 ? 'Intermediate' : 'High');
@@ -1458,9 +1468,14 @@ function calcML() {
     box('r-flipi', 'FLIPI', `${f}<small> / 5点</small>`, f <= 1 ? 'Low' : f === 2 ? 'Intermediate' : 'High');
   } else box('r-flipi', 'FLIPI', null, '年齢・病期・LDH・Hb・領域数');
   if (has(age, hb, lnmax)) {
-    const f = [age > 60, chk('ml-b2m'), hb < 12, chk('ml-bm'), lnmax > 6].filter(Boolean).length;
-    box('r-flipi2', 'FLIPI2', `${f}<small> / 5点</small>`, f === 0 ? 'Low' : f <= 2 ? 'Intermediate' : 'High');
-  } else box('r-flipi2', 'FLIPI2', null, '年齢・Hb・最大径（β2MG・骨髄はチェック）');
+    const b2 = $('ml-b2ms').value, bmv = $('ml-bms').value;
+    const f0 = [age > 60, b2 === '1', hb < 12, bmv === '1', lnmax > 6].filter(Boolean).length;
+    const u = [b2 === '' && 'β2MG', bmv === '' && '骨髄'].filter(Boolean), f1 = f0 + u.length;
+    const g = f => f === 0 ? 'Low' : f <= 2 ? 'Intermediate' : 'High';
+    if (!u.length) box('r-flipi2', 'FLIPI2', `${f0}<small> / 5点</small>`, g(f0));
+    else if (g(f0) === g(f1)) box('r-flipi2', 'FLIPI2', `${f0}〜${f1}<small> / 5点</small>`, `${g(f0)}（${u.join('・')}未検査でも同じ群）`);
+    else box('r-flipi2', 'FLIPI2', `${f0}〜${f1}<small> / 5点</small>`, `判定保留：${g(f0)}〜${g(f1)}（${u.join('・')}が未検査）`, 'warn');
+  } else box('r-flipi2', 'FLIPI2', null, '年齢・Hb・最大径・β2MG・骨髄');
 
   // MIPI・MIPI-c
   const wbc = num('ml-wbc'), ki = num('ml-ki67');
@@ -1565,18 +1580,26 @@ function calcMM() {
   const roman = ['', 'I', 'II', 'III', 'IV'];
   box('r-iss', 'ISS', iss ? roman[iss] : null);
 
-  const d17 = $('mm-17p').checked, t414 = $('mm-414').checked, t1416 = $('mm-1416').checked, q1 = $('mm-1q').checked;
-  if ($('mm-nofish').checked) {
-    box('r-riss', 'R-ISS', null, 'FISH結果が必要'); box('r-r2iss', 'R2-ISS', null, 'FISH結果が必要');
-  } else if (iss && has(ldh, uln)) {
-    const hiLdh = ldh > uln, hiCa = d17 || t414 || t1416;
-    const r = (iss === 1 && !hiCa && !hiLdh) ? 1 : (iss === 3 && (hiCa || hiLdh)) ? 3 : 2;
-    box('r-riss', 'R-ISS', roman[r], hiCa ? '高リスクCAあり' : '高リスクCAなし');
-    const s = (iss === 2 ? 1 : iss === 3 ? 1.5 : 0) + (d17 ? 1 : 0) + (hiLdh ? 1 : 0) + (t414 ? 1 : 0) + (q1 ? 0.5 : 0);
-    const r2 = s === 0 ? 1 : s <= 1 ? 2 : s <= 2.5 ? 3 : 4;
-    box('r-r2iss', 'R2-ISS', roman[r2], `${s}点`);
+  // FISH は項目ごとに '' 未検査・'0' 陰性・'1' 陽性。未検査は陰性・陽性の両方で計算し、結果が変わりうるなら範囲で表示（判定保留）
+  const F = { d17: $('mm-f17p').value, t414: $('mm-f414').value, t1416: $('mm-f1416').value, q1: $('mm-f1q').value };
+  const FN = { d17: 'del(17p)', t414: 't(4;14)', t1416: 't(14;16)', q1: '1q+' };
+  const unk = ks => ks.filter(k => F[k] === '').map(k => FN[k]).join('・');
+  if (iss && has(ldh, uln)) {
+    const hiLdh = ldh > uln, caK = ['d17', 't414', 't1416'];
+    const rissOf = hiCa => (iss === 1 && !hiCa && !hiLdh) ? 1 : (iss === 3 && (hiCa || hiLdh)) ? 3 : 2;
+    const caPos = caK.some(k => F[k] === '1'), caUnk = !caPos && caK.some(k => F[k] === '');
+    const lo = rissOf(caPos), hi = caUnk ? rissOf(true) : lo;
+    if (lo === hi) box('r-riss', 'R-ISS', roman[lo], caPos ? '高リスクCAあり' : caUnk ? `${unk(caK)} 未検査でも同じ病期` : '高リスクCAなし');
+    else box('r-riss', 'R-ISS', `${roman[lo]}〜${roman[hi]}`, `判定保留：${unk(caK)} が未検査`, 'warn');
+    const W = { d17: 1, t414: 1, q1: 0.5 }, r2K = Object.keys(W);
+    const s0 = (iss === 2 ? 1 : iss === 3 ? 1.5 : 0) + (hiLdh ? 1 : 0) + r2K.reduce((a, k) => a + (F[k] === '1' ? W[k] : 0), 0);
+    const s1 = s0 + r2K.reduce((a, k) => a + (F[k] === '' ? W[k] : 0), 0);
+    const r2 = s => s === 0 ? 1 : s <= 1 ? 2 : s <= 2.5 ? 3 : 4;
+    if (s0 === s1) box('r-r2iss', 'R2-ISS', roman[r2(s0)], `${s0}点`);
+    else if (r2(s0) === r2(s1)) box('r-r2iss', 'R2-ISS', roman[r2(s0)], `${s0}〜${s1}点（${unk(r2K)} 未検査でも同じ病期）`);
+    else box('r-r2iss', 'R2-ISS', `${roman[r2(s0)]}〜${roman[r2(s1)]}`, `判定保留：${s0}〜${s1}点、${unk(r2K)} が未検査`, 'warn');
   } else {
-    box('r-riss', 'R-ISS', null); box('r-r2iss', 'R2-ISS', null);
+    box('r-riss', 'R-ISS', null, 'β2MG・Alb・LDH と FISH'); box('r-r2iss', 'R2-ISS', null, 'β2MG・Alb・LDH と FISH');
   }
 
   const hb = num('mm-hb'), ca = num('mm-ca'), cr = num('mm-cr'), bj = num('mm-bj'), mval = num('mm-mval');
@@ -1677,7 +1700,7 @@ function calcMR() {
   const dflc = [0, 1, 2].map(i => has(ifl[i], ufl[i]) ? ifl[i] - ufl[i] : null);
   const bm0 = num('mr-bm0'), bm = num('mr-bm');
   const sife = $('mr-sife').value, uife = $('mr-uife').value, pc = $('mr-pc').value;
-  const ref = a => a[1] ?? a[0];                                  // 最良値（未入力なら治療前値）
+  const ref = a => a[1] ?? a[0];                                  // 最良値（未入力なら治療前値：治療前値から基準を満たせば最良値からも満たす）
   const red = a => a[0] > 0 && a[2] !== null ? (a[0] - a[2]) / a[0] : null;
   const pctTxt = x => x === null ? '—' : (x >= 0 ? `${Math.round(x * 100)}%減少` : `${Math.round(-x * 100)}%増加`);
   const sMeas = sm[0] !== null && sm[0] >= 1, uMeas = um[0] !== null && um[0] >= 200;
@@ -1685,13 +1708,19 @@ function calcMR() {
   const bMeas = !sMeas && !uMeas && !fMeas && bm0 !== null && bm0 >= 30;
 
   // 進行（PD）
-  const pd = [];
-  const rise = (a, absMin) => { const r0 = ref(a), c = a[2]; return r0 !== null && c !== null && c - r0 >= absMin && c >= r0 * 1.25; };
-  if (rise(sm, ref(sm) >= 5 ? 1 : 0.5)) pd.push('血清M増加');
-  if (rise(um, 200)) pd.push('尿M増加');
+  const pd = [], pdPend = [];
+  // 最良値が空欄の項目：治療前値からの増加で基準を満たせば PD（最良値 ≤ 治療前値なので十分条件）。
+  // 満たさなくても、現在値が絶対増加の下限以上なら奏効後の再増悪を否定できない → PD 判定保留
+  const pdChk = (a, name, absMin, minC, strict) => {
+    const r0 = ref(a), c = a[2];
+    if (r0 === null || c === null) return;
+    if ((strict ? c - r0 > absMin : c - r0 >= absMin) && c >= r0 * 1.25) pd.push(name + '増加' + (a[1] === null ? '（治療前値から）' : ''));
+    else if (a[1] === null && (strict ? c > minC : c >= minC)) pdPend.push(name);
+  };
+  pdChk(sm, '血清M', ref(sm) >= 5 ? 1 : 0.5, 0.5);
+  pdChk(um, '尿M', 200, 200);
   if (!sMeas && !uMeas) {
-    const r0 = ref(dflc), c = dflc[2];
-    if (r0 !== null && c !== null && c - r0 > 100 && c >= r0 * 1.25) pd.push('dFLC増加');
+    pdChk(dflc, 'dFLC', 100, 100, true);
     if (bm0 !== null && bm !== null && bm - bm0 >= 10) pd.push('骨髄形質細胞 +10%以上');
   }
   if (pc === 'prog') pd.push('形質細胞腫の増大');
@@ -1708,7 +1737,7 @@ function calcMR() {
   box('r-mrx', '測定可能病変 ・ 変化率', meas ?? (pd.length ? '—' : null),
       detail.join('<br>') || '治療前・現在の値を入力', 'txt');
 
-  if (pd.length) { box('r-mr', '効果判定', 'PD', pd.join('・') + '（最良値からの変化で判定）', 'alert'); return; }
+  if (pd.length) { box('r-mr', '効果判定', 'PD', pd.join('・') + '（最良値からの変化で判定。2回連続の評価で確認）', 'alert'); return; }
   if (!meas && !(sife === 'neg' && uife === 'neg')) { box('r-mr', '効果判定', null, '測定可能病変（血清M ≥1、尿M ≥200、iFLC ≥100）を入力'); return; }
 
   const pcOK = pc !== 'lt50';                                     // 形質細胞腫が残る場合は ≥50% 縮小が必要
@@ -1741,7 +1770,9 @@ function calcMR() {
     if (!pcOK && g !== 'SD') why = '形質細胞腫の縮小が50%未満のため PR 未満';
     if (uMeas && um[2] === null) why = '尿M未測定';
   }
-  box('r-mr', '効果判定', g, why || '2回連続の評価で確認');
+  if (pdPend.length) box('r-mr', '効果判定', `${g}<small>（PD 判定保留）</small>`,
+    `最良値（最低値）が未入力のため、奏効後の再増悪（PD）を判定できません（${pdPend.join('・')}）。最良値を入力してください（現在が最良なら同じ値）` + (why ? `<br>${why}` : ''), 'warn');
+  else box('r-mr', '効果判定', g, why || '2回連続の評価で確認');
 }
 
 /* ---------- 薬剤投与量（腎機能別） ---------- */
@@ -1867,13 +1898,18 @@ function calcMT() {
   const rC = ccr !== null && ccr < 40, rS = cr !== null && cr > 2;
   if (rC || rS) mde.push(`R：${[rC && `eCCr ${fmt(ccr)} mL/min`, rS && `Cr ${cr} mg/dL`].filter(Boolean).join('・')}`);
   if (hb !== null && (hb < 10 || (hbL !== null && hb < hbL - 2))) mde.push(`A：Hb ${hb} g/dL`);
-  if (chk('mt-bone')) mde.push('B：溶骨性病変');
+  const bone = $('mt-bones').value;
+  if (bone === '1') mde.push('B：溶骨性病変');
+  // 未評価の MDE 項目（未検査を「なし」と扱わない）
+  const unk = [bmpc === null && 'S（骨髄形質細胞）', ratio === null && 'Li（FLC 比）', mri === null && 'M（MRI）', ca === null && 'C（Ca）',
+               cr === null && ccr === null && 'R（腎機能）', hb === null && 'A（Hb）', bone === '' && 'B（骨病変の画像）'].filter(Boolean);
 
-  const any = [bmpc, sm, um, ifl, mri, ca, hb].some(x => x !== null) || chk('mt-pct') || chk('mt-bone');
+  const any = [bmpc, sm, um, ifl, mri, ca, hb].some(x => x !== null) || chk('mt-pct') || bone === '1';
   box('r-flcr', 'FLC 比（病的/非病的）', ratio !== null ? fmt(ratio, ratio < 10 ? 2 : 1) : null, ratio !== null ? '' : 'FLC を入力');
   if (!any) box('r-slim', 'SLiM-CRAB', null, '検査値を入力');
-  else box('r-slim', 'SLiM-CRAB', mde.length ? `該当 ${mde.length} 項目` : '該当なし',
-    mde.length ? '<ul>' + mde.map(x => `<li>${x}</li>`).join('') + '</ul>CRAB は形質細胞腫瘍によるものに限る（他の原因を除外）' : 'MDE なし', mde.length ? 'alert' : '');
+  else box('r-slim', 'SLiM-CRAB', mde.length ? `該当 ${mde.length} 項目` : unk.length ? '未評価の項目あり' : '該当なし',
+    mde.length ? '<ul>' + mde.map(x => `<li>${x}</li>`).join('') + '</ul>CRAB は形質細胞腫瘍によるものに限る（他の原因を除外）'
+      : unk.length ? `未評価：${unk.join('・')}。評価するまで MDE は否定できない` : 'MDE なし', mde.length ? 'alert' : unk.length ? 'warn' : '');
 
   const smm = (bmpc !== null && bmpc >= 10 && bmpc < 60) || ((type === 'G' || type === 'A') && sm !== null && sm >= 3) || (um !== null && um >= 500);
   const mm = mde.length > 0 && clonal;
@@ -1881,6 +1917,7 @@ function calcMT() {
   if (!any) box('r-mtdx', '判定', null, '骨髄形質細胞・M蛋白・CRAB を入力');
   else if (mm) { state = 'mm'; box('r-mtdx', '判定', '多発性骨髄腫：治療適応', 'MDE あり（骨髄クローナル形質細胞 ≥10% または形質細胞腫）', 'alert'); }
   else if (mde.length) box('r-mtdx', '判定', 'MDE あり・診断未確定', '骨髄クローナル形質細胞 ≥10% または生検で形質細胞腫の確認が必要');
+  else if (smm && unk.length) { state = 'smm'; box('r-mtdx', '判定', 'SMM の可能性（MDE 未確定）', `未評価の MDE 項目あり：${unk.join('・')}。すべて評価して MDE がなければ SMM。AL アミロイドーシスも除外`, 'warn'); }
   else if (smm) { state = 'smm'; box('r-mtdx', '判定', 'くすぶり型（SMM）', 'MDE なし。原則は経過観察。AL アミロイドーシスを除外'); }
   else if (bmpc !== null) box('r-mtdx', '判定', 'SMM の基準を満たさない', 'MGUS などを検討');
   else box('r-mtdx', '判定', null, '骨髄クローナル形質細胞 % を入力');
@@ -1896,7 +1933,8 @@ function calcMT() {
   const rf = [];
   if (sm !== null && sm >= 3) rf.push(`血清M ${sm} g/dL（≥3）`);
   if (type === 'A') rf.push('IgA 型');
-  if (chk('mt-ip')) rf.push('非病変 Ig 2種以上の低下（免疫不全）');
+  const ips = $('mt-ips').value;
+  if (ips === '1') rf.push('非病変 Ig 2種以上の低下（免疫不全）');
   if (ratio !== null && ratio >= 8 && ratio < 100) rf.push(`FLC 比 ${fmt(ratio)}（≥8 かつ <100）`);
   if (bmpc !== null && bmpc > 50 && bmpc < 60) rf.push(`骨髄形質細胞 ${bmpc}%（>50% かつ <60%、測定可能病変が必要）`);
   const key = 'ダラツムマブ単剤の対象（高リスク SMM・AQUILA）';
@@ -1904,7 +1942,9 @@ function calcMT() {
   else if (state !== 'smm') box('r-aquila', key, null, 'SMM と判定されたときに評価', 'txt');
   else if (bmpc === null || bmpc < 10) box('r-aquila', key, '対象外', '骨髄クローナル形質細胞 ≥10% が必要', 'txt');
   else if (chk('mt-5y')) box('r-aquila', key, '対象外', 'AQUILA の対象は SMM 診断から5年以内', 'txt');
-  else if (rf.length) box('r-aquila', key, '対象', '<ul>' + rf.map(x => `<li>${x}</li>`).join('') + '</ul>骨髄クローナル形質細胞 ≥10%＋上記のリスク因子。添付文書・最適使用推進ガイドラインで最終確認', 'txt');
+  else if (rf.length) box('r-aquila', key, unk.length ? '対象の可能性' : '対象', '<ul>' + rf.map(x => `<li>${x}</li>`).join('') + '</ul>骨髄クローナル形質細胞 ≥10%＋上記のリスク因子。'
+      + (unk.length ? '<b>MDE の未評価項目があり、SMM の確定が先</b>。' : '') + '添付文書・最適使用推進ガイドラインで最終確認', unk.length ? 'txt warn' : 'txt');
+  else if (ips === '' || ratio === null) box('r-aquila', key, 'リスク判定保留', `${[ips === '' && '免疫不全（非病変 Ig の低下）', ratio === null && 'FLC 比'].filter(Boolean).join('・')}が未検査。ほかのリスク因子（血清M ≥3、IgA 型、骨髄形質細胞 50–60%）はなし`, 'txt warn');
   else box('r-aquila', key, '対象外', 'リスク因子（血清M ≥3、IgA 型、免疫不全、FLC 比 8–100、骨髄形質細胞 50–60%）なし', 'txt');
 }
 
@@ -2530,9 +2570,14 @@ function calcGM() {
 function calcCT() {
   const wt = num('ct-wt'), fever = +$('ct-fever').value, bp = +$('ct-bp').value, o2 = +$('ct-o2').value;
   let crs = 0, crsTxt;
-  if (fever) { crs = Math.max(1, bp, o2); crsTxt = crs === 1 ? '発熱のみ' : ['', '', '低血圧（昇圧薬不要）または低流量酸素', '昇圧薬1剤 または 高流量酸素', '昇圧薬複数 または 陽圧換気'][crs]; }
-  else crsTxt = bp || o2 ? '発熱がないため CRS とは判定しない（解熱治療で消失した場合はそれを選択）' : '所見なし';
-  box('r-crs', 'CRS', crs ? `Grade ${crs}` : 'なし', crsTxt, crs >= 3 ? 'alert' : '');
+  const crsW = ['', '', '低血圧（昇圧薬不要）または低流量酸素', '昇圧薬1剤 または 高流量酸素', '昇圧薬複数 または 陽圧換気'];
+  if (fever === 1) { crs = Math.max(1, bp, o2); crsTxt = crs === 1 ? '発熱のみ' : crsW[crs]; }
+  else if (fever === 2) {                                          // ASTCT：CRS 治療（解熱薬・抗サイトカイン療法・ステロイド）後は発熱を必須とせず、低血圧・低酸素で判定
+    crs = Math.max(bp, o2);
+    crsTxt = crs ? `CRS 治療後の評価（発熱は不要）：${crsW[crs]}` : 'CRS 治療後：低血圧・低酸素なし（現在グレードに該当する所見なし）';
+  }
+  else crsTxt = bp || o2 ? '発熱がないため ASTCT の CRS グレーディング要件を満たさない（CRS と診断後の治療で解熱した場合は発熱欄でそれを選択）' : '所見なし';
+  box('r-crs', 'CRS', crs ? `Grade ${crs}` : fever === 2 ? '該当所見なし' : 'なし', crsTxt, crs >= 3 ? 'alert' : '');
 
   const unar = chk('ct-unar');
   $('ct-ice').classList.toggle('off', unar);
@@ -2842,19 +2887,17 @@ document.querySelectorAll('.card > .head').forEach(h => h.addEventListener('clic
   if (card.classList.contains('open')) setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
 }));
 document.querySelectorAll('.card .reset').forEach(b => b.addEventListener('click', () => {
-  const body = b.closest('.body');
-  body.querySelectorAll('input').forEach(i => {
-    if (i.type === 'checkbox' || i.type === 'radio') i.checked = i.defaultChecked;
-    else i.value = i.defaultValue;
+  if (b.classList.contains('all')) { $('cs-new').click(); return; }   // 症例全体：症例リストの「新しい症例（全クリア）」と同じ（確認あり）
+  // このカード固有の入力だけを初期値に戻す。年齢・体重・Cr など共通の項目（data-sync）は残す
+  b.closest('.body').querySelectorAll('input, select').forEach(el => {
+    if (el.dataset.sync) return;
+    if (el.type === 'checkbox' || el.type === 'radio') el.checked = el.defaultChecked;
+    else if (el.tagName === 'SELECT') { const i = [...el.options].findIndex(o => o.defaultSelected); el.selectedIndex = i < 0 ? 0 : i; }
+    else el.value = el.defaultValue;
+    delete el.dataset.edited;
   });
-  body.querySelectorAll('select').forEach(s => { s.selectedIndex = [...s.options].findIndex(o => o.defaultSelected); if (s.selectedIndex < 0) s.selectedIndex = 0; });
-  // 共通項目は他のカードからも消す（性別は全カードで未選択に戻す）
-  body.querySelectorAll('[data-sync]').forEach(el => {
-    if (el.type === 'radio') document.querySelectorAll(`[data-sync="${el.dataset.sync}"]`).forEach(r => { r.checked = false; });
-    else syncFrom(el);
-  });
-  body.querySelectorAll('[data-edited]').forEach(el => delete el.dataset.edited);
   calcAll();
+  toast('このカードの入力をクリアしました（共通の項目は残しています）');
 }));
 
 /* ---------- 並べ替え（端末内に保存） ---------- */
@@ -2994,7 +3037,12 @@ const snapshot = () => {
   });
   return { data, edited };
 };
+// 旧版のチェック欄（未選択＝陰性扱い）→ 3状態の欄。陽性だけ引き継ぎ、未選択は「未検査」にする（陰性と区別できないため）
+const MIGRATE = { 'mm-17p': 'mm-f17p', 'mm-414': 'mm-f414', 'mm-1416': 'mm-f1416', 'mm-1q': 'mm-f1q',
+                  'ml-b2m': 'ml-b2ms', 'ml-bm': 'ml-bms', 'mt-ip': 'mt-ips', 'mt-bone': 'mt-bones' };
 const restore = ({ data, edited }) => {                          // 保存にない項目（後から増えた欄など）は初期値に戻す
+  data = { ...data };
+  for (const [o, n] of Object.entries(MIGRATE)) if (o in data && !(n in data)) data[n] = data[o] === true ? '1' : '';
   fields().forEach(el => {
     const k = fkey(el), has_ = k in data;
     if (el.type === 'radio') el.checked = has_ ? data[k] === el.value : el.defaultChecked;
