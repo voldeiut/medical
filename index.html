@@ -141,6 +141,10 @@
   .lrt .lhd select { width: auto; padding: 3px 10px; }
   .addl { all: unset; font-size: 13px; color: var(--acc); margin-top: 8px; cursor: pointer; display: inline-block; padding: 4px 10px; border-radius: 999px; background: var(--tint); font-weight: 600; }
   .addl[hidden] { display: none; }
+  /* 最小時（最良値）の列：普段は隠し、「＋ 最小時を追加」で出す（.non で隠す） */
+  .tbl3.non { grid-template-columns: 4.4em repeat(2, minmax(0, 1fr)); }
+  .tbl3.non .nad { display: none; }
+  [hidden] { display: none !important; }   /* .grid・label.f などの display 指定に hidden が負けないように */
 
   .chk.warn span { background: #F1F2F5; border: 1.5px dashed #9AA0AC; color: #5C6270; }
   .chk.warn input:checked + span { background: #FDE2E0; border: 1.5px solid #C0473B; color: #A3352B; font-weight: 600; }
@@ -963,8 +967,8 @@
       <p class="note" style="margin-top:0">治療前に病変があった部位のうち、<b>今回の PET で最も集積が高い部位</b>を評価します（新病変は下の欄）。治療前のスコアではありません。</p>
       <div class="grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
         <label class="f">その部位 <span class="unit">SUVmax</span><input type="number" inputmode="decimal" id="lr-suv"></label>
-        <label class="f">縦隔血液プール<input type="number" inputmode="decimal" id="lr-med"></label>
         <label class="f">肝<input type="number" inputmode="decimal" id="lr-liv"></label>
+        <label class="f">縦隔血液プール<input type="number" inputmode="decimal" id="lr-med"></label>
       </div>
       <div class="grid" style="margin-top:8px">
         <label class="f full">今回の Deauville スコア
@@ -1009,45 +1013,43 @@
 
     <div id="lr-ct">
       <h3>CT：標的病変（最大6個、cm）</h3>
-      <div class="tbl3 lrt">
-        <span></span><span class="th">治療前</span><span class="th">最小時</span><span class="th">現在</span>
+      <div class="tbl3 lrt" id="lr-tbl">
+        <span></span><span class="th">治療前</span><span class="th nad">最小時</span><span class="th">現在</span>
       <div class="lgrp" id="lr-g1">
         <span class="lhd">病変1<select id="lr-t1"><option value="n">リンパ節</option><option value="e">節外</option></select></span>
-        <span class="rh">長径<small>LDi</small></span><input type="number" inputmode="decimal" id="lr-l1a"><input type="number" inputmode="decimal" id="lr-l1b"><input type="number" inputmode="decimal" id="lr-l1c">
-        <span class="rh">短径<small>SDi</small></span><input type="number" inputmode="decimal" id="lr-s1a"><input type="number" inputmode="decimal" id="lr-s1b"><input type="number" inputmode="decimal" id="lr-s1c">
+        <span class="rh">長径<small>LDi</small></span><input type="number" inputmode="decimal" id="lr-l1a"><input type="number" inputmode="decimal" class="nad" id="lr-l1b"><input type="number" inputmode="decimal" id="lr-l1c">
+        <span class="rh">短径<small>SDi</small></span><input type="number" inputmode="decimal" id="lr-s1a"><input type="number" inputmode="decimal" class="nad" id="lr-s1b"><input type="number" inputmode="decimal" id="lr-s1c">
       </div>
       <div class="lgrp" id="lr-g2">
         <span class="lhd">病変2<select id="lr-t2"><option value="n">リンパ節</option><option value="e">節外</option></select></span>
-        <span class="rh">長径<small>LDi</small></span><input type="number" inputmode="decimal" id="lr-l2a"><input type="number" inputmode="decimal" id="lr-l2b"><input type="number" inputmode="decimal" id="lr-l2c">
-        <span class="rh">短径<small>SDi</small></span><input type="number" inputmode="decimal" id="lr-s2a"><input type="number" inputmode="decimal" id="lr-s2b"><input type="number" inputmode="decimal" id="lr-s2c">
+        <span class="rh">長径<small>LDi</small></span><input type="number" inputmode="decimal" id="lr-l2a"><input type="number" inputmode="decimal" class="nad" id="lr-l2b"><input type="number" inputmode="decimal" id="lr-l2c">
+        <span class="rh">短径<small>SDi</small></span><input type="number" inputmode="decimal" id="lr-s2a"><input type="number" inputmode="decimal" class="nad" id="lr-s2b"><input type="number" inputmode="decimal" id="lr-s2c">
       </div>
       <div class="lgrp" id="lr-g3">
         <span class="lhd">病変3<select id="lr-t3"><option value="n">リンパ節</option><option value="e">節外</option></select></span>
-        <span class="rh">長径<small>LDi</small></span><input type="number" inputmode="decimal" id="lr-l3a"><input type="number" inputmode="decimal" id="lr-l3b"><input type="number" inputmode="decimal" id="lr-l3c">
-        <span class="rh">短径<small>SDi</small></span><input type="number" inputmode="decimal" id="lr-s3a"><input type="number" inputmode="decimal" id="lr-s3b"><input type="number" inputmode="decimal" id="lr-s3c">
+        <span class="rh">長径<small>LDi</small></span><input type="number" inputmode="decimal" id="lr-l3a"><input type="number" inputmode="decimal" class="nad" id="lr-l3b"><input type="number" inputmode="decimal" id="lr-l3c">
+        <span class="rh">短径<small>SDi</small></span><input type="number" inputmode="decimal" id="lr-s3a"><input type="number" inputmode="decimal" class="nad" id="lr-s3b"><input type="number" inputmode="decimal" id="lr-s3c">
       </div>
       <div class="lgrp" id="lr-g4">
         <span class="lhd">病変4<select id="lr-t4"><option value="n">リンパ節</option><option value="e">節外</option></select></span>
-        <span class="rh">長径<small>LDi</small></span><input type="number" inputmode="decimal" id="lr-l4a"><input type="number" inputmode="decimal" id="lr-l4b"><input type="number" inputmode="decimal" id="lr-l4c">
-        <span class="rh">短径<small>SDi</small></span><input type="number" inputmode="decimal" id="lr-s4a"><input type="number" inputmode="decimal" id="lr-s4b"><input type="number" inputmode="decimal" id="lr-s4c">
+        <span class="rh">長径<small>LDi</small></span><input type="number" inputmode="decimal" id="lr-l4a"><input type="number" inputmode="decimal" class="nad" id="lr-l4b"><input type="number" inputmode="decimal" id="lr-l4c">
+        <span class="rh">短径<small>SDi</small></span><input type="number" inputmode="decimal" id="lr-s4a"><input type="number" inputmode="decimal" class="nad" id="lr-s4b"><input type="number" inputmode="decimal" id="lr-s4c">
       </div>
       <div class="lgrp" id="lr-g5">
         <span class="lhd">病変5<select id="lr-t5"><option value="n">リンパ節</option><option value="e">節外</option></select></span>
-        <span class="rh">長径<small>LDi</small></span><input type="number" inputmode="decimal" id="lr-l5a"><input type="number" inputmode="decimal" id="lr-l5b"><input type="number" inputmode="decimal" id="lr-l5c">
-        <span class="rh">短径<small>SDi</small></span><input type="number" inputmode="decimal" id="lr-s5a"><input type="number" inputmode="decimal" id="lr-s5b"><input type="number" inputmode="decimal" id="lr-s5c">
+        <span class="rh">長径<small>LDi</small></span><input type="number" inputmode="decimal" id="lr-l5a"><input type="number" inputmode="decimal" class="nad" id="lr-l5b"><input type="number" inputmode="decimal" id="lr-l5c">
+        <span class="rh">短径<small>SDi</small></span><input type="number" inputmode="decimal" id="lr-s5a"><input type="number" inputmode="decimal" class="nad" id="lr-s5b"><input type="number" inputmode="decimal" id="lr-s5c">
       </div>
       <div class="lgrp" id="lr-g6">
         <span class="lhd">病変6<select id="lr-t6"><option value="n">リンパ節</option><option value="e">節外</option></select></span>
-        <span class="rh">長径<small>LDi</small></span><input type="number" inputmode="decimal" id="lr-l6a"><input type="number" inputmode="decimal" id="lr-l6b"><input type="number" inputmode="decimal" id="lr-l6c">
-        <span class="rh">短径<small>SDi</small></span><input type="number" inputmode="decimal" id="lr-s6a"><input type="number" inputmode="decimal" id="lr-s6b"><input type="number" inputmode="decimal" id="lr-s6c">
+        <span class="rh">長径<small>LDi</small></span><input type="number" inputmode="decimal" id="lr-l6a"><input type="number" inputmode="decimal" class="nad" id="lr-l6b"><input type="number" inputmode="decimal" id="lr-l6c">
+        <span class="rh">短径<small>SDi</small></span><input type="number" inputmode="decimal" id="lr-s6a"><input type="number" inputmode="decimal" class="nad" id="lr-s6b"><input type="number" inputmode="decimal" id="lr-s6c">
       </div>
         <span class="lhd">脾臓</span>
-        <span class="rh">長径</span><input type="number" inputmode="decimal" id="lr-sp0"><input type="number" inputmode="decimal" id="lr-sp1"><input type="number" inputmode="decimal" id="lr-sp2">
+        <span class="rh">長径</span><input type="number" inputmode="decimal" id="lr-sp0"><input type="number" inputmode="decimal" class="nad" id="lr-sp1"><input type="number" inputmode="decimal" id="lr-sp2">
       </div>
       <button class="addl" type="button" id="lr-add">＋ 病変を追加</button>
-      <div class="checks sub" style="margin-top:8px">
-        <label class="chk"><input type="checkbox" id="lr-first"><span>治療開始後の最初の評価（最小時＝治療前）</span></label>
-      </div>
+      <button class="addl" type="button" id="lr-nadd">＋ 最小時を追加（縮小後の再増大を判定）</button>
       <div class="grid" style="margin-top:8px">
         <label class="f full">非測定病変（標的以外の病変）
           <select id="lr-nm"><option value="">未選択</option><option value="none">なし（治療前から・消失）</option><option value="reg">残存（縮小・不変、増大なし）</option><option value="prog">明らかな増大</option></select>
@@ -1068,7 +1070,7 @@
         <b>PR</b>：最大6個の SPD（PPD の和）が治療前から ≥50% 減少、脾臓は 13 cm を超える部分が &gt;50% 縮小、非測定病変の増大なし、新病変なし。<b>SD</b>：SPD の減少 &lt;50% で PD の基準を満たさない。<br>
         <b>PD</b>（いずれか）：個々の病変が LDi &gt;1.5 cm かつ PPD が最小時から ≥50% 増加 かつ LDi または SDi が最小時から 0.5 cm（≤2 cm の病変）／1.0 cm（&gt;2 cm の病変）以上増加。脾腫があった場合は、13 cm を超えていた部分の &gt;50% の増大（例：15 cm → &gt;16 cm）。脾腫がなかった場合は ≥2 cm の増大。新規・再発の脾腫、非測定病変の明らかな増大、新病変、骨髄の新規・再発浸潤。<br>
         <b>解釈を補った点</b>：原典は「≤2 cm の病変」の大きさを測る時点を明記していないため最小時の LDi で区分した。脾臓の比較値は最小時（空欄なら治療前）とし、脾腫がなかった例は「≥2 cm 増大して 13 cm を超えた」ときに PD、13 cm を超えたが増大が 2 cm 未満なら判定保留とした。<br>
-        最小時が空欄の病変は、治療前値からの増加で PD の基準を満たせば PD（最小時は治療前以下のため）。満たさなければ縮小後の再増大を否定できないため「PD 判定保留」とする（最初の評価ならチェックを入れる）。Cheson BD, et al. J Clin Oncol 2014。</p>
+        最小時は普段は隠してあり、入れないときは治療前を最小時として判定する（いったん縮小した後の再増大は判定しない）。「＋ 最小時を追加」で入れた場合、空欄の病変は治療前値からの増加で PD の基準を満たせば PD（最小時は治療前以下のため）、満たさなければ「PD 判定保留」。Cheson BD, et al. J Clin Oncol 2014。</p>
     </div>
   </div>
 </section>
@@ -1213,17 +1215,18 @@
   <div class="body">
     <div class="resets"><span class="rl">入力値をクリア</span><button class="reset" type="button">このカードだけ</button><button class="reset all" type="button">症例全体</button></div>
     <h3>M蛋白・遊離軽鎖（FLC）</h3>
-    <div class="tbl3">
-      <span></span><span class="th">治療前</span><span class="th">最良値</span><span class="th">現在</span>
+    <div class="tbl3" id="mr-tbl">
+      <span></span><span class="th">治療前</span><span class="th nad">最良値</span><span class="th">現在</span>
       <span class="rh">血清M<small>g/dL</small></span>
-      <input type="number" inputmode="decimal" id="mr-sm0"><input type="number" inputmode="decimal" id="mr-sm1"><input type="number" inputmode="decimal" id="mr-sm2">
+      <input type="number" inputmode="decimal" id="mr-sm0"><input type="number" inputmode="decimal" class="nad" id="mr-sm1"><input type="number" inputmode="decimal" id="mr-sm2">
       <span class="rh">尿M<small>mg/24h</small></span>
-      <input type="number" inputmode="decimal" id="mr-um0"><input type="number" inputmode="decimal" id="mr-um1"><input type="number" inputmode="decimal" id="mr-um2">
+      <input type="number" inputmode="decimal" id="mr-um0"><input type="number" inputmode="decimal" class="nad" id="mr-um1"><input type="number" inputmode="decimal" id="mr-um2">
       <span class="rh">iFLC<small>mg/L 病的</small></span>
-      <input type="number" inputmode="decimal" id="mr-if0"><input type="number" inputmode="decimal" id="mr-if1"><input type="number" inputmode="decimal" id="mr-if2">
+      <input type="number" inputmode="decimal" id="mr-if0"><input type="number" inputmode="decimal" class="nad" id="mr-if1"><input type="number" inputmode="decimal" id="mr-if2">
       <span class="rh">uFLC<small>mg/L 非病的</small></span>
-      <input type="number" inputmode="decimal" id="mr-uf0"><input type="number" inputmode="decimal" id="mr-uf1"><input type="number" inputmode="decimal" id="mr-uf2">
+      <input type="number" inputmode="decimal" id="mr-uf0"><input type="number" inputmode="decimal" class="nad" id="mr-uf1"><input type="number" inputmode="decimal" id="mr-uf2">
     </div>
+    <button class="addl" type="button" id="mr-nadd">＋ 最良値（最低値）を追加（奏効後の再増悪を判定）</button>
     <h3>免疫固定法・骨髄・画像</h3>
     <div class="grid">
       <label class="f">血清 IFE
@@ -1264,7 +1267,7 @@
       <b>PR</b>：血清M ≥50%減少＋尿M ≥90%減少または &lt;200 mg/24h。M蛋白測定不能なら dFLC ≥50%減少、FLCも測定不能なら骨髄形質細胞 ≥50%減少（治療前 ≥30%）。形質細胞腫があれば ≥50%縮小。<br>
       <b>MR</b>：血清M 25–49%減少＋尿M 50–89%減少。<br>
       <b>PD</b>：最良値から ≥25%増加 かつ 血清M 絶対値 +0.5 g/dL 以上（最良値 ≥5 g/dL なら +1 g/dL）、尿M +200 mg/24h 以上、dFLC +100 mg/L 超（M蛋白測定不能例）、骨髄形質細胞 +10%以上、または新規病変・形質細胞腫の増大・末梢血形質細胞増加。<br>
-      最良値（各項目の最低値）が空欄の場合、治療前値からの増加で基準を満たせば PD（最良値は治療前値以下のため）。満たさなければ奏効後の再増悪を否定できないため「PD 判定保留」とする。判定には2回連続の評価で確認が必要（Kumar S, et al. Lancet Oncol 2016）。</p>
+      最良値（各項目の最低値）は普段は隠してあり、入れないときは治療前と比べて判定する（奏効後の再増悪は判定しない）。「＋ 最良値を追加」で入れた場合、空欄の項目は治療前値からの増加で基準を満たせば PD（最良値は治療前値以下のため）、満たさなければ「PD 判定保留」。判定には2回連続の評価で確認が必要（Kumar S, et al. Lancet Oncol 2016）。</p>
   </div>
 </section>
 
@@ -1314,9 +1317,9 @@
       </div>
     </div>
     <button class="addl" type="button" id="rc-add">＋ 病変を追加</button>
-    <div class="grid" style="margin-top:8px">
-      <label class="f">最小の径和 <span class="unit">mm</span><input type="number" inputmode="decimal" id="rc-nadir"></label>
-      <div class="checks sub" style="align-items:flex-end"><label class="chk"><input type="checkbox" id="rc-first"><span>最初の評価（最小＝治療前）</span></label></div>
+    <button class="addl" type="button" id="rc-nadd">＋ 最小の径和を追加（縮小後の再増大を判定）</button>
+    <div class="grid" id="rc-nadw" style="margin-top:8px">
+      <label class="f full">これまでの最小の径和 <span class="unit">mm（治療前を含む）</span><input type="number" inputmode="decimal" id="rc-nadir"></label>
     </div>
     <h3>非標的病変・新病変</h3>
     <div class="grid">
@@ -1656,11 +1659,11 @@
     <h4>カードごとのポイント</h4>
     <ul>
       <li><b>MLリスク分類</b>：IPI 系は上の欄、FLIPI・MIPI は下の欄を追加で入れます（年齢・LDH・病期などは共用）。</li>
-      <li><b>ML治療効果判定</b>：Lugano 分類で判定します。上の切り替えで PET-CT と CT を選びます。PET-CT は、治療前に病変があった部位のうち<b>今回の PET で最も集積が高い部位</b>の SUVmax と、今回の縦隔・肝の SUVmax を入れると、Deauville スコアを自動で付けて判定します（肝以下なら CMR の範囲）。視覚評価と違うときはスコアを手で選びます。4・5 のときだけ治療前の PET と比べた集積の変化を選びます。新たな集積・骨髄も選ぶと CMR／PMR／NMR／PMD が確定します（治療終了時の PMR は残存病変として赤）。CT は標的病変（最大6個）の長径・短径を治療前・最小時・現在で入れます（cm）。最小時が分からない2回目以降の評価は「PD 判定保留」になるので、最初の評価ならチェックを入れてください。</li>
-      <li><b>固形がん治療効果判定</b>：RECIST 1.1 と iRECIST を切り替えます。標的病変（最大5個、腫瘤は長径・リンパ節は短径、mm）の治療前・現在と、これまでの最小の径和を入れます。iRECIST では前回が iUPD なら、その理由と iUPD 時の径和、非標的・新病変の前回からの変化を入れると、iCPD（確定）・iUPD の継続・リセット（iCR/iPR/iSD）を判定します。</li>
+      <li><b>ML治療効果判定</b>：Lugano 分類で判定します。上の切り替えで PET-CT と CT を選びます。PET-CT は、治療前に病変があった部位のうち<b>今回の PET で最も集積が高い部位</b>の SUVmax と、今回の肝・縦隔の SUVmax を入れると、Deauville スコアを自動で付けて判定します（肝以下なら CMR の範囲）。視覚評価と違うときはスコアを手で選びます。4・5 のときだけ治療前の PET と比べた集積の変化を選びます。新たな集積・骨髄も選ぶと CMR／PMR／NMR／PMD が確定します（治療終了時の PMR は残存病変として赤）。CT は標的病変（最大6個）の長径・短径を治療前と現在で入れます（cm）。いったん縮小した後の再増大を PD と判定するときは「＋ 最小時を追加」で最小時も入れます。</li>
+      <li><b>固形がん治療効果判定</b>：RECIST 1.1 と iRECIST を切り替えます。標的病変（最大5個、腫瘤は長径・リンパ節は短径、mm）の治療前・現在を入れます。縮小した後の再増大を判定するときは「＋ 最小の径和を追加」でこれまでの最小の径和も入れます。iRECIST では前回が iUPD なら、その理由と iUPD 時の径和、非標的・新病変の前回からの変化を入れると、iCPD（確定）・iUPD の継続・リセット（iCR/iPR/iSD）を判定します。</li>
       <li><b>MMリスク分類</b>：FISH は項目ごとに「未検査／陰性／陽性」を選びます。未検査が残っていて病期が変わりうるときは範囲で表示し、判定保留にします。</li>
       <li><b>MM治療開始規準</b>：SLiM-CRAB から MM／SMM を判定し、SMM なら Mayo 2/20/20 とダラツムマブ単剤の対象（AQUILA 基準）を表示します。MRI・骨病変の画像・FLC などが未評価のままだと、SMM と断定せず「MDE 未確定」と表示します。</li>
-      <li><b>MM治療効果判定</b>：最良値（最低値）が空欄のときは、治療前値からの増加で基準を満たせば PD、満たさなければ「PD 判定保留」と表示します（奏効後の再増悪を見落とさないため）。現在が最良なら最良値に同じ値を入れてください。</li>
+      <li><b>MM治療効果判定</b>：ふだんは治療前と現在だけを入れます。<b>奏効後の再増悪（PD）は最良値（最低値）からの増加で判定する</b>ので、経過中に下がってから上がってきた例では「＋ 最良値を追加」で最良値を入れてください（入れないと治療前との比較だけになり、再増悪は判定しません）。</li>
       <li><b>腎機能</b>：eCCr（Cr+0.2）は、日本の酵素法 Cr を CG 式の作成時の測定法（Jaffe 法）に近づけた値です。Cr が低い高齢者ほど差が大きくなります。</li>
       <li><b>薬剤投与量</b>：院内推奨（作成者の所属施設の院内推奨）がある薬剤はそれを先頭に表示し、<b>左右にスライド（またはタブ）で一般的な推奨</b>に切り替えます。判定に使う腎機能の値も選べます。</li>
       <li><b>バンコマイシンTDM</b>：母集団モデルによる初期設計の目安です。希釈量（生食 100／250／500 mL）・点滴時間と、初回の採血日時（通常は3日目）も表示します。必ず実測濃度で再設計してください。透析・CRRT 中は対象外です。</li>
@@ -1700,6 +1703,17 @@ function box(id, key, val, desc, cls = '') {
   else el.innerHTML = `<div class="k">${key}</div><div class="v">${val}</div><div class="d">${desc || ''}</div>`;
 }
 const chk = id => $(id).checked;
+// 最小時（最良値）の欄：普段は隠す。「＋ 最小時を追加」を押すか、値が入っていれば表示。表示中かどうかを返す
+// 隠しているときは治療前を最小時（最良値）として判定し、縮小・奏効後の再増大は判定していないことを結果に書く
+const NADIR_OPEN = { lr: false, rc: false, mr: false };
+const nadirCol = (pre, sel, wrap) => {
+  const open = NADIR_OPEN[pre] || [...document.querySelectorAll(sel)].some(e => e.value !== '');
+  $(wrap).classList.toggle('non', !open);
+  if (wrap === 'rc-nadw') $(wrap).hidden = !open;
+  $(`${pre}-nadd`).hidden = open;
+  return open;
+};
+['lr', 'rc', 'mr'].forEach(pre => $(`${pre}-nadd`).addEventListener('click', () => { NADIR_OPEN[pre] = true; calcAll(); }));
 
 /* ---------- ML ---------- */
 const RISK4 = ['Low', 'Low-intermediate', 'High-intermediate', 'High'];
@@ -1965,6 +1979,7 @@ function calcMR() {
   const dflc = [0, 1, 2].map(i => has(ifl[i], ufl[i]) ? ifl[i] - ufl[i] : null);
   const bm0 = num('mr-bm0'), bm = num('mr-bm');
   const sife = $('mr-sife').value, uife = $('mr-uife').value, pc = $('mr-pc').value;
+  const open = nadirCol('mr', '#mr-tbl input.nad', 'mr-tbl');
   const ref = a => a[1] ?? a[0];                                  // 最良値（未入力なら治療前値：治療前値から基準を満たせば最良値からも満たす）
   const red = a => a[0] > 0 && a[2] !== null ? (a[0] - a[2]) / a[0] : null;
   const pctTxt = x => x === null ? '—' : (x >= 0 ? `${Math.round(x * 100)}%減少` : `${Math.round(-x * 100)}%増加`);
@@ -1980,7 +1995,7 @@ function calcMR() {
     const r0 = ref(a), c = a[2];
     if (r0 === null || c === null) return;
     if ((strict ? c - r0 > absMin : c - r0 >= absMin) && c >= r0 * 1.25) pd.push(name + '増加' + (a[1] === null ? '（治療前値から）' : ''));
-    else if (a[1] === null && (strict ? c > minC : c >= minC)) pdPend.push(name);
+    else if (open && a[1] === null && (strict ? c > minC : c >= minC)) pdPend.push(name);
   };
   pdChk(sm, '血清M', ref(sm) >= 5 ? 1 : 0.5, 0.5);
   pdChk(um, '尿M', 200, 200);
@@ -2037,7 +2052,7 @@ function calcMR() {
   }
   if (pdPend.length) box('r-mr', '効果判定', `${g}<small>（PD 判定保留）</small>`,
     `最良値（最低値）が未入力のため、奏効後の再増悪（PD）を判定できません（${pdPend.join('・')}）。最良値を入力してください（現在が最良なら同じ値）` + (why ? `<br>${why}` : ''), 'warn');
-  else box('r-mr', '効果判定', g, why || '2回連続の評価で確認');
+  else box('r-mr', '効果判定', g, [why || '2回連続の評価で確認', open ? '' : '最良値なし：治療前と比べて判定（奏効後の再増悪〔最良値から 25% 以上の増加〕は判定していない。必要なら「＋ 最良値を追加」）'].filter(Boolean).join('<br>'));
 }
 
 /* ---------- 薬剤投与量（腎機能別） ---------- */
@@ -3458,13 +3473,13 @@ function lrPET() {
             : med === null ? '1〜3' : suv > med ? '3' : '1〜2';
     const cmpTxt = suv > liv ? `その部位 ${suv} ＞ 肝 ${liv}（${fmt(suv / liv, 2)} 倍）`
                  : med === null ? `その部位 ${suv} ≤ 肝 ${liv}（縦隔を入れると 3 かどうかを区別）`
-                 : `その部位 ${suv} ${suv > med ? '＞' : '≤'} 縦隔 ${med}、≤ 肝 ${liv}`;
+                 : `その部位 ${suv} ≤ 肝 ${liv}、${suv > med ? '＞' : '≤'} 縦隔 ${med}`;
     if (sel === '') { ds = suv > liv ? '4' : '3'; auto = true; dsTxt = g; }      // 区分の計算用（1〜3 は CMR、4・5 は変化で判定）
     box('r-lrsuv', '今回の Deauville スコア', sel === '' ? `${g}<small>（SUVmax から）</small>` : `${sel}<small>（手で選択）</small>`,
         cmpTxt + (sel !== '' && sel !== g && !(g.includes(sel)) ? `。SUVmax からは ${g}（視覚評価を優先）` : '')
         + (sel === '' ? '。視覚評価と違えばスコアを手で選ぶ' : ''), 'txt');
   } else if (sel !== '') box('r-lrsuv', '今回の Deauville スコア', `${sel}<small>（手で選択）</small>`, '', 'txt');
-  else box('r-lrsuv', '今回の Deauville スコア', null, '今回の SUVmax（その部位・肝。3 かどうかは縦隔も）を入れるか、スコアを選択');
+  else box('r-lrsuv', '今回の Deauville スコア', null, '今回の SUVmax（その部位・肝、3 かどうかは縦隔も）を入れるか、スコアを選択');
   const hi = ds !== '' && +ds >= 4;
   $('lr-cmp').hidden = !hi;                                       // 治療前との比較は 4・5 のときだけ使う
   const dTxt = auto ? dsTxt : ds;
@@ -3504,7 +3519,7 @@ function lrPET() {
   box('r-lrp', K, name, [D[cat], ...why].join('<br>') + unkTxt(unk), bad ? 'alert' : unk.length ? 'warn' : '');
 }
 function lrCT() {
-  const first = chk('lr-first'), K = '効果判定（CT）';
+  const open = nadirCol('lr', '#lr-tbl input.nad', 'lr-tbl'), first = !open, K = '効果判定（CT）';
   const ppd = x => x[0] * x[1];
   const L = [], need = [], pd = [], pend = [];
   for (let i = 1; i <= 6; i++) {
@@ -3588,7 +3603,8 @@ function lrCT() {
   const name = { CR: 'CR<small>（完全奏効）</small>', PR: 'PR<small>（部分奏効）</small>', SD: 'SD<small>（安定）</small>' }[cat];
   const notes = [why];
   if (nw === 'eq') notes.unshift('新病変がリンパ腫か判断できない：生検または短期間での再検。リンパ腫なら PD');
-  if (pend.length) notes.unshift(`最小時が未入力のため、縮小後の再増大（PD）を判定できません（${pend.join('・')}）。最小時を入力してください（最初の評価ならチェック）`);
+  if (pend.length) notes.unshift(`最小時が未入力のため、縮小後の再増大（PD）を判定できません（${pend.join('・')}）。最小時を入力してください`);
+  if (!open) notes.push('最小時なし：治療前を最小時として判定（いったん縮小した後の再増大は判定していない。必要なら「＋ 最小時を追加」）');
   const txt = notes.filter(Boolean).join('<br>') + unkTxt(unk);
   if (pend.length || nw === 'eq') box('r-lrc', K, `${name.replace(/<small>.*<\/small>/, '')}<small>（PD 判定保留）</small>`, txt, 'warn');
   else box('r-lrc', K, name, txt || (cat === 'CR' ? 'すべての標的リンパ節 LDi ≤1.5 cm' : ''), unk.length ? 'warn' : '');
@@ -3615,7 +3631,8 @@ function calcRC() {
   const sum0 = T.reduce((s, t) => s + (t.a ?? 0), 0);
   const known = T.filter(t => t.c !== null), allC = known.length === T.length;
   const sumC = known.reduce((s, t) => s + t.c, 0);
-  const nIn = num('rc-nadir'), first = chk('rc-first');
+  const nOpen = nadirCol('rc', '#rc-nadir', 'rc-nadw');
+  const nIn = nOpen ? num('rc-nadir') : null, first = !nOpen;
   const sur = nIn === null && !first;                              // 最小値が不明：治療前の径和で代用（十分条件）
   const nadir = nIn !== null ? Math.min(nIn, sum0) : sum0;
 
@@ -3632,7 +3649,7 @@ function calcRC() {
   if (T.length && !need.length) {
     const pc = x => (x >= 0 ? '+' : '−') + Math.round(Math.abs(x) * 100) + '%';
     detail.push(`径和 ${sum0} → ${sumC} mm` + (sum0 > 0 ? `（治療前から ${pc((sumC - sum0) / sum0)}）` : '') + (allC ? '' : '（未入力の病変あり）'));
-    if (!sur) detail.push(`最小 ${nadir} mm から ${sumC - nadir >= 0 ? '+' : '−'}${fmt(Math.abs(sumC - nadir), 0)} mm` + (nadir > 0 ? `（${pc((sumC - nadir) / nadir)}）` : ''));
+    if (nIn !== null) detail.push(`最小 ${nadir} mm から ${sumC - nadir >= 0 ? '+' : '−'}${fmt(Math.abs(sumC - nadir), 0)} mm` + (nadir > 0 ? `（${pc((sumC - nadir) / nadir)}）` : ''));
   }
   if (small.length) detail.push('測定可能病変の基準に満たない：' + small.join('・'));
   box('r-rcx', '標的病変', T.length ? `${T.length}病変` : (tc === 'none' ? 'なし' : null), detail.join('<br>') || '治療前・現在の径を入力（mm）', 'txt');
@@ -3672,10 +3689,11 @@ function calcRC() {
   };
   const NAME = { CR: 'CR<small>（完全奏効）</small>', PR: 'PR<small>（部分奏効）</small>', SD: 'SD<small>（安定）</small>', PD: 'PD<small>（進行）</small>', NE: 'NE<small>（評価不能）</small>', 'Non-CR/Non-PD': '非CR／非PD' };
   const INAME = { CR: 'iCR', PR: 'iPR', SD: 'iSD', NE: 'NE<small>（評価不能）</small>', 'Non-CR/Non-PD': '非iCR／非iUPD' };
-  const PENDTXT = '最小の径和が未入力のため、縮小後の再増大（PD）を判定できません。最小の径和を入力してください（最初の評価ならチェック）';
+  const PENDTXT = '最小の径和が未入力のため、縮小後の再増大（PD）を判定できません。最小の径和を入力してください';
+  const NONADIR = nOpen ? '' : '最小の径和なし：治療前の径和を最小として判定（いったん縮小した後の再増大は判定していない。必要なら「＋ 最小の径和を追加」）';
   const show = (r, nm, extra = '') => {
     if (r.need) { box('r-rc', K, null, r.need); return; }
-    const notes = [r.why, extra];
+    const notes = [r.why, extra, T.length ? NONADIR : ''];
     if (r.eq) notes.unshift('新病変が判断できない：PD とせず次回の評価で確認（確定したら PD、日付は最初に見つけた時点）');
     if (r.pend) notes.unshift(PENDTXT);
     const txt = notes.filter(Boolean).join('<br>') + unkTxt(r.unk || []);
