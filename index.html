@@ -33,6 +33,7 @@
     --dm: #E9E7FB;   --dm-d: #6E68C8;
     --lr: #E5ECF4;   --lr-d: #56789E;
     --rc: #F2ECDD;   --rc-d: #9C8146;
+    --cm: #E0ECEC;   --cm-d: #4F7F86;
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
@@ -133,6 +134,7 @@
   .dm .ico { background: var(--dm); }  .dm { --acc: var(--dm-d); --tint: var(--dm); }
   .lr .ico { background: var(--lr); }  .lr { --acc: var(--lr-d); --tint: var(--lr); }
   .rc .ico { background: var(--rc); }  .rc { --acc: var(--rc-d); --tint: var(--rc); }
+  .cm .ico { background: var(--cm); }  .cm { --acc: var(--cm-d); --tint: var(--cm); }
   /* 治療効果判定の標的病変の表（ML・固形がん）。病変ごとの行のまとまり .lgrp が表示・非表示の単位 */
   .lgrp { display: contents; }
   .lgrp.off { display: none; }
@@ -930,6 +932,72 @@
   </div>
 </section>
 
+<!-- ================= CML リスク分類（ELTS・Sokal・Hasford・EUTOS）と病期 ================= -->
+<section class="card cm" id="cm">
+  <button class="head" type="button">
+    <div class="ico">
+      <!-- 9 番と 22 番の相互転座（左：der(9)、右上：フィラデルフィア染色体）と顆粒球 -->
+      <svg viewBox="0 0 64 64">
+        <rect x="7" y="7" width="8" height="48" rx="4" fill="#B9D6D9"/><rect x="16" y="7" width="8" height="48" rx="4" fill="#B9D6D9"/>
+        <rect x="7" y="43" width="8" height="12" rx="4" fill="#F3BDCB"/><rect x="16" y="43" width="8" height="12" rx="4" fill="#F3BDCB"/>
+        <rect x="7" y="7" width="8" height="48" rx="4" fill="none" stroke="#4F7F86" stroke-width="2"/><rect x="16" y="7" width="8" height="48" rx="4" fill="none" stroke="#4F7F86" stroke-width="2"/>
+        <path d="M7 21h17M9 31h4M18 31h4" stroke="#4F7F86" stroke-width="1.8" stroke-linecap="round"/>
+        <rect x="32" y="6" width="7" height="22" rx="3.5" fill="#F3BDCB"/><rect x="40" y="6" width="7" height="22" rx="3.5" fill="#F3BDCB"/>
+        <rect x="32" y="19" width="7" height="9" rx="3.5" fill="#B9D6D9"/><rect x="40" y="19" width="7" height="9" rx="3.5" fill="#B9D6D9"/>
+        <rect x="32" y="6" width="7" height="22" rx="3.5" fill="none" stroke="#4F7F86" stroke-width="2"/><rect x="40" y="6" width="7" height="22" rx="3.5" fill="none" stroke="#4F7F86" stroke-width="2"/>
+        <path d="M32 13h15" stroke="#4F7F86" stroke-width="1.8" stroke-linecap="round"/>
+        <circle cx="46" cy="47" r="12" fill="#FBF3F6" stroke="#C98AA0" stroke-width="2"/>
+        <path d="M39 46c0-3 3-4 4-2s-1 4 1 5 3-3 5-2 1 4 3 4 2-3 1-5" fill="none" stroke="#9E6C8F" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="42" cy="53" r="1.1" fill="#C98AA0"/><circle cx="51" cy="40" r="1.1" fill="#C98AA0"/><circle cx="50" cy="54" r="1.1" fill="#C98AA0"/>
+      </svg>
+    </div>
+    <div class="ttl"><b>CML​リスク分類</b><small>ELTS ・ Sokal ・ Hasford ・ EUTOS ・ 病期（ELN・ICC）</small></div>
+    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
+  <div class="body">
+    <div class="resets"><span class="rl">入力値をクリア</span><button class="reset" type="button">このカードだけ</button><button class="reset all" type="button">症例全体</button></div>
+    <h3>診断時・治療開始前の値</h3>
+    <div class="grid">
+      <label class="f">年齢<input type="number" inputmode="numeric" id="cm-age" data-sync="age" placeholder="歳"></label>
+      <label class="f">脾臓 左肋骨弓下 <span class="unit">cm（触れなければ 0）</span><input type="number" inputmode="decimal" id="cm-spl"></label>
+      <label class="f">Plt <span class="unit">/μL</span><input type="number" inputmode="numeric" id="cm-plt" data-sync="plt" placeholder="例 400000"></label>
+      <label class="f">末梢血 芽球 <span class="unit">%</span><input type="number" inputmode="decimal" id="cm-bl"></label>
+      <label class="f">末梢血 好塩基球 <span class="unit">%</span><input type="number" inputmode="decimal" id="cm-ba"></label>
+      <label class="f">末梢血 好酸球 <span class="unit">%</span><input type="number" inputmode="decimal" id="cm-eo"></label>
+    </div>
+    <div class="results">
+      <div class="res full" id="r-elts"></div>
+      <div class="res" id="r-sokal"></div>
+      <div class="res" id="r-hasford"></div>
+      <div class="res" id="r-eutos"></div>
+      <div class="res txt" id="r-cmeln"></div>
+    </div>
+    <h3>病期の確認（リスクスコアは慢性期で使う）</h3>
+    <div class="grid">
+      <label class="f">末梢血 前骨髄球 <span class="unit">%（任意）</span><input type="number" inputmode="decimal" id="cm-pro"></label>
+      <label class="f">骨髄 芽球 <span class="unit">%（任意）</span><input type="number" inputmode="decimal" id="cm-bmbl"></label>
+      <label class="f">骨髄 前骨髄球 <span class="unit">%（任意）</span><input type="number" inputmode="decimal" id="cm-bmpro"></label>
+      <label class="f full">Ph+ 細胞の付加的染色体異常（ACA）<select id="cm-aca"><option value="">未検査</option><option value="0">なし（Ph のみ）</option><option value="icc">+Ph・+8・i(17q)・+19・3q26.2・複雑核型</option><option value="eln">−7/7q−・11q23（上の選択肢の異常はなし）</option><option value="oth">その他の ACA のみ</option></select></label>
+    </div>
+    <div class="checks sub">
+      <label class="chk"><input type="checkbox" id="cm-emb"><span>脾臓以外の髄外芽球増殖（骨髄肉腫）</span></label>
+      <label class="chk"><input type="checkbox" id="cm-lyb"><span>形態上のリンパ芽球 &gt;5%（末梢血・骨髄）</span></label>
+    </div>
+    <div class="results">
+      <div class="res full txt" id="r-cmph-eln"></div>
+      <div class="res full txt" id="r-cmph-icc"></div>
+    </div>
+    <p class="note">いずれも<b>診断時・治療開始前</b>（ハイドロキシウレアなどの投与前）の値で計算する。治療後や慢性期後期の値では使わない（ELN 2013・2020）。脾臓は触診での左肋骨弓下の最大距離（cm）、芽球・好塩基球・好酸球は末梢血の白血球分画（%）、血小板は ×10⁹/L（/μL ÷ 1,000）。<br>
+      ELTS＝0.0025×(年齢/10)³＋0.0615×脾臓＋0.1052×芽球＋0.4104×(血小板/1000)^−0.5。低 ≤1.5680・中間 1.5680〜2.2185（1.5680 を超え 2.2185 以下）・高 &gt;2.2185（Pfirrmann M, et al. Leukemia 2016）。(年齢/10)³ と血小板の項は原著どおり小数3桁に丸め、スコアは小数4桁。ELN 2020（Hochhaus A, et al. Leukemia 2020）は ELTS の使用を推奨。<br>
+      Sokal＝exp[0.0116×(年齢−43.4)＋0.0345×(脾臓−7.51)＋0.188×{(血小板/700)²−0.563}＋0.0887×(芽球−2.10)]。低 &lt;0.8・中間 0.8〜1.2・高 &gt;1.2（Sokal JE, et al. Blood 1984）。<br>
+      Hasford（Euro）＝[0.6666（年齢 ≥50 歳）＋0.0420×脾臓＋0.0584×芽球＋0.0413×好酸球＋0.2039（好塩基球 ≥3%）＋1.0956（血小板 ≥150万/μL）]×1000。低 ≤780・中間 781〜1480・高 &gt;1480（Hasford J, et al. J Natl Cancer Inst 1998。インターフェロン時代の生存の予測）。Hasford の加点は公式の計算機と同じく年齢 ≥50・好塩基球 ≥3%・血小板 ≥1500×10⁹/L（ELN 2013 の表の「&gt;3%」「&gt;1500」「×100」は採らない）。<br>判定は原著の境界で行う。ELN 公式の計算機（leukemia-net.org）は ELTS で脾臓・芽球を整数に丸め、Sokal・Hasford を小数2桁に切り捨ててから判定するため、境界付近で群が変わるときは結果に併記して黄色で示す。18歳未満では成人のデータで作られたスコアであることを表示。<br>
+      EUTOS＝7×好塩基球＋4×脾臓。高 &gt;87・低 ≤87（Hasford J, et al. Blood 2011。イマチニブ治療での 18か月時の CCyR 不到達の予測。他の TKI での予測には一般化しない）。<br>
+      ELN 2020：ベースラインの高リスク ELTS・高リスク ACA は warning。高リスク ACA（+8、+Ph、i(17q)、+19、−7/7q−、11q23、3q26.2 異常、複雑核型）がある患者は高リスクとして扱う。<br>
+      病期（ELN。2013 の定義を 2020 も踏襲）：移行期（AP）＝末梢血または骨髄の芽球 15〜29%、または芽球＋前骨髄球 &gt;30%（芽球 &lt;30%）、末梢血好塩基球 ≥20%、治療と無関係に持続する血小板 &lt;10万/μL、治療中に出現した Ph+ 細胞の付加的染色体異常（major route。診断時の判定には使わない）。急性期（BP）＝芽球 ≥30%、脾臓以外の髄外芽球増殖（Baccarani M, et al. Blood 2013）。<br>
+      病期（ICC 2022、Arber DA, et al. Blood 2022）：AP＝末梢血または骨髄の芽球 10〜19%、末梢血好塩基球 ≥20%、Ph+ 細胞の ACA（+Ph、+8、i(17q)、+19、複雑核型、3q26.2 異常）。BP＝芽球 ≥20%、骨髄肉腫（髄外芽球増殖）。形態上のリンパ芽球 &gt;5% はリンパ性急性転化を考慮（免疫表現型で確認）。WHO 第5版（2022、Khoury JD, et al. Leukemia 2022）は AP を廃止し、BP＝骨髄系芽球 ≥20%、髄外芽球増殖、リンパ芽球の増加。</p>
+  </div>
+</section>
+
 <!-- ================= ML 治療効果判定（Lugano 2014） ================= -->
 <section class="card lr" id="lr">
   <button class="head" type="button">
@@ -1660,6 +1728,7 @@
       <li><b>MLリスク分類</b>：IPI 系は上の欄、FLIPI・MIPI は下の欄を追加で入れます（年齢・LDH・病期などは共用）。</li>
       <li><b>ML治療効果判定</b>：Lugano 分類で判定します。上の切り替えで PET-CT と CT を選びます。PET-CT は、治療前に病変があった部位のうち<b>今回の PET で最も集積が高い部位</b>の SUVmax と、今回の肝・縦隔の SUVmax を入れると、Deauville スコアを自動で付けて判定します（肝以下なら CMR の範囲）。視覚評価と違うときはスコアを手で選びます。4・5 のときだけ治療前の PET と比べた集積の変化を選びます。新たな集積・骨髄も選ぶと CMR／PMR／NMR／PMD が確定します（治療終了時の PMR は残存病変として赤）。CT は標的病変（最大6個）の長径・短径を治療前と現在で入れます（cm）。いったん縮小した後の再増大を PD と判定するときは「＋ 最小時を追加」で最小時も入れます。</li>
       <li><b>固形がん治療効果判定</b>：RECIST 1.1 と iRECIST を切り替えます。標的病変（最大5個、腫瘤は長径・リンパ節は短径、mm）の治療前・現在を入れます。縮小した後の再増大を判定するときは「＋ 最小時を追加」で、径和が最小だった時点の各病変の径も入れます（径和はアプリが計算）。iRECIST では前回が iUPD なら、その理由と、前回（iUPD 時）の各病変の径（表の「前回」の列）、非標的・新病変の前回からの変化を入れると、iCPD（確定）・iUPD の継続・リセット（iCR/iPR/iSD）を判定します。</li>
+      <li><b>CMLリスク分類</b>：診断時・治療開始前の年齢・脾臓（触診で左肋骨弓下の cm、触れなければ 0）・血小板・末梢血の芽球・好塩基球・好酸球を入れると、ELTS（ELN 2020 の推奨）・Sokal・Hasford（Euro）・EUTOS を表示します。スコアは慢性期のための指標なので、下の欄で病期（ELN と ICC 2022）も確かめます。Ph+ 細胞の付加的染色体異常（ACA）は「未検査／なし／種類」から選びます（未検査のままだと ICC の移行期を否定できないため黄色で表示）。</li>
       <li><b>MMリスク分類</b>：FISH は項目ごとに「未検査／陰性／陽性」を選びます。未検査が残っていて病期が変わりうるときは範囲で表示し、判定保留にします。</li>
       <li><b>MM治療開始規準</b>：SLiM-CRAB から MM／SMM を判定し、SMM なら Mayo 2/20/20 とダラツムマブ単剤の対象（AQUILA 基準）を表示します。MRI・骨病変の画像・FLC などが未評価のままだと、SMM と断定せず「MDE 未確定」と表示します。</li>
       <li><b>MM治療効果判定</b>：ふだんは治療前と現在だけを入れます。<b>奏効後の再増悪（PD）は最良値（最低値）からの増加で判定する</b>ので、経過中に下がってから上がってきた例では「＋ 最良値を追加」で最良値を入れてください（入れないと治療前との比較だけになり、再増悪は判定しません）。</li>
@@ -1859,6 +1928,105 @@ function calcCL() {
   else box('r-iwcll', 'iwCLL 治療開始規準', h.length ? '治療適応あり' : '経過観察',
     (h.length ? '<ul>' + h.map(x => `<li>${x}</li>`).join('') + '</ul>' : '活動性病変の規準に該当なし') + (ldtTxt && !h.some(x => x.startsWith('進行性リンパ球')) ? `<br>${ldtTxt}` : ''),
     h.length ? 'alert' : '');
+}
+
+/* ---------- CML（ELTS・Sokal・Hasford・EUTOS と病期：ELN・ICC 2022） ---------- */
+// 原典：Pfirrmann 2016（ELTS）、Sokal 1984、Hasford 1998（Euro）、Hasford 2011（EUTOS）。丸め・境界は ELN 公式の計算機（leukemia-net.org）に合わせる
+const CM_G = { L: '低リスク', I: '中間リスク', H: '高リスク' };
+const cmTrim = x => String(+x.toFixed(2));
+function calcCM() {
+  const age = num('cm-age'), spl = num('cm-spl'), plt = num('cm-plt'), bl = num('cm-bl'), ba = num('cm-ba'), eo = num('cm-eo');
+  const pro = num('cm-pro'), bm = num('cm-bmbl'), bmpro = num('cm-bmpro'), aca = $('cm-aca').value, emb = chk('cm-emb'), lyb = chk('cm-lyb');
+  const p9 = plt === null ? null : plt / 1000;   // ×10⁹/L
+  const lack = o => Object.entries(o).filter(([, v]) => v === null).map(([k]) => k).join('・');
+
+  // ---- 病期（先に決めて、AP/BP ならスコアの説明に添える） ----
+  const blMax = Math.max(bl ?? -1, bm ?? -1), blWhere = () => [bl !== null && `末梢血 ${bl}%`, bm !== null && `骨髄 ${bm}%`].filter(Boolean).join('・');
+  const anyPh = [bl, bm, ba, plt, pro, bmpro].some(x => x !== null) || emb || lyb || aca !== '';
+  let advanced = false;
+  if (!anyPh) {
+    box('r-cmph-eln', '病期（ELN）', null, '芽球・好塩基球・血小板など');
+    box('r-cmph-icc', '病期（ICC 2022）', null, '芽球・好塩基球・ACA など');
+  } else {
+    // ELN
+    const bp = [blMax >= 30 && `芽球 ≥30%（${blWhere()}）`, emb && '脾臓以外の髄外芽球増殖'].filter(Boolean);
+    const ap = [blMax >= 15 && blMax < 30 && `芽球 15〜29%（${blWhere()}）`,
+      bl !== null && pro !== null && bl < 30 && bl + pro > 30 && `末梢血 芽球＋前骨髄球 ${cmTrim(bl + pro)}%（>30%）`,
+      bm !== null && bmpro !== null && bm < 30 && bm + bmpro > 30 && `骨髄 芽球＋前骨髄球 ${cmTrim(bm + bmpro)}%（>30%）`,
+      ba !== null && ba >= 20 && `好塩基球 ${ba}%（≥20%）`].filter(Boolean);
+    const thr = plt !== null && plt < 100000;
+    const miss = lack({ '芽球': bl === null && bm === null ? null : 1, '好塩基球': ba, '血小板': plt });
+    const li = a => '<ul>' + a.map(x => `<li>${x}</li>`).join('') + '</ul>';
+    if (bp.length) box('r-cmph-eln', '病期（ELN）', '急性期（BP）', li(bp), 'alert');
+    else if (ap.length) box('r-cmph-eln', '病期（ELN）', '移行期（AP）', li(ap.concat(thr ? ['血小板 <10万/μL（治療と無関係に持続するなら AP の基準）'] : [])), 'alert');
+    else if (thr) box('r-cmph-eln', '病期（ELN）', '移行期の可能性', `血小板 ${plt.toLocaleString()}/μL（<10万）：治療と無関係に持続するなら移行期（AP）` + (miss ? `<br>未入力：${miss}` : ''), 'warn');
+    else box('r-cmph-eln', '病期（ELN）', '慢性期の範囲' + (miss ? '<small>（未確定）</small>' : ''),
+      (miss ? `入力した値は移行期・急性期の基準に該当しない。未入力：${miss}` : '入力した項目では移行期・急性期の基準に該当なし') + (bm === null && bl !== null ? '（骨髄未入力：末梢血の芽球で判定。骨髄・髄外の所見も確認）' : ''), miss ? 'warn' : '');
+    advanced = bp.length > 0 || ap.length > 0;
+
+    // ICC 2022
+    const ibp = [blMax >= 20 && `芽球 ≥20%（${blWhere()}）`, emb && '骨髄肉腫（髄外芽球増殖）'].filter(Boolean);
+    const iap = [blMax >= 10 && blMax < 20 && `芽球 10〜19%（${blWhere()}）`, ba !== null && ba >= 20 && `好塩基球 ${ba}%（≥20%）`,
+      aca === 'icc' && 'Ph+ 細胞の ACA（+Ph・+8・i(17q)・+19・3q26.2・複雑核型）'].filter(Boolean);
+    const lyTxt = 'リンパ芽球 >5%：リンパ性急性転化を考慮（免疫表現型で確認）';
+    const imiss = [bl === null && bm === null && '芽球', ba === null && '好塩基球', aca === '' && 'ACA（未検査）'].filter(Boolean).join('・');
+    if (ibp.length) box('r-cmph-icc', '病期（ICC 2022）', '急性期（BP）', li(ibp.concat(lyb ? [lyTxt] : [])), 'alert');
+    else if (lyb) box('r-cmph-icc', '病期（ICC 2022）', '急性期（リンパ性）を考慮', li([lyTxt].concat(iap)), 'alert');
+    else if (iap.length) box('r-cmph-icc', '病期（ICC 2022）', '移行期（AP）', li(iap), 'alert');
+    else box('r-cmph-icc', '病期（ICC 2022）', '慢性期の範囲' + (imiss ? '<small>（未確定）</small>' : ''),
+      (imiss ? `入力した値は移行期・急性期の基準に該当しない。未入力：${imiss}` : '入力した項目では移行期・急性期の基準に該当なし') + (bm === null && bl !== null ? '（骨髄未入力）' : '') + (aca === 'eln' ? '<br>−7/7q−・11q23 は ICC の移行期の基準にないが、ELN 2020 では高リスク ACA' : ''), imiss ? 'warn' : '');
+    advanced = advanced || ibp.length > 0 || iap.length > 0 || lyb;
+  }
+  const adv = advanced ? '<br>移行期・急性期の基準に該当：リスクスコアは慢性期のための指標' : '';
+
+  // ---- 判定は原著の境界で。ELN 公式の計算機（丸め・切り捨てが違う）と群が食い違うときだけ注記して黄色 ----
+  const ped = age !== null && age < 18 ? '<br>18歳未満：成人のデータで作られたスコア' : '';
+  const calcNote = (gRaw, gCalc, how) => gRaw === gCalc ? '' : `<br>ELN 公式の計算機（${how}）では${CM_G[gCalc]}：境界付近`;
+
+  // ---- ELTS（(年齢/10)³ と血小板の項は原著どおり小数3桁に丸める） ----
+  let eltsG = null;
+  if (has(age, spl, p9, bl) && p9 > 0) {
+    const at = Math.round((age / 10) ** 3 * 1000) / 1000, pt = Math.round((p9 / 1000) ** -0.5 * 1000) / 1000;   // 血小板は ×10⁹/L をさらに 1000 で割る（例 400 → 0.4）
+    const sc = (s, b) => Math.round((0.0025 * at + 0.0615 * s + 0.1052 * b + 0.4104 * pt) * 10000) / 10000;
+    const g = v => v > 2.2185 ? 'H' : v > 1.5680 ? 'I' : 'L';
+    const v = sc(spl, bl), vc = sc(Math.round(spl), Math.round(bl));
+    eltsG = g(v);
+    const cn = calcNote(eltsG, g(vc), `脾臓・芽球を整数に丸めて ${vc.toFixed(4)}`);
+    box('r-elts', 'ELTS（ELN 2020 の推奨）', v.toFixed(4), CM_G[eltsG] + '（低 ≤1.5680・高 >2.2185）' + cn + ped + adv, cn ? 'warn' : '');
+  } else box('r-elts', 'ELTS（ELN 2020 の推奨）', null, '要入力：' + lack({ '年齢': age, '脾臓': spl, '血小板': p9, '芽球': bl }));
+
+  // ---- Sokal ----
+  if (has(age, spl, p9, bl)) {
+    const v = Math.exp(0.0116 * (age - 43.4) + 0.0345 * (spl - 7.51) + 0.188 * ((p9 / 700) ** 2 - 0.563) + 0.0887 * (bl - 2.10));
+    const g = x => x < 0.8 ? 'L' : x <= 1.2 ? 'I' : 'H';
+    const f = Math.floor(v * 100 + 1e-9) / 100, gr = g(Math.round(v * 1e6) / 1e6);
+    const cn = calcNote(gr, g(f), `小数2桁に切り捨てて ${f.toFixed(2)}`);
+    const shown = g(+v.toFixed(2)) === gr && !cn ? v.toFixed(2) : v.toFixed(4);   // 2桁の表示が境界をまたいで見えるときは4桁で出す
+    box('r-sokal', 'Sokal', shown, CM_G[gr] + cn + ped + adv, cn ? 'warn' : '');
+  } else box('r-sokal', 'Sokal', null, '要入力：' + lack({ '年齢': age, '脾臓': spl, '血小板': p9, '芽球': bl }));
+
+  // ---- Hasford（Euro）：好塩基球 ≥3%・血小板 ≥1500×10⁹/L・年齢 ≥50 で加点（公式の計算機と同じ） ----
+  if (has(age, spl, p9, bl, ba, eo)) {
+    const v = Math.round((0.6666 * (age >= 50 ? 1 : 0) + 0.0420 * spl + 0.0584 * bl + 0.0413 * eo + 0.2039 * (ba >= 3 ? 1 : 0) + 1.0956 * (p9 >= 1500 ? 1 : 0)) * 1000 * 1e6) / 1e6;
+    const f = Math.floor(v * 100 + 1e-6) / 100;
+    const gr = v <= 780 ? 'L' : v <= 1480 ? 'I' : 'H', gc = f < 781 ? 'L' : f <= 1480 ? 'I' : 'H';
+    const cn = calcNote(gr, gc, `小数2桁に切り捨て、781 未満を低`);
+    box('r-hasford', 'Hasford（Euro）', cmTrim(v), CM_G[gr] + cn + ped + adv, cn ? 'warn' : '');
+  } else box('r-hasford', 'Hasford（Euro）', null, '要入力：' + lack({ '年齢': age, '脾臓': spl, '血小板': p9, '芽球': bl, '好塩基球': ba, '好酸球': eo }));
+
+  // ---- EUTOS ----
+  if (has(spl, ba)) {
+    const v = 7 * ba + 4 * spl;
+    box('r-eutos', 'EUTOS', cmTrim(v), (v > 87 ? '高リスク' : '低リスク') + '（イマチニブ治療での 18か月時の CCyR 不到達の予測。>87 で高）' + ped + adv);
+  } else box('r-eutos', 'EUTOS', null, '要入力：' + lack({ '脾臓': spl, '好塩基球': ba }));
+
+  // ---- ELN 2020 のベースライン（高リスク ELTS・高リスク ACA は warning） ----
+  const hiAca = aca === 'icc' || aca === 'eln';
+  const hr = [eltsG === 'H' && '高リスク ELTS', hiAca && '高リスク ACA'].filter(Boolean);
+  if (hr.length) box('r-cmeln', 'ELN 2020 ベースライン', 'warning', `${hr.join('・')}：治療選択・モニタリングで考慮` + (hiAca ? '。高リスク ACA の患者は高リスクとして扱う（ELN 2020）' : '') + (eltsG === null ? '（ELTS は未計算）' : aca === '' ? '（ACA は未検査）' : ''), 'alert');
+  else if (eltsG !== null && aca !== '') box('r-cmeln', 'ELN 2020 ベースライン', '該当なし', '高リスク ELTS・高リスク ACA なし');
+  else if (eltsG !== null) box('r-cmeln', 'ELN 2020 ベースライン', '未確定', 'ELTS は高リスクではない。ACA が未検査', 'warn');
+  else box('r-cmeln', 'ELN 2020 ベースライン', null, 'ELTS と ACA');
 }
 
 /* ---------- MM ---------- */
@@ -3762,7 +3930,7 @@ function calcRC() {
       `確認できるさらなる増大はない${still.length ? `（進行のまま：${still.join('・')}）` : ''}。臨床的に安定なら次の評価で再確認` + (extra ? '<br>' + extra : '') + unkTxt(unk), unk.length || extra ? 'warn' : 'alert');
 }
 
-const calcAll = () => { calcML(); calcFL(); calcCL(); calcMM(); calcMT(); calcMR(); calcLR(); calcRC(); calcKD(); calcRX(); calcVC(); calcNT(); calcGM(); calcCT(); calcTL(); calcDM(); };
+const calcAll = () => { calcML(); calcFL(); calcCL(); calcCM(); calcMM(); calcMT(); calcMR(); calcLR(); calcRC(); calcKD(); calcRX(); calcVC(); calcNT(); calcGM(); calcCT(); calcTL(); calcDM(); };
 
 /* ---------- 共通項目の同期（年齢・身長・体重・Cr・性別など） ---------- */
 const syncFrom = src => {
