@@ -958,9 +958,18 @@
         <label class="f full">評価の時点
           <select id="lr-tp"><option value="eot">治療終了時</option><option value="int">中間評価</option></select>
         </label>
-        <label class="f full">Deauville <span class="unit">初発部位で最も高い集積</span>
+      </div>
+      <h3>今回の PET（治療後）</h3>
+      <p class="note" style="margin-top:0">治療前に病変があった部位のうち、<b>今回の PET で最も集積が高い部位</b>を評価します（新病変は下の欄）。治療前のスコアではありません。</p>
+      <div class="grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+        <label class="f">その部位 <span class="unit">SUVmax</span><input type="number" inputmode="decimal" id="lr-suv"></label>
+        <label class="f">縦隔血液プール<input type="number" inputmode="decimal" id="lr-med"></label>
+        <label class="f">肝<input type="number" inputmode="decimal" id="lr-liv"></label>
+      </div>
+      <div class="grid" style="margin-top:8px">
+        <label class="f full">今回の Deauville スコア
           <select id="lr-ds">
-            <option value="">未入力</option>
+            <option value="">SUVmax から自動で判定</option>
             <option value="1">1：集積なし</option>
             <option value="2">2：縦隔以下</option>
             <option value="3">3：縦隔より高く肝以下</option>
@@ -968,9 +977,19 @@
             <option value="5">5：肝より著明に高い</option>
           </select>
         </label>
-        <label class="f full">集積の変化 <span class="unit">ベースライン PET と比べて（Deauville 4・5 のとき）</span>
-          <select id="lr-chg"><option value="">未選択</option><option value="down">低下</option><option value="same">有意な変化なし</option><option value="up">上昇</option></select>
-        </label>
+      </div>
+      <div class="results"><div class="res full txt" id="r-lrsuv"></div></div>
+      <div id="lr-cmp">
+        <h3>治療前（ベースライン）の PET との比較</h3>
+        <div class="grid">
+          <label class="f">同じ部位の治療前 SUVmax <span class="unit">任意・変化率の表示用</span><input type="number" inputmode="decimal" id="lr-suv0"></label>
+          <label class="f">集積の変化
+            <select id="lr-chg"><option value="">未選択</option><option value="down">低下</option><option value="same">有意な変化なし</option><option value="up">上昇</option></select>
+          </label>
+        </div>
+      </div>
+      <h3>新病変・骨髄</h3>
+      <div class="grid">
         <label class="f full">新たな FDG 集積 <span class="unit">X＝リンパ腫とは考えにくい集積（感染・炎症など）</span>
           <select id="lr-pnew"><option value="">未選択</option><option value="no">なし（X のみ）</option><option value="ly">あり：リンパ腫に合致</option><option value="eq">リンパ腫か判断がつかない</option></select>
         </label>
@@ -978,17 +997,10 @@
           <select id="lr-pbm"><option value="">未選択</option><option value="none">集積なし（治療前から・消失）</option><option value="res">残存（ベースラインより低下）</option><option value="same">ベースラインから変化なし</option><option value="new">新規・再発の集積</option></select>
         </label>
       </div>
-      <h3>SUVmax から Deauville の目安（任意・参考）</h3>
-      <div class="grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
-        <label class="f">病変<input type="number" inputmode="decimal" id="lr-suv"></label>
-        <label class="f">縦隔血液プール<input type="number" inputmode="decimal" id="lr-med"></label>
-        <label class="f">肝<input type="number" inputmode="decimal" id="lr-liv"></label>
-      </div>
       <div class="results">
         <div class="res full" id="r-lrp"></div>
-        <div class="res full txt" id="r-lrsuv"></div>
       </div>
-      <p class="note"><b>Deauville</b>：初発部位で最も強い集積を 1 集積なし、2 縦隔以下、3 縦隔より高く肝以下、4 肝より中等度に高い、5 肝より著明に高い・新病変、X リンパ腫とは考えにくい新たな集積、で評価。視覚評価が基本。SUVmax の目安は、4＝肝の最大 SUV を超える、5＝肝の最大 SUV の 2〜3 倍を超える（Barrington 2014）。SUV の目安は判定には使わない（1 と 2 は SUV では区別できない）。<br>
+      <p class="note"><b>Deauville</b>：今回の PET で、治療前に病変があった部位のうち最も集積が高い部位を、<b>今回の</b>縦隔血液プール・肝と比べて付ける。1 集積なし、2 縦隔以下、3 縦隔より高く肝以下、4 肝より中等度に高い、5 肝より著明に高い・新病変、X リンパ腫とは考えにくい新たな集積。<br><b>SUVmax からの自動判定</b>：4＝肝の最大 SUV を超える、5＝肝の最大 SUV の 2〜3 倍を超える（Barrington 2014）に従い、肝以下なら 1〜3（CMR の範囲）、肝を超えれば 4・5 とする。1 と 2、4 と 5 は SUV では区別しきれないが、効果判定の区分は変わらない。肝は正常肝の広い領域の SUVmax（SUVmean ではない）。数値は ROI の取り方・画像ノイズ・再構成条件で揺れ、小さな病変は部分容積効果で低く出る。肝に近い値や、視覚評価と食い違うとき（生理的集積の高い部位・炎症など）はスコアを手で選ぶ。新病変・他部位の進行は下の欄で別に評価する。<br>
         <b>CMR</b>：Deauville 1〜3（残存腫瘤の有無を問わない）、骨髄に FDG 集積なし、新病変なし。ワルダイエル輪・生理的集積の高い節外部位、化学療法・G-CSF で活性化した脾・骨髄では集積が縦隔・肝を超えうる。このとき初発部位の集積が周囲の正常組織を超えなければ（リンパ腫による集積と考えられなければ）CMR と推定できる。Deauville 3 は標準治療では多くが予後良好だが、治療を減らす（de-escalation）場面では過少治療を避けるため不十分な反応とみなすことがある。<br>
         <b>PMR</b>：Deauville 4・5 でベースラインより集積が低下（残存腫瘤の大きさは問わない）。中間評価では治療に反応している所見、<b>治療終了時は残存病変（集積が下がっていても治療不成功）</b>。骨髄の局所的な集積が残るときは MRI・生検・再検を検討。<br>
         <b>NMR</b>：Deauville 4・5 で集積に有意な変化なし。<b>PMD</b>：Deauville 4・5 で集積が上昇、またはリンパ腫に合致する新たな集積、骨髄の新規・再発の集積。新たな集積がリンパ腫か判断できなければ生検または短期間での再検。残存集積に追加治療を考えるときも生検か再検を勧める。<br>
@@ -1644,7 +1656,7 @@
     <h4>カードごとのポイント</h4>
     <ul>
       <li><b>MLリスク分類</b>：IPI 系は上の欄、FLIPI・MIPI は下の欄を追加で入れます（年齢・LDH・病期などは共用）。</li>
-      <li><b>ML治療効果判定</b>：Lugano 分類で判定します。上の切り替えで PET-CT と CT を選びます。PET-CT は初発部位で最も高い集積の Deauville スコアと、4・5 のときはベースラインからの集積の変化、新たな集積、骨髄を選ぶと CMR／PMR／NMR／PMD を表示します（治療終了時の PMR は残存病変として赤）。SUVmax を入れると Deauville の目安も出ますが、判定には使いません。CT は標的病変（最大6個）の長径・短径を治療前・最小時・現在で入れます（cm）。最小時が分からない2回目以降の評価は「PD 判定保留」になるので、最初の評価ならチェックを入れてください。</li>
+      <li><b>ML治療効果判定</b>：Lugano 分類で判定します。上の切り替えで PET-CT と CT を選びます。PET-CT は、治療前に病変があった部位のうち<b>今回の PET で最も集積が高い部位</b>の SUVmax と、今回の縦隔・肝の SUVmax を入れると、Deauville スコアを自動で付けて判定します（肝以下なら CMR の範囲）。視覚評価と違うときはスコアを手で選びます。4・5 のときだけ治療前の PET と比べた集積の変化を選びます。新たな集積・骨髄も選ぶと CMR／PMR／NMR／PMD が確定します（治療終了時の PMR は残存病変として赤）。CT は標的病変（最大6個）の長径・短径を治療前・最小時・現在で入れます（cm）。最小時が分からない2回目以降の評価は「PD 判定保留」になるので、最初の評価ならチェックを入れてください。</li>
       <li><b>固形がん治療効果判定</b>：RECIST 1.1 と iRECIST を切り替えます。標的病変（最大5個、腫瘤は長径・リンパ節は短径、mm）の治療前・現在と、これまでの最小の径和を入れます。iRECIST では前回が iUPD なら、その理由と iUPD 時の径和、非標的・新病変の前回からの変化を入れると、iCPD（確定）・iUPD の継続・リセット（iCR/iPR/iSD）を判定します。</li>
       <li><b>MMリスク分類</b>：FISH は項目ごとに「未検査／陰性／陽性」を選びます。未検査が残っていて病期が変わりうるときは範囲で表示し、判定保留にします。</li>
       <li><b>MM治療開始規準</b>：SLiM-CRAB から MM／SMM を判定し、SMM なら Mayo 2/20/20 とダラツムマブ単剤の対象（AQUILA 基準）を表示します。MRI・骨病変の画像・FLC などが未評価のままだと、SMM と断定せず「MDE 未確定」と表示します。</li>
@@ -3436,38 +3448,54 @@ function calcLR() {
 }
 const LR_ORD = ['CMR', 'PMR', 'NMR', 'PMD'];
 function lrPET() {
-  // SUVmax からの Deauville の目安（参考。判定には使わない）：4＝肝の最大 SUV 超、5＝肝の 2〜3 倍超（Barrington 2014）
-  const suv = num('lr-suv'), med = num('lr-med'), liv = num('lr-liv');
+  // 今回の Deauville：手で選んだスコアを優先。空欄なら今回の SUVmax（その部位・縦隔・肝）から
+  // 4＝肝の最大 SUV 超、5＝肝の 2〜3 倍超（Barrington 2014）。判定に効くのは肝との比較（≤肝 → 1〜3、>肝 → 4・5）
+  const suv = num('lr-suv'), med = num('lr-med'), liv = num('lr-liv'), suv0 = num('lr-suv0');
+  const sel = $('lr-ds').value;
+  let ds = sel, dsTxt = null, auto = false;
   if (has(suv, liv) && liv > 0) {
     const g = suv > liv * 3 ? '5' : suv > liv * 2 ? '4〜5' : suv > liv ? '4'
             : med === null ? '1〜3' : suv > med ? '3' : '1〜2';
-    box('r-lrsuv', 'SUVmax からの目安（参考）', g,
-        `病変／肝 ＝ ${fmt(suv / liv, 2)}${med === null && suv <= liv ? '（縦隔の SUVmax で 3 かどうかを区別）' : ''}。Deauville は視覚評価で選択（目安は判定に使わない）`, 'txt');
-  } else box('r-lrsuv', 'SUVmax からの目安（参考）', null, '病変・肝（・縦隔）の SUVmax を入れると目安を表示');
+    const cmpTxt = suv > liv ? `その部位 ${suv} ＞ 肝 ${liv}（${fmt(suv / liv, 2)} 倍）`
+                 : med === null ? `その部位 ${suv} ≤ 肝 ${liv}（縦隔を入れると 3 かどうかを区別）`
+                 : `その部位 ${suv} ${suv > med ? '＞' : '≤'} 縦隔 ${med}、≤ 肝 ${liv}`;
+    if (sel === '') { ds = suv > liv ? '4' : '3'; auto = true; dsTxt = g; }      // 区分の計算用（1〜3 は CMR、4・5 は変化で判定）
+    box('r-lrsuv', '今回の Deauville スコア', sel === '' ? `${g}<small>（SUVmax から）</small>` : `${sel}<small>（手で選択）</small>`,
+        cmpTxt + (sel !== '' && sel !== g && !(g.includes(sel)) ? `。SUVmax からは ${g}（視覚評価を優先）` : '')
+        + (sel === '' ? '。視覚評価と違えばスコアを手で選ぶ' : ''), 'txt');
+  } else if (sel !== '') box('r-lrsuv', '今回の Deauville スコア', `${sel}<small>（手で選択）</small>`, '', 'txt');
+  else box('r-lrsuv', '今回の Deauville スコア', null, '今回の SUVmax（その部位・肝。3 かどうかは縦隔も）を入れるか、スコアを選択');
+  const hi = ds !== '' && +ds >= 4;
+  $('lr-cmp').hidden = !hi;                                       // 治療前との比較は 4・5 のときだけ使う
+  const dTxt = auto ? dsTxt : ds;
 
-  const ds = $('lr-ds').value, chg = $('lr-chg').value, nw = $('lr-pnew').value, bm = $('lr-pbm').value;
+  const chg = hi ? $('lr-chg').value : '', nw = $('lr-pnew').value, bm = $('lr-pbm').value;
   const eot = $('lr-tp').value === 'eot', K = '効果判定（PET-CT）';
-  const node = ds === '' ? null : +ds <= 3 ? 'CMR' : { down: 'PMR', same: 'NMR', up: 'PMD' }[chg] || null;
+  const node = ds === '' ? null : !hi ? 'CMR' : { down: 'PMR', same: 'NMR', up: 'PMD' }[chg] || null;
   const bmC = { none: 'CMR', res: 'PMR', same: 'NMR', new: 'PMD' }[bm];
+  const delta = hi && has(suv, suv0) && suv0 > 0 ? `その部位の SUVmax ${suv0} → ${suv}（${suv <= suv0 ? '−' : '+'}${Math.round(Math.abs(suv - suv0) / suv0 * 100)}%）` : '';
   const pmd = [];
-  if (node === 'PMD') pmd.push(`Deauville ${ds} で集積が上昇`);
+  if (node === 'PMD') pmd.push(`Deauville ${dTxt} で集積が上昇`);
   if (nw === 'ly') pmd.push('リンパ腫に合致する新たな集積');
   if (bmC === 'PMD') pmd.push('骨髄の新規・再発の集積');
   if (pmd.length) { box('r-lrp', K, 'PMD', pmd.join('・') + '（判断に迷う集積は生検または短期間での再検）', 'alert'); return; }
-  if (ds === '') { box('r-lrp', K, null, 'Deauville スコアを選択（初発部位で最も高い集積）'); return; }
-  if (!node) { box('r-lrp', K, null, `Deauville ${ds}：ベースラインからの集積の変化を選択`); return; }
+  if (ds === '') { box('r-lrp', K, null, '今回の SUVmax を入れるか、今回の Deauville スコアを選択'); return; }
+  if (!node) { box('r-lrp', K, null, `Deauville ${dTxt}：治療前の PET と比べた集積の変化を選択` + (delta ? `（${delta}）` : '')); return; }
 
   let cat = node; const why = [];
   if (bmC && LR_ORD.indexOf(bmC) > LR_ORD.indexOf(node)) {
     cat = bmC; why.push(`リンパ節・節外は ${node}、骨髄の所見で ${bmC}（局所的な集積が残るときは MRI・生検・再検を検討）`);
   }
+  if (delta) why.push(delta);
   const unk = [];
   if (bm === '') unk.push('骨髄');
   if (nw === '') unk.push('新たな集積');
   const D = {
-    CMR: ds === '3' ? 'Deauville 3：標準治療では CMR。治療を減らす（de-escalation）場面では不十分な反応とみなすことがある' : `Deauville ${ds}`,
-    PMR: eot ? '治療終了時：残存病変（集積が下がっていても治療不成功）。追加治療を考えるなら生検または再検' : '中間評価：治療に反応している所見（化学療法感受性）',
-    NMR: `Deauville 4・5 で集積に有意な変化なし：治療不成功（${eot ? '治療終了時' : '中間評価'}）`,
+    CMR: dTxt === '3' ? 'Deauville 3：標準治療では CMR。治療を減らす（de-escalation）場面では不十分な反応とみなすことがある'
+       : dTxt === '1〜3' ? 'Deauville 1〜3（肝以下）。3 かどうかは縦隔の SUVmax で区別（3 は de-escalation の場面では不十分な反応とみなすことがある）'
+       : `Deauville ${dTxt}`,
+    PMR: (eot ? '治療終了時：残存病変（集積が下がっていても治療不成功）。追加治療を考えるなら生検または再検' : '中間評価：治療に反応している所見（化学療法感受性）') + `（Deauville ${dTxt}）`,
+    NMR: `Deauville ${dTxt} で集積に有意な変化なし：治療不成功（${eot ? '治療終了時' : '中間評価'}）`,
   };
   const bad = cat === 'NMR' || (cat === 'PMR' && eot);
   const name = { CMR: 'CMR<small>（完全代謝奏効）</small>', PMR: 'PMR<small>（部分代謝奏効）</small>', NMR: 'NMR<small>（代謝的に不変）</small>' }[cat];
