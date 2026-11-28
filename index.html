@@ -650,11 +650,14 @@
         <path d="M32 52c-3 4-4 6-4 7.5a4 4 0 0 0 8 0c0-1.5-1-3.5-4-7.5z" fill="#9CC2EE"/>
       </svg>
     </div>
-    <div class="ttl"><b>TLS</b><small>腫瘍崩壊症候群の診断 ・ リスク評価 ・ 輸液量 ・ 尿酸対策</small></div>
+    <div class="ttl"><b>TLS</b><small>腫瘍崩壊症候群のリスク評価 ・ 予防 ・ 発症時の対応</small></div>
     <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
   </button>
   <div class="body">
     <div class="resets"><span class="rl">入力値をクリア</span><button class="reset" type="button">このカードだけ</button><button class="reset all" type="button">症例全体</button></div>
+    <div class="checks">
+      <label class="chk warn"><input type="checkbox" id="tl-est"><span>既にTLS発症（発症時の対応を表示）</span></label>
+    </div>
     <h3>疾患・腫瘍量</h3>
     <div class="grid">
       <label class="f full">疾患
@@ -697,28 +700,25 @@
       <label class="f">Cr <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="tl-cr" data-sync="cr"></label>
       <label class="f full">Cr 基準上限 <span class="unit">mg/dL（性別で自動：男性 1.07、女性 0.79）</span><input type="number" inputmode="decimal" id="tl-cruln" value="1.07"></label>
     </div>
-    <h3>検査値・症状（治療3日前〜7日後）</h3>
+    <h3>検査値（未発症：治療前の値でリスク調整／発症時：現在の値）</h3>
     <div class="grid">
       <label class="f">尿酸 <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="tl-ua"></label>
       <label class="f">K <span class="unit">mEq/L</span><input type="number" inputmode="decimal" id="tl-k"></label>
       <label class="f">P <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="tl-p"></label>
-      <label class="f">補正Ca <span class="unit">mg/dL</span><input type="number" inputmode="decimal" id="tl-ca" data-sync="ca"></label>
-    </div>
-    <div class="checks sub">
-      <label class="chk"><input type="checkbox" id="tl-arr"><span>不整脈・突然死</span></label>
-      <label class="chk"><input type="checkbox" id="tl-sz"><span>痙攣</span></label>
     </div>
     <div class="results">
-      <div class="res" id="r-tld"></div>
-      <div class="res" id="r-tlr"></div>
+      <div class="res full" id="r-tlr"></div>
       <div class="res full txt" id="r-tlf"></div>
       <div class="res full txt" id="r-tlu"></div>
       <div class="res full txt" id="r-tlx"></div>
+      <div class="res full txt" id="r-tle"></div>
+      <div class="res full txt" id="r-tld"></div>
       <div class="res full txt" id="r-tlm"></div>
     </div>
-    <p class="note">Laboratory TLS（Cairo-Bishop）：尿酸 ≥8.0 mg/dL、K ≥6.0 mEq/L、P ≥4.5 mg/dL、補正Ca ≤7.0 mg/dL のうち2項目以上（または治療前から25%の変化）。Clinical TLS：LTLS＋Cr ≥1.5×基準上限・不整脈/突然死・痙攣のいずれか。Cr 基準上限は男性 1.07、女性 0.79（JCCLS）。<br>
+    <p class="note">TLS の診断には使わない（予防法の確認と、発症時の対応の表示のためのカード）。Cr 基準上限は男性 1.07、女性 0.79（JCCLS）。<br>
       リスク分類は Cairo MS, et al. Br J Haematol 2010 と日本臨床腫瘍学会 TLS 診療ガイダンスに準拠。中間リスクで腎機能障害（Cr &gt;基準上限、自動判定）・腎浸潤、または尿酸・K・P が基準上限超（尿酸 &gt;7.0、K &gt;5.0、P &gt;4.5）なら高リスクへ。Burkitt・リンパ芽球性リンパ腫は、進行期（III/IV）・白血病型（Burkitt 白血病など）または LDH ≥2×基準上限なら高リスク、それ以外は中間リスク。バルキーは中高悪性度リンパ腫（LDH 高値例）と固形腫瘍で使う。ベネトクラクスは添付文書の腫瘍量分類（低：全リンパ節 &lt;5 cm かつ ALC &lt;25,000、高：リンパ節 ≥10 cm または ALC ≥25,000 かつリンパ節 ≥5 cm、他は中）。<br>
-      輸液は 2,500–3,000 mL/m²/日、尿量 80–100 mL/m²/時を目標（心不全・腎不全では調整）。尿のアルカリ化はルーチンでは推奨されない。</p>
+      輸液は 2,500–3,000 mL/m²/日、尿量 80–100 mL/m²/時を目標（心不全・腎不全では調整）。尿のアルカリ化はルーチンでは推奨されない。<br>
+      発症時の対応は PMDA 重篤副作用疾患別対応マニュアル「腫瘍崩壊症候群」（平成30年6月改定）、Coiffier B, et al. J Clin Oncol 2008、Howard SC, et al. N Engl J Med 2011 に基づく。電解質異常の区分：K 中等度 ≥6.0・高度 ≥7.0 mEq/L、P 中等度 ≥6.5 mg/dL（2.1 mmol/L）、低Ca ≤7.0 mg/dL（1.75 mmol/L）。GI 療法・グルコン酸カルシウムの体重あたりの量は同マニュアルの表による（成人では施設のプロトコルも確認）。リン吸着薬・陽イオン交換樹脂の TLS での保険上の扱いは製剤ごとに確認。</p>
   </div>
 </section>
 
@@ -1405,7 +1405,7 @@
       <li><b>バンコマイシンTDM</b>：母集団モデルによる初期設計の目安です。希釈量（生食 100／250／500 mL）・点滴時間と、初回の採血日時（通常は3日目）も表示します。必ず実測濃度で再設計してください。透析・CRRT 中は対象外です。</li>
       <li><b>減量・休薬基準</b>：疾患ごとに並んだレジメン（D-VRd、KRd、Pola-BR など）を選び、好中球・血小板などを入れると、そのレジメンの構成薬それぞれについて、電子添文の血液毒性の基準に沿った「継続可／休薬／延期／減量／中止」と再開の目安・再開時の用量をまとめて表示します。一番上の判定はレジメン全体で最も重い対応です。薬剤ごとの「現在の用量」と、電子添文と【ガイド】（適正使用ガイドの試験規定）の切り替えは「薬剤ごとの基準・現在の用量」で選びます。電子添文にもガイドにも数値の基準がない薬剤（R-CHOP のシクロホスファミド・ドキソルビシン、オビヌツズマブなど）は、主要な臨床試験のプロトコルの規定を【試験】として初期値にしています（施設のレジメン規定がある場合はそちらを優先）。検索欄に薬剤名を入れると、その薬剤を含むレジメンが出ます。休薬回数で用量が変わる薬剤は「今回の発現」を選んでください。</li>
       <li><b>CRS / ICANS</b>：原因薬剤を選ぶと、二重特異性抗体（テクベイリ・タービー・エルレフィオ・エプキンリ・ルンスミオ）は各薬剤の適正使用ガイドの管理ガイダンスと、電子添文の本剤の休薬・中止基準を表示します。CAR-T（キムリア・イエスカルタ・ブレヤンジ・アベクマ・カービクティ）は各製品の適正使用ガイドの管理アルゴリズムを表示します（グレードの判定基準は製品ごとに異なります。ブレヤンジ・アベクマは「本品投与後72時間未満」で対応が変わります）。「覚醒せず ICE 評価不能」は ICANS Grade 4 になります（誤タップに注意）。CRS と診断後に解熱薬・トシリズマブ・ステロイドを投与した場合は、発熱欄でそれを選ぶと、発熱がなくても血圧低下・低酸素でグレードを判定します。</li>
-      <li><b>TLS</b>：疾患を選ぶと、その疾患で使う項目だけが表示されます。腎機能障害は Cr と基準上限（性別で自動）から自動判定します。</li>
+      <li><b>TLS</b>：予防法を確認するためのカードで、TLS の診断はしません。疾患を選ぶと、その疾患で使う項目だけが表示されます。腎機能障害は Cr と基準上限（性別で自動）から自動判定します。既に TLS を発症しているときは先頭の「既にTLS発症」を押すと、発症時の対応（輸液・ラスブリカーゼ・高K/高P/低Ca の対処・血液浄化療法の適応・モニタリング）を表示します。体重を入れると薬の量を計算し、K・P を入れると重症度に応じた対処を強調します。</li>
     </ul>
 
     <h4>更新とオフライン</h4>
@@ -3073,18 +3073,8 @@ function calcTL() {
   if (!cu.dataset.edited) cu.value = sexOf('tl-sex') === 'F' ? '0.79' : '1.07';
   const lr = has(ldh, uln) && uln > 0 ? ldh / uln : null;
   const adv = chk('tl-adv'), bulky = chk('tl-bulky');
-  const ua = num('tl-ua'), k = num('tl-k'), p = num('tl-p'), ca = num('tl-ca'), cr = num('tl-cr'), crU = num('tl-cruln');
-
-  // 診断（Cairo-Bishop）
-  const labs = [[ua !== null && ua >= 8, '尿酸'], [k !== null && k >= 6, 'K'], [p !== null && p >= 4.5, 'P'], [ca !== null && ca <= 7, 'Ca']];
-  const ab = labs.filter(l => l[0]).map(l => l[1]);
-  const ltls = ab.length >= 2;
-  const cl = [[has(cr, crU) && cr >= 1.5 * crU, 'Cr ≥1.5×ULN'], [chk('tl-arr'), '不整脈'], [chk('tl-sz'), '痙攣']].filter(c => c[0]).map(c => c[1]);
-  const ctls = ltls && cl.length > 0;
-  if ([ua, k, p, ca].some(x => x !== null))
-    box('r-tld', 'TLS 診断', ctls ? 'Clinical TLS' : ltls ? 'Laboratory TLS' : '該当なし',
-        (ab.length ? `異常：${ab.join('・')}` : '検査異常なし') + (ctls ? `／${cl.join('・')}` : '') + (k !== null && k >= 6 ? '<br><b>K ≥6.0：心電図・緊急補正</b>' : ''), ltls ? 'alert' : '');
-  else box('r-tld', 'TLS 診断', null, '尿酸・K・P・Ca を入力');
+  const ua = num('tl-ua'), k = num('tl-k'), p = num('tl-p'), cr = num('tl-cr'), crU = num('tl-cruln');
+  const est = chk('tl-est');                                      // 既に TLS 発症（診断はしない。本人が押す）
 
   const renDys = has(cr, crU) && cr > crU;                        // 腎機能障害：Cr > 基準上限
 
@@ -3119,8 +3109,10 @@ function calcTL() {
     if (renDys || chk('tl-reninv')) { risk = 3; why += `＋${[renDys && '腎機能障害', chk('tl-reninv') && '腎浸潤'].filter(Boolean).join('・')}`; }
     else if ((ua !== null && ua > 7) || (k !== null && k > 5) || (p !== null && p > 4.5)) { risk = 3; why += '＋尿酸・K・P 高値'; }
   }
-  const lvl = ltls ? 4 : risk;                                   // 4 = TLS 発症
-  if (ltls) box('r-tlr', 'リスク', 'TLS 発症', risk ? `治療前分類：${RISK[risk]}` : '治療・腎臓内科へ相談', 'alert');
+  const lvl = est ? 4 : risk;                                    // 4 = TLS 発症
+  $('r-tle').style.display = $('r-tld').style.display = est ? '' : 'none';
+  if (est) box('r-tlr', 'リスク', 'TLS 発症',
+      '腎臓内科と早期に相談し、ICU 管理を考慮。腎毒性薬（NSAIDs・造影剤など）と K・P を含む薬剤・輸液を見直す。抗腫瘍治療の継続・延期は主治医が再評価' + (risk ? `<br>治療前分類：${RISK[risk]}` : ''), 'alert');
   else if (risk) box('r-tlr', 'リスク', RISK[risk].replace('リスク', ''), why + (has(cr, crU) ? `<br>腎機能障害：${renDys ? 'あり' : 'なし'}（Cr ${cr} / 基準上限 ${crU}）` : '<br>Cr を入れると腎機能障害を自動判定'), risk === 3 ? 'alert' : '');
   else box('r-tlr', 'リスク', null, dz ? `${need}を入力` : '疾患を選択');
 
@@ -3130,13 +3122,15 @@ function calcTL() {
   const uo = bsa ? `${Math.round(80 * bsa)}–${Math.round(100 * bsa)}<small> mL/時</small>` : '80–100<small> mL/m²/時</small>';
   const bsaTxt = bsa ? `BSA ${fmt(bsa, 2)} m²` : '身長・体重で輸液量を計算';
   if (!lvl) box('r-tlf', '輸液', null, bsaTxt);
-  else if (dz === 'cllv' && !ltls) box('r-tlf', '輸液（ベネトクラクス）',
+  else if (dz === 'cllv' && !est) box('r-tlf', '輸液（ベネトクラクス）',
       risk === 3 ? '経口 1.5–2 L/日＋点滴 150–200 mL/時' : risk === 2 ? '経口 1.5–2 L/日（＋点滴を考慮）' : '経口 1.5–2 L/日',
       '投与開始2日前から。高リスク・CCr <80 の中リスクは入院管理を考慮', 'txt');
   else if (lvl === 1) box('r-tlf', '輸液', '通常の輸液・飲水', `大量補液は必須ではない。${bsaTxt}`, 'txt');
+  else if (est) box('r-tlf', '輸液（乏尿・溢水がなければ 2,500–3,000 mL/m²/日）', hyd ?? '2,500–3,000 mL/m²/日',
+      `${bsaTxt}。生理食塩水など K・P を含まない輸液。体液量が十分で尿量が足りなければフロセミド。乏尿・溢水・心不全では大量補液をせず、血液浄化療法を早めに検討`, 'txt');
   else box('r-tlf', '輸液（2,500–3,000 mL/m²/日）', hyd ?? '2,500–3,000 mL/m²/日', `${bsaTxt}。K・P を含まない輸液から開始。心不全・腎不全では調整し、尿量不足には利尿薬（フロセミド）を考慮`, 'txt');
   box('r-tlu', '尿量目標', lvl && lvl >= 2 ? uo : lvl === 1 ? '尿量・体重を観察' : null,
-      lvl ? `${lvl >= 2 ? '80–100 mL/m²/時。' : ''}尿のアルカリ化（重曹）はルーチンでは推奨されない` : '', 'txt');
+      lvl ? `${lvl >= 2 ? '80–100 mL/m²/時。' : ''}${est ? '尿のアルカリ化（重曹・クエン酸塩）は行わない（リン酸カルシウムの沈着を促す）' : '尿のアルカリ化（重曹）はルーチンでは推奨されない'}` : '', 'txt');
 
   const allo = `アロプリノール ${ccr === null ? '300' : ccr > 50 ? '300' : ccr > 30 ? '100' : '50'} mg/日`;
   const alloD = ccr === null ? '腎機能で減量（腎機能カード参照）' : `eCCr ${fmt(ccr)} mL/min に応じた用量`;
@@ -3146,11 +3140,26 @@ function calcTL() {
   const uaM = ['', ['経過観察', `必要に応じ ${febu}（または ${allo}）`],
     [febu, `${febuD}。<br>代替：${allo}（${alloD}）。治療前から尿酸高値ならラスブリカーゼを考慮`],
     [rasb, rasbD],
-    [rasb, `${rasbD}。電解質補正（高K・高P）、乏尿・高K・溢水が改善しなければ透析を検討`]];
+    [rasb, `${rasbD}。酵素製剤のため投与歴を確認する。ラスブリカーゼ使用中はアロプリノール・フェブキソスタットを併用しない。終了後もリスクが続けば尿酸生成抑制薬を検討`]];
   box('r-tlx', '尿酸対策', lvl ? uaM[lvl][0] : null, lvl ? uaM[lvl][1] : '', 'txt');
-  const mon = ['', ['1日1回', ''], ['8–12時間ごと', '治療開始後 24–48時間は特に注意'], ['6–8時間ごと', '心電図モニタ、ICU 管理を考慮'], ['4–6時間ごと', '心電図モニタ、腎臓内科・ICU と連携']];
+  const mon = ['', ['1日1回', ''], ['8–12時間ごと', '治療開始後 24–48時間は特に注意'], ['6–8時間ごと', '心電図モニタ、ICU 管理を考慮'], ['4–6時間ごと', '心電図モニタ。血液ガス・血糖・Mg・水分出納も確認し、異常値や処置の後は間隔を短くする']];
   box('r-tlm', 'モニタリング（尿酸・K・P・Ca・Cr・尿量）', lvl ? mon[lvl][0] : null,
-      lvl ? [mon[lvl][1], '化学療法開始後 3–7日間は継続'].filter(Boolean).join('。') : '', 'txt');
+      lvl ? [mon[lvl][1], est ? '' : '化学療法開始後 3–7日間は継続'].filter(Boolean).join('。') : '', 'txt');
+
+  // 発症時の電解質異常・血液浄化療法（PMDA 重篤副作用疾患別対応マニュアル、Coiffier 2008）
+  if (!est) return;
+  const kLv = k === null ? 0 : k >= 7 ? 2 : k >= 6 ? 1 : 0, pHi = p !== null && p >= 6.5;
+  const gi = wt ? `速効型インスリン ${fmt(wt * 0.1, 1)} 単位＋25% ブドウ糖 ${Math.round(wt * 2)} mL` : '速効型インスリン 0.1 単位/kg＋25% ブドウ糖 2 mL/kg';
+  const caG = (lo, hi) => wt ? `${fmt(wt * lo / 1000, 1)}–${fmt(wt * hi / 1000, 1)} g（${lo}–${hi} mg/kg）` : `${lo}–${hi} mg/kg`;
+  const kTxt = `<b>高K</b>${k !== null ? `（K ${k}：${['6.0 未満', '中等度', '高度'][kLv]}）` : ''}：K ≥6.0 は K の投与を中止し、心電図モニタ、陽イオン交換樹脂（ポリスチレンスルホン酸ナトリウムなど）。`
+    + `K ≥7.0・症状・心電図変化には GI 療法（${gi} を静注。前後で血糖を測り、低血糖と K の再上昇に注意）、フロセミド。`
+    + `致死性不整脈にはグルコン酸カルシウム ${caG(100, 200)} を緩徐に静注（K は下がらない）。改善しなければ透析`;
+  const pTxt = `<b>高P</b>${p !== null ? `（P ${p}${pHi ? '：中等度以上' : ''}）` : ''}：P ≥6.5 mg/dL はリン酸の投与を中止し、リン吸着薬（マニュアルの例は水酸化アルミニウム・炭酸カルシウム。腎機能低下時のアルミニウム蓄積に注意）。高度なら血液浄化療法`;
+  const caTxt = `<b>低Ca</b>（≤7.0 mg/dL）：無症状なら補正しない（リン酸カルシウムの沈着を促す）。テタニー・痙攣・不整脈があればグルコン酸カルシウム ${caG(50, 100)} を心電図モニタ下で緩徐に静注`;
+  box('r-tle', '電解質異常への対処', kLv === 2 ? 'K ≥7.0：緊急対応' : kLv === 1 ? 'K ≥6.0：心電図モニタ' : pHi ? 'P 高値：リン酸を中止' : '値に応じて対処',
+      `<ul><li>${kTxt}</li><li>${pTxt}</li><li>${caTxt}</li></ul>`, kLv || pHi ? 'txt alert' : 'txt');
+  box('r-tld', '血液浄化療法', '早めに導入を検討',
+      '乏尿・無尿、利尿薬に反応しない溢水、治療抵抗性の高K、高P と症候性の低Ca、アシドーシス。TLS は K が急に上がるため、通常の腎不全より低い基準で導入する。高齢・腎機能低下例はさらに早く。循環が不安定なら持続的血液濾過透析（CHDF）。透析後も K・P は再上昇しうるので再検する', 'txt');
 }
 
 const calcAll = () => { calcML(); calcFL(); calcCL(); calcMM(); calcMT(); calcMR(); calcKD(); calcRX(); calcVC(); calcNT(); calcGM(); calcCT(); calcTL(); calcDM(); };
