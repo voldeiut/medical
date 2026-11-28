@@ -144,6 +144,8 @@
   /* 最小時（最良値）の列：普段は隠し、「＋ 最小時を追加」で出す（.non で隠す） */
   .tbl3.non { grid-template-columns: 4.4em repeat(2, minmax(0, 1fr)); }
   .tbl3.non .nad { display: none; }
+  .tbl3.rct { grid-template-columns: 1.2em 5.4em repeat(var(--rcn, 2), minmax(0, 1fr)); }
+  .tbl3.rct.nop .prv { display: none; }
   [hidden] { display: none !important; }   /* .grid・label.f などの display 指定に hidden が負けないように */
 
   .chk.warn span { background: #F1F2F5; border: 1.5px dashed #9AA0AC; color: #5C6270; }
@@ -1298,29 +1300,26 @@
       </div>
     </div>
     <h3>標的病変（最大5個・1臓器2個まで、mm。腫瘤は長径、リンパ節は短径）</h3>
-    <div class="tbl3 rct">
-      <span></span><span class="th">種類</span><span class="th">治療前</span><span class="th">現在</span>
+    <div class="tbl3 rct" id="rc-tbl">
+      <span></span><span class="th">種類</span><span class="th">治療前</span><span class="th nad">最小時</span><span class="th prv">前回</span><span class="th">現在</span>
       <div class="lgrp" id="rc-g1">
-        <span class="rh">病変1</span><select id="rc-t1"><option value="o">腫瘤</option><option value="n">リンパ節</option></select><input type="number" inputmode="decimal" id="rc-a1"><input type="number" inputmode="decimal" id="rc-c1">
+        <span class="rh">1</span><select id="rc-t1"><option value="o">腫瘤</option><option value="n">リンパ節</option></select><input type="number" inputmode="decimal" id="rc-a1"><input type="number" inputmode="decimal" class="nad" id="rc-b1"><input type="number" inputmode="decimal" class="prv" id="rc-p1"><input type="number" inputmode="decimal" id="rc-c1">
       </div>
       <div class="lgrp" id="rc-g2">
-        <span class="rh">病変2</span><select id="rc-t2"><option value="o">腫瘤</option><option value="n">リンパ節</option></select><input type="number" inputmode="decimal" id="rc-a2"><input type="number" inputmode="decimal" id="rc-c2">
+        <span class="rh">2</span><select id="rc-t2"><option value="o">腫瘤</option><option value="n">リンパ節</option></select><input type="number" inputmode="decimal" id="rc-a2"><input type="number" inputmode="decimal" class="nad" id="rc-b2"><input type="number" inputmode="decimal" class="prv" id="rc-p2"><input type="number" inputmode="decimal" id="rc-c2">
       </div>
       <div class="lgrp" id="rc-g3">
-        <span class="rh">病変3</span><select id="rc-t3"><option value="o">腫瘤</option><option value="n">リンパ節</option></select><input type="number" inputmode="decimal" id="rc-a3"><input type="number" inputmode="decimal" id="rc-c3">
+        <span class="rh">3</span><select id="rc-t3"><option value="o">腫瘤</option><option value="n">リンパ節</option></select><input type="number" inputmode="decimal" id="rc-a3"><input type="number" inputmode="decimal" class="nad" id="rc-b3"><input type="number" inputmode="decimal" class="prv" id="rc-p3"><input type="number" inputmode="decimal" id="rc-c3">
       </div>
       <div class="lgrp" id="rc-g4">
-        <span class="rh">病変4</span><select id="rc-t4"><option value="o">腫瘤</option><option value="n">リンパ節</option></select><input type="number" inputmode="decimal" id="rc-a4"><input type="number" inputmode="decimal" id="rc-c4">
+        <span class="rh">4</span><select id="rc-t4"><option value="o">腫瘤</option><option value="n">リンパ節</option></select><input type="number" inputmode="decimal" id="rc-a4"><input type="number" inputmode="decimal" class="nad" id="rc-b4"><input type="number" inputmode="decimal" class="prv" id="rc-p4"><input type="number" inputmode="decimal" id="rc-c4">
       </div>
       <div class="lgrp" id="rc-g5">
-        <span class="rh">病変5</span><select id="rc-t5"><option value="o">腫瘤</option><option value="n">リンパ節</option></select><input type="number" inputmode="decimal" id="rc-a5"><input type="number" inputmode="decimal" id="rc-c5">
+        <span class="rh">5</span><select id="rc-t5"><option value="o">腫瘤</option><option value="n">リンパ節</option></select><input type="number" inputmode="decimal" id="rc-a5"><input type="number" inputmode="decimal" class="nad" id="rc-b5"><input type="number" inputmode="decimal" class="prv" id="rc-p5"><input type="number" inputmode="decimal" id="rc-c5">
       </div>
     </div>
     <button class="addl" type="button" id="rc-add">＋ 病変を追加</button>
-    <button class="addl" type="button" id="rc-nadd">＋ 最小の径和を追加（縮小後の再増大を判定）</button>
-    <div class="grid" id="rc-nadw" style="margin-top:8px">
-      <label class="f full">これまでの最小の径和 <span class="unit">mm（治療前を含む）</span><input type="number" inputmode="decimal" id="rc-nadir"></label>
-    </div>
+    <button class="addl" type="button" id="rc-nadd">＋ 最小時を追加（縮小後の再増大を判定）</button>
     <h3>非標的病変・新病変</h3>
     <div class="grid">
       <label class="f full">非標的病変
@@ -1348,8 +1347,8 @@
           <label class="chk"><input type="checkbox" id="rc-pl"><span>新病変</span></label>
         </div>
         <div class="grid" style="margin-top:8px">
-          <label class="f">前回（iUPD 時）の標的の径和 <span class="unit">mm</span><input type="number" inputmode="decimal" id="rc-psum"></label>
-          <label class="f">非標的病変の前回からの増大
+          <p class="note full" style="margin:0">前回（iUPD 時）の各病変の径は、上の表の「前回」の列に入れます。</p>
+          <label class="f full">非標的病変の前回からの増大
             <select id="rc-ntinc"><option value="">未選択</option><option value="no">なし</option><option value="yes">あり（明らかでなくてよい）</option></select>
           </label>
           <label class="f full">新病変（前回の評価と比べて）
@@ -1362,7 +1361,7 @@
       <div class="res full" id="r-rc"></div>
       <div class="res full txt" id="r-rcx"></div>
     </div>
-    <p class="note"><b>測定可能病変</b>：腫瘤は長径 ≥10 mm（CT のスライス厚 ≤5 mm）、リンパ節は短径 ≥15 mm。短径 10〜15 mm のリンパ節は非標的、&lt;10 mm は正常。標的は最大5個（1臓器2個まで）、径和は腫瘤の長径とリンパ節の短径の和。小さすぎて測れない病変は 5 mm、消失は 0 mm（リンパ節は縮小しても実測の短径を足す）。<br>
+    <p class="note"><b>測定可能病変</b>：腫瘤は長径 ≥10 mm（CT のスライス厚 ≤5 mm）、リンパ節は短径 ≥15 mm。短径 10〜15 mm のリンパ節は非標的、&lt;10 mm は正常。標的は最大5個（1臓器2個まで）、径和は腫瘤の長径とリンパ節の短径の和（アプリが計算）。<b>最小時</b>は径和が最小だった時点（治療前を含む）の各病変の径。小さすぎて測れない病変は 5 mm、消失は 0 mm（リンパ節は縮小しても実測の短径を足す）。<br>
       <b>標的病変</b>：CR＝腫瘤がすべて消失し、リンパ節がすべて短径 &lt;10 mm。PR＝径和が治療前から ≥30% 減少。PD＝径和が最小値（治療前を含む）から ≥20% 増加 かつ 絶対値で ≥5 mm 増加。SD＝それ以外。<br>
       <b>総合効果</b>（Eisenhauer EA, et al. Eur J Cancer 2009 Table 4・5）：新病変・標的 PD・非標的の明らかな増悪のいずれかで PD。標的 CR でも非標的が残存・未評価、または腫瘍マーカーが正常化していなければ PR。標的 SD は非標的が PD でなければ SD。標的の一部が未評価なら NE（評価できた病変だけで PD なら PD）。非標的病変だけの例は CR／非CR・非PD／PD。新病変が判断できないときは PD とせず次回の評価で確認し、確定したら PD（日付は最初に見つけた時点）。腫瘍マーカーだけで奏効・進行は判定しない。奏効の確定（4週以上あけた再評価）が要るかは試験のデザイン・プロトコルによる（RECIST 1.1 では奏効が主要評価項目の非ランダム化試験で必要）。<br>
       <b>iRECIST</b>（Seymour L, et al. Lancet Oncol 2017）：RECIST 1.1 の PD は iUPD（未確定）とし、臨床的に安定（PS の悪化・症状の増悪・対症療法の強化がない）なら治療を続けて 4〜8週後に再評価。前回 iUPD のとき、iUPD の理由となったカテゴリーがさらに増大（標的の径和が前回から ≥5 mm、非標的の増大〔明らかでなくてよい〕、新病変の標的の径和 ≥5 mm・新病変の非標的の増大・新たな新病変の出現）するか、前回は進行していなかったカテゴリーで RECIST 1.1 の PD を満たせば iCPD（確定）。縮小して iCR・iPR・iSD（新病変なし、非標的は増悪なし）になれば iUPD はリセットされ、次に進行すれば再び iUPD から。どちらでもなければ iUPD のまま。新病変は最大5個（1臓器2個まで）を「新病変の標的」として測定し、標的の径和には含めない。</p>
@@ -1660,7 +1659,7 @@
     <ul>
       <li><b>MLリスク分類</b>：IPI 系は上の欄、FLIPI・MIPI は下の欄を追加で入れます（年齢・LDH・病期などは共用）。</li>
       <li><b>ML治療効果判定</b>：Lugano 分類で判定します。上の切り替えで PET-CT と CT を選びます。PET-CT は、治療前に病変があった部位のうち<b>今回の PET で最も集積が高い部位</b>の SUVmax と、今回の肝・縦隔の SUVmax を入れると、Deauville スコアを自動で付けて判定します（肝以下なら CMR の範囲）。視覚評価と違うときはスコアを手で選びます。4・5 のときだけ治療前の PET と比べた集積の変化を選びます。新たな集積・骨髄も選ぶと CMR／PMR／NMR／PMD が確定します（治療終了時の PMR は残存病変として赤）。CT は標的病変（最大6個）の長径・短径を治療前と現在で入れます（cm）。いったん縮小した後の再増大を PD と判定するときは「＋ 最小時を追加」で最小時も入れます。</li>
-      <li><b>固形がん治療効果判定</b>：RECIST 1.1 と iRECIST を切り替えます。標的病変（最大5個、腫瘤は長径・リンパ節は短径、mm）の治療前・現在を入れます。縮小した後の再増大を判定するときは「＋ 最小の径和を追加」でこれまでの最小の径和も入れます。iRECIST では前回が iUPD なら、その理由と iUPD 時の径和、非標的・新病変の前回からの変化を入れると、iCPD（確定）・iUPD の継続・リセット（iCR/iPR/iSD）を判定します。</li>
+      <li><b>固形がん治療効果判定</b>：RECIST 1.1 と iRECIST を切り替えます。標的病変（最大5個、腫瘤は長径・リンパ節は短径、mm）の治療前・現在を入れます。縮小した後の再増大を判定するときは「＋ 最小時を追加」で、径和が最小だった時点の各病変の径も入れます（径和はアプリが計算）。iRECIST では前回が iUPD なら、その理由と、前回（iUPD 時）の各病変の径（表の「前回」の列）、非標的・新病変の前回からの変化を入れると、iCPD（確定）・iUPD の継続・リセット（iCR/iPR/iSD）を判定します。</li>
       <li><b>MMリスク分類</b>：FISH は項目ごとに「未検査／陰性／陽性」を選びます。未検査が残っていて病期が変わりうるときは範囲で表示し、判定保留にします。</li>
       <li><b>MM治療開始規準</b>：SLiM-CRAB から MM／SMM を判定し、SMM なら Mayo 2/20/20 とダラツムマブ単剤の対象（AQUILA 基準）を表示します。MRI・骨病変の画像・FLC などが未評価のままだと、SMM と断定せず「MDE 未確定」と表示します。</li>
       <li><b>MM治療効果判定</b>：ふだんは治療前と現在だけを入れます。<b>奏効後の再増悪（PD）は最良値（最低値）からの増加で判定する</b>ので、経過中に下がってから上がってきた例では「＋ 最良値を追加」で最良値を入れてください（入れないと治療前との比較だけになり、再増悪は判定しません）。</li>
@@ -1705,15 +1704,26 @@ function box(id, key, val, desc, cls = '') {
 const chk = id => $(id).checked;
 // 最小時（最良値）の欄：普段は隠す。「＋ 最小時を追加」を押すか、値が入っていれば表示。表示中かどうかを返す
 // 隠しているときは治療前を最小時（最良値）として判定し、縮小・奏効後の再増大は判定していないことを結果に書く
+// 表示中はボタンが「− 最小時を消して隠す」に変わり、押すと欄の値を消して隠す（見えない値で判定しないように、値ごと消す）
 const NADIR_OPEN = { lr: false, rc: false, mr: false };
+const NADIR_SEL = { lr: '#lr-tbl input.nad', rc: '#rc-tbl input.nad', mr: '#mr-tbl input.nad' };
+const NADIR_NAME = { lr: '最小時', rc: '最小時', mr: '最良値' };
 const nadirCol = (pre, sel, wrap) => {
   const open = NADIR_OPEN[pre] || [...document.querySelectorAll(sel)].some(e => e.value !== '');
   $(wrap).classList.toggle('non', !open);
-  if (wrap === 'rc-nadw') $(wrap).hidden = !open;
-  $(`${pre}-nadd`).hidden = open;
+  const b = $(`${pre}-nadd`);
+  b.dataset.add ??= b.textContent;
+  b.textContent = open ? `− ${NADIR_NAME[pre]}を消して隠す` : b.dataset.add;
+  b.dataset.open = open ? '1' : '';
   return open;
 };
-['lr', 'rc', 'mr'].forEach(pre => $(`${pre}-nadd`).addEventListener('click', () => { NADIR_OPEN[pre] = true; calcAll(); }));
+['lr', 'rc', 'mr'].forEach(pre => $(`${pre}-nadd`).addEventListener('click', e => {
+  if (e.currentTarget.dataset.open) {
+    document.querySelectorAll(NADIR_SEL[pre]).forEach(el => { el.value = ''; });
+    NADIR_OPEN[pre] = false;
+  } else NADIR_OPEN[pre] = true;
+  calcAll();
+}));
 
 /* ---------- ML ---------- */
 const RISK4 = ['Low', 'Low-intermediate', 'High-intermediate', 'High'];
@@ -3621,19 +3631,24 @@ function calcRC() {
 
   const T = [], need = [], small = [];
   for (let i = 1; i <= 5; i++) {
-    const a = num(`rc-a${i}`), c = num(`rc-c${i}`);
-    if (a === null && c === null) continue;
+    const a = num(`rc-a${i}`), c = num(`rc-c${i}`), b = num(`rc-b${i}`), pv = num(`rc-p${i}`);
+    if (a === null && c === null && b === null && pv === null) continue;
     const node = $(`rc-t${i}`).value === 'n';
     if (a === null) need.push(`病変${i}の治療前`);
     else if (node ? a < 15 : a < 10) small.push(`病変${i}（${node ? 'リンパ節 短径 <15' : '腫瘤 長径 <10'} mm）`);
-    T.push({ i, node, a, c });
+    T.push({ i, node, a, b, c, pv });
   }
   const sum0 = T.reduce((s, t) => s + (t.a ?? 0), 0);
   const known = T.filter(t => t.c !== null), allC = known.length === T.length;
   const sumC = known.reduce((s, t) => s + t.c, 0);
-  const nOpen = nadirCol('rc', '#rc-nadir', 'rc-nadw');
-  const nIn = nOpen ? num('rc-nadir') : null, first = !nOpen;
-  const sur = nIn === null && !first;                              // 最小値が不明：治療前の径和で代用（十分条件）
+  // 最小時：径和が最小だった時点の各病変の径。列を隠しているときは治療前を最小とする
+  const nOpen = nadirCol('rc', '#rc-tbl input.nad', 'rc-tbl');
+  $('rc-tbl').classList.toggle('nop', !prevI);                    // 「前回」の列は iRECIST で前回 iUPD のときだけ
+  $('rc-tbl').style.setProperty('--rcn', 2 + (nOpen ? 1 : 0) + (prevI ? 1 : 0));
+  const bAny = T.some(t => t.b !== null), bAll = T.length > 0 && T.every(t => t.b !== null);
+  // 一部の病変だけ未入力なら、その病変は治療前の値で代用（最小の径和を大きめに見積もる → PD なら確実、そうでなければ保留）
+  const nIn = nOpen && bAny ? T.reduce((s, t) => s + (t.b ?? t.a ?? 0), 0) : null;
+  const sur = nOpen && !bAll;                                      // 最小時が不明（全部・一部）：治療前で代用（十分条件）
   const nadir = nIn !== null ? Math.min(nIn, sum0) : sum0;
 
   // 標的病変の区分
@@ -3649,7 +3664,7 @@ function calcRC() {
   if (T.length && !need.length) {
     const pc = x => (x >= 0 ? '+' : '−') + Math.round(Math.abs(x) * 100) + '%';
     detail.push(`径和 ${sum0} → ${sumC} mm` + (sum0 > 0 ? `（治療前から ${pc((sumC - sum0) / sum0)}）` : '') + (allC ? '' : '（未入力の病変あり）'));
-    if (nIn !== null) detail.push(`最小 ${nadir} mm から ${sumC - nadir >= 0 ? '+' : '−'}${fmt(Math.abs(sumC - nadir), 0)} mm` + (nadir > 0 ? `（${pc((sumC - nadir) / nadir)}）` : ''));
+    if (nIn !== null) detail.push(`最小${bAll ? '' : '（一部は治療前で代用）'} ${nadir} mm から ${sumC - nadir >= 0 ? '+' : '−'}${fmt(Math.abs(sumC - nadir), 0)} mm` + (nadir > 0 ? `（${pc((sumC - nadir) / nadir)}）` : ''));
   }
   if (small.length) detail.push('測定可能病変の基準に満たない：' + small.join('・'));
   box('r-rcx', '標的病変', T.length ? `${T.length}病変` : (tc === 'none' ? 'なし' : null), detail.join('<br>') || '治療前・現在の径を入力（mm）', 'txt');
@@ -3689,8 +3704,8 @@ function calcRC() {
   };
   const NAME = { CR: 'CR<small>（完全奏効）</small>', PR: 'PR<small>（部分奏効）</small>', SD: 'SD<small>（安定）</small>', PD: 'PD<small>（進行）</small>', NE: 'NE<small>（評価不能）</small>', 'Non-CR/Non-PD': '非CR／非PD' };
   const INAME = { CR: 'iCR', PR: 'iPR', SD: 'iSD', NE: 'NE<small>（評価不能）</small>', 'Non-CR/Non-PD': '非iCR／非iUPD' };
-  const PENDTXT = '最小の径和が未入力のため、縮小後の再増大（PD）を判定できません。最小の径和を入力してください';
-  const NONADIR = nOpen ? '' : '最小の径和なし：治療前の径和を最小として判定（いったん縮小した後の再増大は判定していない。必要なら「＋ 最小の径和を追加」）';
+  const PENDTXT = '最小時の径が未入力の病変があるため、縮小後の再増大（PD）を判定できません。最小時（径和が最小だった時点）の各病変の径を入力してください';
+  const NONADIR = nOpen ? '' : '最小時なし：治療前の径和を最小として判定（いったん縮小した後の再増大は判定していない。必要なら「＋ 最小時を追加」）';
   const show = (r, nm, extra = '') => {
     if (r.need) { box('r-rc', K, null, r.need); return; }
     const notes = [r.why, extra, T.length ? NONADIR : ''];
@@ -3716,13 +3731,14 @@ function calcRC() {
   }
   // 前回 iUPD：確認（iCPD）・リセット・iUPD 継続
   const pt = chk('rc-pt'), pn = chk('rc-pn'), pl = chk('rc-pl');
-  const psum = num('rc-psum'), ntinc = $('rc-ntinc').value;
+  const pAll = T.length > 0 && T.every(t => t.pv !== null);
+  const psum = pAll ? T.reduce((s, t) => s + t.pv, 0) : null, ntinc = $('rc-ntinc').value;
   if (!pt && !pn && !pl) { box('r-rc', K, null, '前回 iUPD となった理由（標的・非標的・新病変）を選択'); return; }
   if (tc === null) { box('r-rc', K, null, need.join('・') + 'を入力'); return; }
   const cpd = [], unk = [];
   if (pt) {
-    if (psum === null) unk.push('iUPD 時の標的の径和');
-    else if (known.length && sumC - psum >= 5 - EPS) cpd.push(`標的の径和が iUPD 時から +${fmt(sumC - psum, 0)} mm`);
+    if (psum === null) unk.push('前回（iUPD 時）の各病変の径');
+    else if (known.length && sumC - psum >= 5 - EPS) cpd.push(`標的の径和が iUPD 時（${fmt(psum, 0)} mm）から +${fmt(sumC - psum, 0)} mm`);
   }
   if (pn) { if (ntinc === 'yes') cpd.push('非標的病変がさらに増大'); else if (ntinc === '') unk.push('非標的病変の前回からの増大'); }
   if (nl === 'up') cpd.push('新病変が増大');
