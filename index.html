@@ -31,6 +31,8 @@
     --mt: #FBE7D8;   --mt-d: #C47E52;
     --vc: #EEF5D6;   --vc-d: #879B37;
     --dm: #E9E7FB;   --dm-d: #6E68C8;
+    --lr: #E5ECF4;   --lr-d: #56789E;
+    --rc: #F2ECDD;   --rc-d: #9C8146;
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
@@ -129,6 +131,16 @@
   .mt .ico { background: var(--mt); }  .mt { --acc: var(--mt-d); --tint: var(--mt); }
   .vc .ico { background: var(--vc); }  .vc { --acc: var(--vc-d); --tint: var(--vc); }
   .dm .ico { background: var(--dm); }  .dm { --acc: var(--dm-d); --tint: var(--dm); }
+  .lr .ico { background: var(--lr); }  .lr { --acc: var(--lr-d); --tint: var(--lr); }
+  .rc .ico { background: var(--rc); }  .rc { --acc: var(--rc-d); --tint: var(--rc); }
+  /* 治療効果判定の標的病変の表（ML・固形がん）。病変ごとの行のまとまり .lgrp が表示・非表示の単位 */
+  .lgrp { display: contents; }
+  .lgrp.off { display: none; }
+  .lrt .lhd { grid-column: 1 / -1; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+  .lrt .lhd select, .rct select { font-size: 16px; padding: 7px 2px; border-radius: 10px; border: 1.5px solid var(--line); background: #FCFBFD; color: var(--ink); min-width: 0; width: 100%; -webkit-appearance: none; appearance: none; text-align: center; }
+  .lrt .lhd select { width: auto; padding: 3px 10px; }
+  .addl { all: unset; font-size: 13px; color: var(--acc); margin-top: 8px; cursor: pointer; display: inline-block; padding: 4px 10px; border-radius: 999px; background: var(--tint); font-weight: 600; }
+  .addl[hidden] { display: none; }
 
   .chk.warn span { background: #F1F2F5; border: 1.5px dashed #9AA0AC; color: #5C6270; }
   .chk.warn input:checked + span { background: #FDE2E0; border: 1.5px solid #C0473B; color: #A3352B; font-weight: 600; }
@@ -912,6 +924,143 @@
   </div>
 </section>
 
+<!-- ================= ML 治療効果判定（Lugano 2014） ================= -->
+<section class="card lr" id="lr">
+  <button class="head" type="button">
+    <div class="ico">
+      <!-- PET-CT の撮像装置と集積 -->
+      <svg viewBox="0 0 64 64">
+        <circle cx="32" cy="30" r="22" fill="#F5F8FC" stroke="#56789E" stroke-width="2.5"/>
+        <circle cx="32" cy="30" r="12" fill="#fff" stroke="#A9BCD3" stroke-width="2"/>
+        <rect x="8" y="48" width="48" height="7" rx="3.5" fill="#C9D7E8" stroke="#56789E" stroke-width="2"/>
+        <circle cx="28" cy="27" r="3.2" fill="#F2A65A"/><circle cx="36" cy="33" r="2.2" fill="#F6C27F"/>
+        <path d="M14 18a22 22 0 0 1 8-7" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".8"/>
+      </svg>
+    </div>
+    <div class="ttl"><b>ML​治療効果判定</b><small>Lugano 分類（PET-CT：Deauville スコア ／ CT：SPD）</small></div>
+    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
+  <div class="body">
+    <div class="resets"><span class="rl">入力値をクリア</span><button class="reset" type="button">このカードだけ</button><button class="reset all" type="button">症例全体</button></div>
+    <div class="grid">
+      <div class="f full" style="font-size:12px;color:var(--sub)">判定に使う画像
+        <div class="seg">
+          <label><input type="radio" name="lr-mode" value="pet" checked><span>PET-CT</span></label>
+          <label><input type="radio" name="lr-mode" value="ct"><span>CT</span></label>
+        </div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:6px">FDG 集積のある組織型（DLBCL・HL・FL など）は PET-CT が望ましい。CLL/SLL・LPL/WM・菌状息肉症・MZL など集積が乏しい・ばらつく組織型は CT で判定。</p>
+
+    <div id="lr-pet">
+      <h3>PET-CT（Deauville 5ポイントスケール）</h3>
+      <div class="grid">
+        <label class="f full">評価の時点
+          <select id="lr-tp"><option value="eot">治療終了時</option><option value="int">中間評価</option></select>
+        </label>
+        <label class="f full">Deauville <span class="unit">初発部位で最も高い集積</span>
+          <select id="lr-ds">
+            <option value="">未入力</option>
+            <option value="1">1：集積なし</option>
+            <option value="2">2：縦隔以下</option>
+            <option value="3">3：縦隔より高く肝以下</option>
+            <option value="4">4：肝より中等度に高い</option>
+            <option value="5">5：肝より著明に高い</option>
+          </select>
+        </label>
+        <label class="f full">集積の変化 <span class="unit">ベースライン PET と比べて（Deauville 4・5 のとき）</span>
+          <select id="lr-chg"><option value="">未選択</option><option value="down">低下</option><option value="same">有意な変化なし</option><option value="up">上昇</option></select>
+        </label>
+        <label class="f full">新たな FDG 集積 <span class="unit">X＝リンパ腫とは考えにくい集積（感染・炎症など）</span>
+          <select id="lr-pnew"><option value="">未選択</option><option value="no">なし（X のみ）</option><option value="ly">あり：リンパ腫に合致</option><option value="eq">リンパ腫か判断がつかない</option></select>
+        </label>
+        <label class="f full">骨髄 <span class="unit">化学療法・G-CSF による反応性のびまん性集積は「集積なし」</span>
+          <select id="lr-pbm"><option value="">未選択</option><option value="none">集積なし（治療前から・消失）</option><option value="res">残存（ベースラインより低下）</option><option value="same">ベースラインから変化なし</option><option value="new">新規・再発の集積</option></select>
+        </label>
+      </div>
+      <h3>SUVmax から Deauville の目安（任意・参考）</h3>
+      <div class="grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+        <label class="f">病変<input type="number" inputmode="decimal" id="lr-suv"></label>
+        <label class="f">縦隔血液プール<input type="number" inputmode="decimal" id="lr-med"></label>
+        <label class="f">肝<input type="number" inputmode="decimal" id="lr-liv"></label>
+      </div>
+      <div class="results">
+        <div class="res full" id="r-lrp"></div>
+        <div class="res full txt" id="r-lrsuv"></div>
+      </div>
+      <p class="note"><b>Deauville</b>：初発部位で最も強い集積を 1 集積なし、2 縦隔以下、3 縦隔より高く肝以下、4 肝より中等度に高い、5 肝より著明に高い・新病変、X リンパ腫とは考えにくい新たな集積、で評価。視覚評価が基本。SUVmax の目安は、4＝肝の最大 SUV を超える、5＝肝の最大 SUV の 2〜3 倍を超える（Barrington 2014）。SUV の目安は判定には使わない（1 と 2 は SUV では区別できない）。<br>
+        <b>CMR</b>：Deauville 1〜3（残存腫瘤の有無を問わない）、骨髄に FDG 集積なし、新病変なし。ワルダイエル輪・生理的集積の高い節外部位、化学療法・G-CSF で活性化した脾・骨髄では集積が縦隔・肝を超えうる。このとき初発部位の集積が周囲の正常組織を超えなければ（リンパ腫による集積と考えられなければ）CMR と推定できる。Deauville 3 は標準治療では多くが予後良好だが、治療を減らす（de-escalation）場面では過少治療を避けるため不十分な反応とみなすことがある。<br>
+        <b>PMR</b>：Deauville 4・5 でベースラインより集積が低下（残存腫瘤の大きさは問わない）。中間評価では治療に反応している所見、<b>治療終了時は残存病変（集積が下がっていても治療不成功）</b>。骨髄の局所的な集積が残るときは MRI・生検・再検を検討。<br>
+        <b>NMR</b>：Deauville 4・5 で集積に有意な変化なし。<b>PMD</b>：Deauville 4・5 で集積が上昇、またはリンパ腫に合致する新たな集積、骨髄の新規・再発の集積。新たな集積がリンパ腫か判断できなければ生検または短期間での再検。残存集積に追加治療を考えるときも生検か再検を勧める。<br>
+        総合は部位ごと（リンパ節・節外、骨髄、新病変）の最も悪い区分とした。Cheson BD, et al. J Clin Oncol 2014（Lugano 分類）、Barrington SF, et al. J Clin Oncol 2014。</p>
+    </div>
+
+    <div id="lr-ct">
+      <h3>CT：標的病変（最大6個、cm）</h3>
+      <div class="tbl3 lrt">
+        <span></span><span class="th">治療前</span><span class="th">最小時</span><span class="th">現在</span>
+      <div class="lgrp" id="lr-g1">
+        <span class="lhd">病変1<select id="lr-t1"><option value="n">リンパ節</option><option value="e">節外</option></select></span>
+        <span class="rh">長径<small>LDi</small></span><input type="number" inputmode="decimal" id="lr-l1a"><input type="number" inputmode="decimal" id="lr-l1b"><input type="number" inputmode="decimal" id="lr-l1c">
+        <span class="rh">短径<small>SDi</small></span><input type="number" inputmode="decimal" id="lr-s1a"><input type="number" inputmode="decimal" id="lr-s1b"><input type="number" inputmode="decimal" id="lr-s1c">
+      </div>
+      <div class="lgrp" id="lr-g2">
+        <span class="lhd">病変2<select id="lr-t2"><option value="n">リンパ節</option><option value="e">節外</option></select></span>
+        <span class="rh">長径<small>LDi</small></span><input type="number" inputmode="decimal" id="lr-l2a"><input type="number" inputmode="decimal" id="lr-l2b"><input type="number" inputmode="decimal" id="lr-l2c">
+        <span class="rh">短径<small>SDi</small></span><input type="number" inputmode="decimal" id="lr-s2a"><input type="number" inputmode="decimal" id="lr-s2b"><input type="number" inputmode="decimal" id="lr-s2c">
+      </div>
+      <div class="lgrp" id="lr-g3">
+        <span class="lhd">病変3<select id="lr-t3"><option value="n">リンパ節</option><option value="e">節外</option></select></span>
+        <span class="rh">長径<small>LDi</small></span><input type="number" inputmode="decimal" id="lr-l3a"><input type="number" inputmode="decimal" id="lr-l3b"><input type="number" inputmode="decimal" id="lr-l3c">
+        <span class="rh">短径<small>SDi</small></span><input type="number" inputmode="decimal" id="lr-s3a"><input type="number" inputmode="decimal" id="lr-s3b"><input type="number" inputmode="decimal" id="lr-s3c">
+      </div>
+      <div class="lgrp" id="lr-g4">
+        <span class="lhd">病変4<select id="lr-t4"><option value="n">リンパ節</option><option value="e">節外</option></select></span>
+        <span class="rh">長径<small>LDi</small></span><input type="number" inputmode="decimal" id="lr-l4a"><input type="number" inputmode="decimal" id="lr-l4b"><input type="number" inputmode="decimal" id="lr-l4c">
+        <span class="rh">短径<small>SDi</small></span><input type="number" inputmode="decimal" id="lr-s4a"><input type="number" inputmode="decimal" id="lr-s4b"><input type="number" inputmode="decimal" id="lr-s4c">
+      </div>
+      <div class="lgrp" id="lr-g5">
+        <span class="lhd">病変5<select id="lr-t5"><option value="n">リンパ節</option><option value="e">節外</option></select></span>
+        <span class="rh">長径<small>LDi</small></span><input type="number" inputmode="decimal" id="lr-l5a"><input type="number" inputmode="decimal" id="lr-l5b"><input type="number" inputmode="decimal" id="lr-l5c">
+        <span class="rh">短径<small>SDi</small></span><input type="number" inputmode="decimal" id="lr-s5a"><input type="number" inputmode="decimal" id="lr-s5b"><input type="number" inputmode="decimal" id="lr-s5c">
+      </div>
+      <div class="lgrp" id="lr-g6">
+        <span class="lhd">病変6<select id="lr-t6"><option value="n">リンパ節</option><option value="e">節外</option></select></span>
+        <span class="rh">長径<small>LDi</small></span><input type="number" inputmode="decimal" id="lr-l6a"><input type="number" inputmode="decimal" id="lr-l6b"><input type="number" inputmode="decimal" id="lr-l6c">
+        <span class="rh">短径<small>SDi</small></span><input type="number" inputmode="decimal" id="lr-s6a"><input type="number" inputmode="decimal" id="lr-s6b"><input type="number" inputmode="decimal" id="lr-s6c">
+      </div>
+        <span class="lhd">脾臓</span>
+        <span class="rh">長径</span><input type="number" inputmode="decimal" id="lr-sp0"><input type="number" inputmode="decimal" id="lr-sp1"><input type="number" inputmode="decimal" id="lr-sp2">
+      </div>
+      <button class="addl" type="button" id="lr-add">＋ 病変を追加</button>
+      <div class="checks sub" style="margin-top:8px">
+        <label class="chk"><input type="checkbox" id="lr-first"><span>治療開始後の最初の評価（最小時＝治療前）</span></label>
+      </div>
+      <div class="grid" style="margin-top:8px">
+        <label class="f full">非測定病変（標的以外の病変）
+          <select id="lr-nm"><option value="">未選択</option><option value="none">なし（治療前から・消失）</option><option value="reg">残存（縮小・不変、増大なし）</option><option value="prog">明らかな増大</option></select>
+        </label>
+        <label class="f full">新規病変 <span class="unit">消失した病変の再出現、新規リンパ節 &gt;1.5 cm、新規節外病変 &gt;1.0 cm、リンパ腫と明らかな病変</span>
+          <select id="lr-cnew"><option value="">未選択</option><option value="no">なし</option><option value="yes">あり</option><option value="eq">リンパ腫か判断がつかない</option></select>
+        </label>
+        <label class="f full">骨髄（形態、判定困難なら免疫染色）
+          <select id="lr-cbm"><option value="">未評価</option><option value="neg0">治療前から浸潤なし</option><option value="clear">浸潤あり → 消失</option><option value="res">浸潤が残存</option><option value="new">新規・再発の浸潤</option></select>
+        </label>
+      </div>
+      <div class="results">
+        <div class="res full" id="r-lrc"></div>
+        <div class="res full txt" id="r-lrcx"></div>
+      </div>
+      <p class="note">測定可能病変：リンパ節は LDi &gt;1.5 cm、節外病変は LDi &gt;1.0 cm。二方向で測れる大きいものを最大6個（異なる部位から）。小さすぎて測れない病変は 0.5×0.5 cm、見えなくなった病変は 0×0 を入力（0.5×0.5 cm を超えるが正常大より小さいリンパ節は実測値）。長径と短径は大きいほうを LDi として計算。<b>最小時</b>は PPD（LDi×SDi）が最も小さかった時（治療前を含む）。脾腫は長径 &gt;13 cm。<br>
+        <b>CR</b>：標的のリンパ節がすべて LDi ≤1.5 cm、節外病変なし、非測定病変なし、腫大した臓器が正常化、新病変なし、骨髄が形態で正常。<br>
+        <b>PR</b>：最大6個の SPD（PPD の和）が治療前から ≥50% 減少、脾臓は 13 cm を超える部分が &gt;50% 縮小、非測定病変の増大なし、新病変なし。<b>SD</b>：SPD の減少 &lt;50% で PD の基準を満たさない。<br>
+        <b>PD</b>（いずれか）：個々の病変が LDi &gt;1.5 cm かつ PPD が最小時から ≥50% 増加 かつ LDi または SDi が最小時から 0.5 cm（≤2 cm の病変）／1.0 cm（&gt;2 cm の病変）以上増加。脾腫があった場合は、13 cm を超えていた部分の &gt;50% の増大（例：15 cm → &gt;16 cm）。脾腫がなかった場合は ≥2 cm の増大。新規・再発の脾腫、非測定病変の明らかな増大、新病変、骨髄の新規・再発浸潤。<br>
+        <b>解釈を補った点</b>：原典は「≤2 cm の病変」の大きさを測る時点を明記していないため最小時の LDi で区分した。脾臓の比較値は最小時（空欄なら治療前）とし、脾腫がなかった例は「≥2 cm 増大して 13 cm を超えた」ときに PD、13 cm を超えたが増大が 2 cm 未満なら判定保留とした。<br>
+        最小時が空欄の病変は、治療前値からの増加で PD の基準を満たせば PD（最小時は治療前以下のため）。満たさなければ縮小後の再増大を否定できないため「PD 判定保留」とする（最初の評価ならチェックを入れる）。Cheson BD, et al. J Clin Oncol 2014。</p>
+    </div>
+  </div>
+</section>
+
 <!-- ================= 多発性骨髄腫 ================= -->
 <section class="card mm" id="mm">
   <button class="head" type="button">
@@ -1104,6 +1253,104 @@
       <b>MR</b>：血清M 25–49%減少＋尿M 50–89%減少。<br>
       <b>PD</b>：最良値から ≥25%増加 かつ 血清M 絶対値 +0.5 g/dL 以上（最良値 ≥5 g/dL なら +1 g/dL）、尿M +200 mg/24h 以上、dFLC +100 mg/L 超（M蛋白測定不能例）、骨髄形質細胞 +10%以上、または新規病変・形質細胞腫の増大・末梢血形質細胞増加。<br>
       最良値（各項目の最低値）が空欄の場合、治療前値からの増加で基準を満たせば PD（最良値は治療前値以下のため）。満たさなければ奏効後の再増悪を否定できないため「PD 判定保留」とする。判定には2回連続の評価で確認が必要（Kumar S, et al. Lancet Oncol 2016）。</p>
+  </div>
+</section>
+
+<!-- ================= 固形がん治療効果判定（RECIST 1.1・iRECIST） ================= -->
+<section class="card rc" id="rc">
+  <button class="head" type="button">
+    <div class="ico">
+      <!-- 腫瘤と物差し -->
+      <svg viewBox="0 0 64 64">
+        <path d="M20 12c9-6 24-3 28 7s1 20-9 24-24 2-27-9 0-17 8-22z" fill="#FBF6EA" stroke="#9C8146" stroke-width="2.5"/>
+        <path d="M24 24c3-4 9-5 13-2s4 9 0 12-10 3-13-1-3-6 0-9z" fill="#E6D3A6"/>
+        <path d="M15 19l34 18" stroke="#D99A5B" stroke-width="2" stroke-dasharray="3 3" stroke-linecap="round"/>
+        <rect x="8" y="48" width="48" height="9" rx="2.5" fill="#fff" stroke="#9C8146" stroke-width="2"/>
+        <path d="M14 48v4M20 48v3M26 48v4M32 48v3M38 48v4M44 48v3M50 48v4" stroke="#9C8146" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="ttl"><b>固形がん​治療効果判定</b><small>RECIST 1.1 ・ iRECIST（免疫療法）</small></div>
+    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
+  <div class="body">
+    <div class="resets"><span class="rl">入力値をクリア</span><button class="reset" type="button">このカードだけ</button><button class="reset all" type="button">症例全体</button></div>
+    <div class="grid">
+      <div class="f full" style="font-size:12px;color:var(--sub)">判定基準
+        <div class="seg">
+          <label><input type="radio" name="rc-mode" value="recist" checked><span>RECIST 1.1</span></label>
+          <label><input type="radio" name="rc-mode" value="irecist"><span>iRECIST</span></label>
+        </div>
+      </div>
+    </div>
+    <h3>標的病変（最大5個・1臓器2個まで、mm。腫瘤は長径、リンパ節は短径）</h3>
+    <div class="tbl3 rct">
+      <span></span><span class="th">種類</span><span class="th">治療前</span><span class="th">現在</span>
+      <div class="lgrp" id="rc-g1">
+        <span class="rh">病変1</span><select id="rc-t1"><option value="o">腫瘤</option><option value="n">リンパ節</option></select><input type="number" inputmode="decimal" id="rc-a1"><input type="number" inputmode="decimal" id="rc-c1">
+      </div>
+      <div class="lgrp" id="rc-g2">
+        <span class="rh">病変2</span><select id="rc-t2"><option value="o">腫瘤</option><option value="n">リンパ節</option></select><input type="number" inputmode="decimal" id="rc-a2"><input type="number" inputmode="decimal" id="rc-c2">
+      </div>
+      <div class="lgrp" id="rc-g3">
+        <span class="rh">病変3</span><select id="rc-t3"><option value="o">腫瘤</option><option value="n">リンパ節</option></select><input type="number" inputmode="decimal" id="rc-a3"><input type="number" inputmode="decimal" id="rc-c3">
+      </div>
+      <div class="lgrp" id="rc-g4">
+        <span class="rh">病変4</span><select id="rc-t4"><option value="o">腫瘤</option><option value="n">リンパ節</option></select><input type="number" inputmode="decimal" id="rc-a4"><input type="number" inputmode="decimal" id="rc-c4">
+      </div>
+      <div class="lgrp" id="rc-g5">
+        <span class="rh">病変5</span><select id="rc-t5"><option value="o">腫瘤</option><option value="n">リンパ節</option></select><input type="number" inputmode="decimal" id="rc-a5"><input type="number" inputmode="decimal" id="rc-c5">
+      </div>
+    </div>
+    <button class="addl" type="button" id="rc-add">＋ 病変を追加</button>
+    <div class="grid" style="margin-top:8px">
+      <label class="f">最小の径和 <span class="unit">mm</span><input type="number" inputmode="decimal" id="rc-nadir"></label>
+      <div class="checks sub" style="align-items:flex-end"><label class="chk"><input type="checkbox" id="rc-first"><span>最初の評価（最小＝治療前）</span></label></div>
+    </div>
+    <h3>非標的病変・新病変</h3>
+    <div class="grid">
+      <label class="f full">非標的病変
+        <select id="rc-nt"><option value="">未選択</option><option value="none">なし（治療前から非標的病変なし）</option><option value="cr">すべて消失（リンパ節はすべて短径 &lt;10 mm）</option><option value="non">残存（非CR／非PD）</option><option value="pd">明らかな増悪</option><option value="ne">評価できず</option></select>
+      </label>
+      <label class="f full">腫瘍マーカー <span class="unit">治療前に基準値上限を超えていた場合</span>
+        <select id="rc-tm"><option value="">未選択</option><option value="na">該当なし（治療前に高値でない）</option><option value="norm">正常化</option><option value="high">基準値上限を超えたまま</option><option value="nm">未測定</option></select>
+      </label>
+      <label class="f full" id="rc-new-w">新病変
+        <select id="rc-new"><option value="">未選択</option><option value="no">なし</option><option value="yes">あり（明らかな新病変）</option><option value="eq">判断がつかない</option></select>
+      </label>
+    </div>
+    <div id="rc-ir">
+      <h3>iRECIST：前回の判定</h3>
+      <div class="grid">
+        <label class="f full">前回の評価
+          <select id="rc-prev"><option value="">iUPD ではない（初回・iCR・iPR・iSD）</option><option value="iupd">iUPD（未確定の進行）</option></select>
+        </label>
+      </div>
+      <div id="rc-pv">
+        <div class="f" style="font-size:12px;color:var(--sub);margin-top:8px">前回 iUPD となった理由（複数可）</div>
+        <div class="checks sub" style="margin-top:4px">
+          <label class="chk"><input type="checkbox" id="rc-pt"><span>標的病変</span></label>
+          <label class="chk"><input type="checkbox" id="rc-pn"><span>非標的病変</span></label>
+          <label class="chk"><input type="checkbox" id="rc-pl"><span>新病変</span></label>
+        </div>
+        <div class="grid" style="margin-top:8px">
+          <label class="f">前回（iUPD 時）の標的の径和 <span class="unit">mm</span><input type="number" inputmode="decimal" id="rc-psum"></label>
+          <label class="f">非標的病変の前回からの増大
+            <select id="rc-ntinc"><option value="">未選択</option><option value="no">なし</option><option value="yes">あり（明らかでなくてよい）</option></select>
+          </label>
+          <label class="f full">新病変（前回の評価と比べて）
+            <select id="rc-nlchg"><option value="">未選択</option><option value="none">新病変なし（すべて消失を含む）</option><option value="same">新病変あり・増えていない</option><option value="up">増大（新病変の標的 +5 mm 以上・非標的の増大）</option><option value="more">新たな新病変が出現</option></select>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="results">
+      <div class="res full" id="r-rc"></div>
+      <div class="res full txt" id="r-rcx"></div>
+    </div>
+    <p class="note"><b>測定可能病変</b>：腫瘤は長径 ≥10 mm（CT のスライス厚 ≤5 mm）、リンパ節は短径 ≥15 mm。短径 10〜15 mm のリンパ節は非標的、&lt;10 mm は正常。標的は最大5個（1臓器2個まで）、径和は腫瘤の長径とリンパ節の短径の和。小さすぎて測れない病変は 5 mm、消失は 0 mm（リンパ節は縮小しても実測の短径を足す）。<br>
+      <b>標的病変</b>：CR＝腫瘤がすべて消失し、リンパ節がすべて短径 &lt;10 mm。PR＝径和が治療前から ≥30% 減少。PD＝径和が最小値（治療前を含む）から ≥20% 増加 かつ 絶対値で ≥5 mm 増加。SD＝それ以外。<br>
+      <b>総合効果</b>（Eisenhauer EA, et al. Eur J Cancer 2009 Table 4・5）：新病変・標的 PD・非標的の明らかな増悪のいずれかで PD。標的 CR でも非標的が残存・未評価、または腫瘍マーカーが正常化していなければ PR。標的 SD は非標的が PD でなければ SD。標的の一部が未評価なら NE（評価できた病変だけで PD なら PD）。非標的病変だけの例は CR／非CR・非PD／PD。新病変が判断できないときは PD とせず次回の評価で確認し、確定したら PD（日付は最初に見つけた時点）。腫瘍マーカーだけで奏効・進行は判定しない。奏効の確定（4週以上あけた再評価）が要るかは試験のデザイン・プロトコルによる（RECIST 1.1 では奏効が主要評価項目の非ランダム化試験で必要）。<br>
+      <b>iRECIST</b>（Seymour L, et al. Lancet Oncol 2017）：RECIST 1.1 の PD は iUPD（未確定）とし、臨床的に安定（PS の悪化・症状の増悪・対症療法の強化がない）なら治療を続けて 4〜8週後に再評価。前回 iUPD のとき、iUPD の理由となったカテゴリーがさらに増大（標的の径和が前回から ≥5 mm、非標的の増大〔明らかでなくてよい〕、新病変の標的の径和 ≥5 mm・新病変の非標的の増大・新たな新病変の出現）するか、前回は進行していなかったカテゴリーで RECIST 1.1 の PD を満たせば iCPD（確定）。縮小して iCR・iPR・iSD（新病変なし、非標的は増悪なし）になれば iUPD はリセットされ、次に進行すれば再び iUPD から。どちらでもなければ iUPD のまま。新病変は最大5個（1臓器2個まで）を「新病変の標的」として測定し、標的の径和には含めない。</p>
   </div>
 </section>
 
@@ -1397,6 +1644,8 @@
     <h4>カードごとのポイント</h4>
     <ul>
       <li><b>MLリスク分類</b>：IPI 系は上の欄、FLIPI・MIPI は下の欄を追加で入れます（年齢・LDH・病期などは共用）。</li>
+      <li><b>ML治療効果判定</b>：Lugano 分類で判定します。上の切り替えで PET-CT と CT を選びます。PET-CT は初発部位で最も高い集積の Deauville スコアと、4・5 のときはベースラインからの集積の変化、新たな集積、骨髄を選ぶと CMR／PMR／NMR／PMD を表示します（治療終了時の PMR は残存病変として赤）。SUVmax を入れると Deauville の目安も出ますが、判定には使いません。CT は標的病変（最大6個）の長径・短径を治療前・最小時・現在で入れます（cm）。最小時が分からない2回目以降の評価は「PD 判定保留」になるので、最初の評価ならチェックを入れてください。</li>
+      <li><b>固形がん治療効果判定</b>：RECIST 1.1 と iRECIST を切り替えます。標的病変（最大5個、腫瘤は長径・リンパ節は短径、mm）の治療前・現在と、これまでの最小の径和を入れます。iRECIST では前回が iUPD なら、その理由と iUPD 時の径和、非標的・新病変の前回からの変化を入れると、iCPD（確定）・iUPD の継続・リセット（iCR/iPR/iSD）を判定します。</li>
       <li><b>MMリスク分類</b>：FISH は項目ごとに「未検査／陰性／陽性」を選びます。未検査が残っていて病期が変わりうるときは範囲で表示し、判定保留にします。</li>
       <li><b>MM治療開始規準</b>：SLiM-CRAB から MM／SMM を判定し、SMM なら Mayo 2/20/20 とダラツムマブ単剤の対象（AQUILA 基準）を表示します。MRI・骨病変の画像・FLC などが未評価のままだと、SMM と断定せず「MDE 未確定」と表示します。</li>
       <li><b>MM治療効果判定</b>：最良値（最低値）が空欄のときは、治療前値からの増加で基準を満たせば PD、満たさなければ「PD 判定保留」と表示します（奏効後の再増悪を見落とさないため）。現在が最良なら最良値に同じ値を入れてください。</li>
@@ -3162,7 +3411,296 @@ function calcTL() {
       '乏尿・無尿、利尿薬に反応しない溢水、治療抵抗性の高K、高P と症候性の低Ca、アシドーシス。TLS は K が急に上がるため、通常の腎不全より低い基準で導入する。高齢・腎機能低下例はさらに早く。循環が不安定なら持続的血液濾過透析（CHDF）。透析後も K・P は再上昇しうるので再検する', 'txt');
 }
 
-const calcAll = () => { calcML(); calcFL(); calcCL(); calcMM(); calcMT(); calcMR(); calcKD(); calcRX(); calcVC(); calcNT(); calcGM(); calcCT(); calcTL(); calcDM(); };
+/* ---------- 治療効果判定の共通（標的病変の行の表示） ---------- */
+const EPS = 1e-9;                                                  // 小数の誤差対策（2.3−1.8 などが 0.5 をわずかに下回るため）
+const RESP_SHOWN = { lr: 3, rc: 3 };                               // 最初に見せる病変の行数（「＋ 病変を追加」で増やす）
+// 入力のある行と「追加」で開いた行までを表示する
+const lesionRows = (pre, max) => {
+  let last = 0;
+  for (let i = 1; i <= max; i++) if ([...$(`${pre}-g${i}`).querySelectorAll('input')].some(e => e.value !== '')) last = i;
+  const n = Math.min(max, Math.max(RESP_SHOWN[pre], last));
+  for (let i = 1; i <= max; i++) $(`${pre}-g${i}`).classList.toggle('off', i > n);
+  $(`${pre}-add`).hidden = n >= max;
+};
+['lr', 'rc'].forEach(pre => $(`${pre}-add`).addEventListener('click', () => { RESP_SHOWN[pre]++; calcAll(); }));
+const radioVal = name => document.querySelector(`input[name="${name}"]:checked`)?.value;
+const unkTxt = u => u.length ? `<br>未選択：${u.join('・')}（選ぶと判定が変わりうる）` : '';
+
+/* ---------- ML 治療効果判定（Lugano 2014：PET-CT の Deauville／CT の SPD） ---------- */
+function calcLR() {
+  const mode = radioVal('lr-mode') || 'pet';
+  $('lr-pet').hidden = mode !== 'pet';
+  $('lr-ct').hidden = mode !== 'ct';
+  lesionRows('lr', 6);
+  lrPET(); lrCT();
+}
+const LR_ORD = ['CMR', 'PMR', 'NMR', 'PMD'];
+function lrPET() {
+  // SUVmax からの Deauville の目安（参考。判定には使わない）：4＝肝の最大 SUV 超、5＝肝の 2〜3 倍超（Barrington 2014）
+  const suv = num('lr-suv'), med = num('lr-med'), liv = num('lr-liv');
+  if (has(suv, liv) && liv > 0) {
+    const g = suv > liv * 3 ? '5' : suv > liv * 2 ? '4〜5' : suv > liv ? '4'
+            : med === null ? '1〜3' : suv > med ? '3' : '1〜2';
+    box('r-lrsuv', 'SUVmax からの目安（参考）', g,
+        `病変／肝 ＝ ${fmt(suv / liv, 2)}${med === null && suv <= liv ? '（縦隔の SUVmax で 3 かどうかを区別）' : ''}。Deauville は視覚評価で選択（目安は判定に使わない）`, 'txt');
+  } else box('r-lrsuv', 'SUVmax からの目安（参考）', null, '病変・肝（・縦隔）の SUVmax を入れると目安を表示');
+
+  const ds = $('lr-ds').value, chg = $('lr-chg').value, nw = $('lr-pnew').value, bm = $('lr-pbm').value;
+  const eot = $('lr-tp').value === 'eot', K = '効果判定（PET-CT）';
+  const node = ds === '' ? null : +ds <= 3 ? 'CMR' : { down: 'PMR', same: 'NMR', up: 'PMD' }[chg] || null;
+  const bmC = { none: 'CMR', res: 'PMR', same: 'NMR', new: 'PMD' }[bm];
+  const pmd = [];
+  if (node === 'PMD') pmd.push(`Deauville ${ds} で集積が上昇`);
+  if (nw === 'ly') pmd.push('リンパ腫に合致する新たな集積');
+  if (bmC === 'PMD') pmd.push('骨髄の新規・再発の集積');
+  if (pmd.length) { box('r-lrp', K, 'PMD', pmd.join('・') + '（判断に迷う集積は生検または短期間での再検）', 'alert'); return; }
+  if (ds === '') { box('r-lrp', K, null, 'Deauville スコアを選択（初発部位で最も高い集積）'); return; }
+  if (!node) { box('r-lrp', K, null, `Deauville ${ds}：ベースラインからの集積の変化を選択`); return; }
+
+  let cat = node; const why = [];
+  if (bmC && LR_ORD.indexOf(bmC) > LR_ORD.indexOf(node)) {
+    cat = bmC; why.push(`リンパ節・節外は ${node}、骨髄の所見で ${bmC}（局所的な集積が残るときは MRI・生検・再検を検討）`);
+  }
+  const unk = [];
+  if (bm === '') unk.push('骨髄');
+  if (nw === '') unk.push('新たな集積');
+  const D = {
+    CMR: ds === '3' ? 'Deauville 3：標準治療では CMR。治療を減らす（de-escalation）場面では不十分な反応とみなすことがある' : `Deauville ${ds}`,
+    PMR: eot ? '治療終了時：残存病変（集積が下がっていても治療不成功）。追加治療を考えるなら生検または再検' : '中間評価：治療に反応している所見（化学療法感受性）',
+    NMR: `Deauville 4・5 で集積に有意な変化なし：治療不成功（${eot ? '治療終了時' : '中間評価'}）`,
+  };
+  const bad = cat === 'NMR' || (cat === 'PMR' && eot);
+  const name = { CMR: 'CMR<small>（完全代謝奏効）</small>', PMR: 'PMR<small>（部分代謝奏効）</small>', NMR: 'NMR<small>（代謝的に不変）</small>' }[cat];
+  if (nw === 'eq') { box('r-lrp', K, `${cat}<small>（PMD 判定保留）</small>`,
+    '新たな集積がリンパ腫か判断できない：生検または短期間での再検。リンパ腫なら PMD<br>' + [D[cat], ...why].join('<br>') + unkTxt(unk), 'warn'); return; }
+  box('r-lrp', K, name, [D[cat], ...why].join('<br>') + unkTxt(unk), bad ? 'alert' : unk.length ? 'warn' : '');
+}
+function lrCT() {
+  const first = chk('lr-first'), K = '効果判定（CT）';
+  const ppd = x => x[0] * x[1];
+  const L = [], need = [], pd = [], pend = [];
+  for (let i = 1; i <= 6; i++) {
+    const d = t => { const l = num(`lr-l${i}${t}`), s = num(`lr-s${i}${t}`);
+      return l === null && s === null ? null : l === null || s === null ? 'half' : [Math.max(l, s), Math.min(l, s)]; };
+    const a = d('a'), b = d('b'), c = d('c');
+    if (!a && !b && !c) continue;
+    if ([a, b, c].includes('half')) { need.push(`病変${i}の長径と短径`); continue; }
+    if (!a) need.push(`病変${i}の治療前`);
+    if (!c) need.push(`病変${i}の現在`);
+    L.push({ i, e: $(`lr-t${i}`).value === 'e', a, b, c });
+  }
+  // PD：個々の病変が LDi >1.5 かつ PPD が最小時から ≥50% 増加 かつ LDi か SDi が最小時から 0.5（≤2 cm）／1.0 cm（>2 cm）以上増加
+  L.forEach(({ i, a, b, c }) => {
+    if (!c || !(a || b)) return;
+    const ref = b && (!a || ppd(b) <= ppd(a)) ? b : a;          // 最小時（治療前より大きい値は治療前で置き換える）
+    const sur = !b && !first;                                     // 最小時が不明：治療前値で代用（十分条件）
+    const thr = ref[0] <= 2 + EPS ? 0.5 : 1.0;
+    const isPD = c[0] > 1.5 + EPS && ppd(c) >= 1.5 * ppd(ref) - EPS && (c[0] - ref[0] >= thr - EPS || c[1] - ref[1] >= thr - EPS);
+    if (isPD) pd.push(`病変${i}の増大` + (sur ? '（治療前値から）' : ''));
+    else if (sur && c[0] > 1.5 + EPS) pend.push(`病変${i}`);
+  });
+  // 脾臓：脾腫あり（比較値 >13 cm）→ 13 cm を超える部分の >50% の増大。脾腫なし → ≥2 cm 増大して 13 cm 超
+  const sp0 = num('lr-sp0'), sp1 = num('lr-sp1'), sp2 = num('lr-sp2');
+  if (sp2 !== null && (sp0 !== null || sp1 !== null)) {
+    const sur = sp1 === null && !first;
+    const ref = sp1 !== null ? Math.min(sp1, sp0 ?? sp1) : sp0;
+    if (ref > 13 + EPS) {
+      if (sp2 > ref + 0.5 * (ref - 13) + EPS) pd.push(`脾臓の増大（${ref} → ${sp2} cm）` + (sur ? '（治療前値から）' : ''));
+      else if (sur && sp2 > 13 + EPS) pend.push('脾臓');
+    } else if (sp2 > 13 + EPS) {
+      if (sp2 - ref >= 2 - EPS) pd.push(`脾腫の出現（${ref} → ${sp2} cm）`);
+      else pend.push('脾臓（13 cm を超えたが増大 <2 cm：新規脾腫とするかは臨床判断）');
+    } else if (sur && sp2 > 13 + EPS) pend.push('脾臓');
+  }
+  const nm = $('lr-nm').value, nw = $('lr-cnew').value, bm = $('lr-cbm').value;
+  if (nm === 'prog') pd.push('非測定病変の明らかな増大');
+  if (nw === 'yes') pd.push('新病変');
+  if (bm === 'new') pd.push('骨髄の新規・再発浸潤');
+
+  // SPD
+  const M = L.filter(x => x.a && x.c);
+  const spd0 = M.reduce((s, x) => s + ppd(x.a), 0), spdC = M.reduce((s, x) => s + ppd(x.c), 0);
+  const red = spd0 > 0 ? (spd0 - spdC) / spd0 : null;
+  const detail = [];
+  if (M.length) detail.push(`SPD ${fmt(spd0, 2)} → ${fmt(spdC, 2)} cm²` + (red === null ? '' : red >= 0 ? `（${Math.round(red * 100)}%減少）` : `（${Math.round(-red * 100)}%増加）`));
+  if (sp0 !== null && sp2 !== null) detail.push(`脾臓 ${sp0} → ${sp2} cm`);
+  box('r-lrcx', '標的病変（最大6個）', M.length ? `${M.length}病変` : (pd.length ? '—' : null),
+      detail.join('<br>') || '治療前・現在の長径・短径を入力（cm）', 'txt');
+
+  if (pd.length) { box('r-lrc', K, 'PD', pd.join('・'), 'alert'); return; }
+  if (need.length) { box('r-lrc', K, null, need.join('・') + 'を入力'); return; }
+  if (!M.length) { box('r-lrc', K, null, '標的病変の治療前・現在の長径・短径を入力（cm）'); return; }
+
+  // CR：リンパ節の標的はすべて LDi ≤1.5、節外の標的は消失、脾臓 ≤13、非測定病変なし、新病変なし、骨髄正常
+  const unk = [];
+  const lesCR = M.every(x => x.e ? x.c[0] === 0 : x.c[0] <= 1.5 + EPS);
+  const spCR = sp2 !== null ? sp2 <= 13 + EPS : sp0 !== null && sp0 > 13 + EPS ? null : true;
+  let cat, why = '';
+  if (lesCR && spCR !== false && nm !== 'reg' && bm !== 'res') {
+    cat = 'CR';
+    if (spCR === null) unk.push('脾臓（現在）');
+    if (nm === '') unk.push('非測定病変');
+    if (nw === '') unk.push('新規病変');
+    if (bm === '') unk.push('骨髄（治療前に浸潤があれば正常化の確認が必要）');
+  } else {
+    // PR：SPD ≥50% 減少、脾腫があれば 13 cm を超える部分が >50% 縮小
+    let spPR = true;
+    if (sp0 !== null && sp0 > 13 + EPS) {
+      if (sp2 === null) { spPR = null; unk.push('脾臓（現在）'); }
+      else spPR = sp0 - sp2 > 0.5 * (sp0 - 13) + EPS;
+    }
+    if (red !== null && red >= 0.5 - EPS && spPR !== false) cat = 'PR';
+    else cat = 'SD';
+    if (cat === 'SD' && red !== null && red >= 0.5 - EPS) why = '脾臓の縮小が不十分（13 cm を超える部分の 50% 以下）のため PR に満たない';
+    if (lesCR && bm === 'res') why = '骨髄に浸潤が残るため CR ではない';
+    if (lesCR && nm === 'reg') why = '非測定病変が残るため CR ではない';
+    if (nm === '') unk.push('非測定病変');
+    if (nw === '') unk.push('新規病変');
+  }
+  const name = { CR: 'CR<small>（完全奏効）</small>', PR: 'PR<small>（部分奏効）</small>', SD: 'SD<small>（安定）</small>' }[cat];
+  const notes = [why];
+  if (nw === 'eq') notes.unshift('新病変がリンパ腫か判断できない：生検または短期間での再検。リンパ腫なら PD');
+  if (pend.length) notes.unshift(`最小時が未入力のため、縮小後の再増大（PD）を判定できません（${pend.join('・')}）。最小時を入力してください（最初の評価ならチェック）`);
+  const txt = notes.filter(Boolean).join('<br>') + unkTxt(unk);
+  if (pend.length || nw === 'eq') box('r-lrc', K, `${name.replace(/<small>.*<\/small>/, '')}<small>（PD 判定保留）</small>`, txt, 'warn');
+  else box('r-lrc', K, name, txt || (cat === 'CR' ? 'すべての標的リンパ節 LDi ≤1.5 cm' : ''), unk.length ? 'warn' : '');
+}
+
+/* ---------- 固形がん治療効果判定（RECIST 1.1・iRECIST） ---------- */
+function calcRC() {
+  const ir = radioVal('rc-mode') === 'irecist';
+  const prevI = ir && $('rc-prev').value === 'iupd';
+  $('rc-ir').hidden = !ir;
+  $('rc-pv').hidden = !prevI;
+  $('rc-new-w').hidden = prevI;                                    // 前回 iUPD のときは新病変を「前回と比べて」で入力
+  lesionRows('rc', 5);
+
+  const T = [], need = [], small = [];
+  for (let i = 1; i <= 5; i++) {
+    const a = num(`rc-a${i}`), c = num(`rc-c${i}`);
+    if (a === null && c === null) continue;
+    const node = $(`rc-t${i}`).value === 'n';
+    if (a === null) need.push(`病変${i}の治療前`);
+    else if (node ? a < 15 : a < 10) small.push(`病変${i}（${node ? 'リンパ節 短径 <15' : '腫瘤 長径 <10'} mm）`);
+    T.push({ i, node, a, c });
+  }
+  const sum0 = T.reduce((s, t) => s + (t.a ?? 0), 0);
+  const known = T.filter(t => t.c !== null), allC = known.length === T.length;
+  const sumC = known.reduce((s, t) => s + t.c, 0);
+  const nIn = num('rc-nadir'), first = chk('rc-first');
+  const sur = nIn === null && !first;                              // 最小値が不明：治療前の径和で代用（十分条件）
+  const nadir = nIn !== null ? Math.min(nIn, sum0) : sum0;
+
+  // 標的病変の区分
+  let tc = null, tPend = false;
+  if (!T.length) tc = 'none';
+  else if (!need.length) {
+    const pdT = known.length > 0 && sumC - nadir >= 5 - EPS && sumC >= nadir * 1.2 - EPS;
+    tc = pdT ? 'PD' : !allC ? 'NE' : T.every(t => t.node ? t.c < 10 : t.c === 0) ? 'CR'
+       : sum0 > 0 && sumC <= sum0 * 0.7 + EPS ? 'PR' : 'SD';
+    tPend = sur && tc !== 'PD' && sumC >= 5 - EPS;
+  }
+  const detail = [];
+  if (T.length && !need.length) {
+    const pc = x => (x >= 0 ? '+' : '−') + Math.round(Math.abs(x) * 100) + '%';
+    detail.push(`径和 ${sum0} → ${sumC} mm` + (sum0 > 0 ? `（治療前から ${pc((sumC - sum0) / sum0)}）` : '') + (allC ? '' : '（未入力の病変あり）'));
+    if (!sur) detail.push(`最小 ${nadir} mm から ${sumC - nadir >= 0 ? '+' : '−'}${fmt(Math.abs(sumC - nadir), 0)} mm` + (nadir > 0 ? `（${pc((sumC - nadir) / nadir)}）` : ''));
+  }
+  if (small.length) detail.push('測定可能病変の基準に満たない：' + small.join('・'));
+  box('r-rcx', '標的病変', T.length ? `${T.length}病変` : (tc === 'none' ? 'なし' : null), detail.join('<br>') || '治療前・現在の径を入力（mm）', 'txt');
+
+  const nt = $('rc-nt').value, tm = $('rc-tm').value;
+  const nl = $('rc-nlchg').value;
+  const nw = prevI ? ({ none: 'no', same: 'yes', up: 'yes', more: 'yes' }[nl] ?? '') : $('rc-new').value;
+  const K = ir ? '効果判定（iRECIST）' : '効果判定（RECIST 1.1）';
+
+  // RECIST 1.1 の総合効果（Eisenhauer 2009 Table 4・5）
+  const recist = () => {
+    const pd = [];
+    if (tc === 'PD') pd.push(`標的病変の径和が最小値から ≥20% かつ ≥5 mm 増加${sur ? '（治療前から）' : ''}`);
+    if (nt === 'pd') pd.push('非標的病変の明らかな増悪');
+    if (nw === 'yes') pd.push('新病変');
+    if (pd.length) return { cat: 'PD', why: pd.join('・') };
+    if (tc === null) return { need: need.join('・') + 'を入力' };
+    const unk = [];
+    if (nw === '') unk.push('新病変');
+    let cat, why = '';
+    if (tc === 'none') {
+      if (nt === '' || nt === 'none') return { need: nt === '' ? '標的病変の径、または非標的病変を入力' : '評価できる病変がない（標的・非標的とも）' };
+      if (nt === 'ne') cat = 'NE';
+      else if (nt === 'non' || tm === 'high') { cat = 'Non-CR/Non-PD'; if (nt === 'cr') why = '腫瘍マーカーが正常化していない'; }
+      else if (tm === 'nm') { cat = 'NE'; why = '腫瘍マーカーが未測定'; }
+      else { cat = 'CR'; if (tm === '') unk.push('腫瘍マーカー'); }
+    } else if (tc === 'CR') {
+      if (nt === 'non' || nt === 'ne') { cat = 'PR'; why = nt === 'non' ? '標的は CR だが非標的病変が残存' : '標的は CR だが非標的病変が未評価'; }
+      else if (tm === 'high' || tm === 'nm') { cat = 'PR'; why = tm === 'high' ? '標的は CR だが腫瘍マーカーが正常化していない' : '標的は CR だが腫瘍マーカーが未測定'; }
+      else { cat = 'CR'; if (nt === '') unk.push('非標的病変'); if (tm === '') unk.push('腫瘍マーカー'); }
+    } else {
+      cat = tc;
+      if (tc === 'NE') why = '標的病変の一部が未評価';
+      if (nt === '') unk.push('非標的病変');
+    }
+    return { cat, why, unk, pend: tPend, eq: nw === 'eq' };
+  };
+  const NAME = { CR: 'CR<small>（完全奏効）</small>', PR: 'PR<small>（部分奏効）</small>', SD: 'SD<small>（安定）</small>', PD: 'PD<small>（進行）</small>', NE: 'NE<small>（評価不能）</small>', 'Non-CR/Non-PD': '非CR／非PD' };
+  const INAME = { CR: 'iCR', PR: 'iPR', SD: 'iSD', NE: 'NE<small>（評価不能）</small>', 'Non-CR/Non-PD': '非iCR／非iUPD' };
+  const PENDTXT = '最小の径和が未入力のため、縮小後の再増大（PD）を判定できません。最小の径和を入力してください（最初の評価ならチェック）';
+  const show = (r, nm, extra = '') => {
+    if (r.need) { box('r-rc', K, null, r.need); return; }
+    const notes = [r.why, extra];
+    if (r.eq) notes.unshift('新病変が判断できない：PD とせず次回の評価で確認（確定したら PD、日付は最初に見つけた時点）');
+    if (r.pend) notes.unshift(PENDTXT);
+    const txt = notes.filter(Boolean).join('<br>') + unkTxt(r.unk || []);
+    if (r.pend || r.eq) box('r-rc', K, `${nm[r.cat].replace(/<small>.*<\/small>/, '')}<small>（${ir ? 'iUPD' : 'PD'} 判定保留）</small>`, txt, 'warn');
+    else box('r-rc', K, nm[r.cat], txt, (r.unk || []).length ? 'warn' : '');
+  };
+
+  if (!ir) {
+    const r = recist();
+    if (r.cat === 'PD') { box('r-rc', K, NAME.PD, r.why, 'alert'); return; }
+    show(r, NAME);
+    return;
+  }
+  if (!prevI) {
+    const r = recist();
+    if (r.cat === 'PD') { box('r-rc', K, 'iUPD<small>（未確定の進行）</small>',
+      r.why + '<br>臨床的に安定なら治療を続け、4〜8週後に再評価して確認（iCPD）', 'alert'); return; }
+    show(r, INAME);
+    return;
+  }
+  // 前回 iUPD：確認（iCPD）・リセット・iUPD 継続
+  const pt = chk('rc-pt'), pn = chk('rc-pn'), pl = chk('rc-pl');
+  const psum = num('rc-psum'), ntinc = $('rc-ntinc').value;
+  if (!pt && !pn && !pl) { box('r-rc', K, null, '前回 iUPD となった理由（標的・非標的・新病変）を選択'); return; }
+  if (tc === null) { box('r-rc', K, null, need.join('・') + 'を入力'); return; }
+  const cpd = [], unk = [];
+  if (pt) {
+    if (psum === null) unk.push('iUPD 時の標的の径和');
+    else if (known.length && sumC - psum >= 5 - EPS) cpd.push(`標的の径和が iUPD 時から +${fmt(sumC - psum, 0)} mm`);
+  }
+  if (pn) { if (ntinc === 'yes') cpd.push('非標的病変がさらに増大'); else if (ntinc === '') unk.push('非標的病変の前回からの増大'); }
+  if (nl === 'up') cpd.push('新病変が増大');
+  if (nl === 'more') cpd.push('新たな新病変が出現');
+  // 前回は進行の理由でなかったカテゴリーで RECIST 1.1 の PD を満たす
+  if (!pt && tc === 'PD') cpd.push('標的病変で RECIST 1.1 の PD（前回は標的の進行なし）');
+  if (!pn && nt === 'pd') cpd.push('非標的病変の明らかな増悪（前回は非標的の進行なし）');
+  if (cpd.length) { box('r-rc', K, 'iCPD<small>（進行の確定）</small>', cpd.join('・'), 'alert'); return; }
+  if (nl === '') unk.push('新病変（前回と比べて）');
+  const extra = !pl && nl === 'same' ? '前回の理由に新病変がないのに「新病変あり」：前回なかった新病変なら「新たな新病変が出現」（iCPD）を選択' : '';
+  // リセット：新病変がなく、非標的が増悪しておらず、標的が iCR・iPR・iSD（治療前・最小値と比べて）
+  const r = recist();
+  const stillN = pn && nt === 'pd';
+  if (nl === 'none' && !stillN && r.cat && r.cat !== 'PD') {
+    r.unk = [...(r.unk || []), ...unk.filter(u => !r.unk?.includes(u))];
+    show(r, INAME, 'iUPD はリセット（次に進行すれば再び iUPD から）');
+    return;
+  }
+  const still = [tc === 'PD' && '標的', stillN && '非標的', nw === 'yes' && '新病変'].filter(Boolean);
+  box('r-rc', K, 'iUPD<small>（継続・未確定）</small>',
+      `確認できるさらなる増大はない${still.length ? `（進行のまま：${still.join('・')}）` : ''}。臨床的に安定なら次の評価で再確認` + (extra ? '<br>' + extra : '') + unkTxt(unk), unk.length || extra ? 'warn' : 'alert');
+}
+
+const calcAll = () => { calcML(); calcFL(); calcCL(); calcMM(); calcMT(); calcMR(); calcLR(); calcRC(); calcKD(); calcRX(); calcVC(); calcNT(); calcGM(); calcCT(); calcTL(); calcDM(); };
 
 /* ---------- 共通項目の同期（年齢・身長・体重・Cr・性別など） ---------- */
 const syncFrom = src => {
