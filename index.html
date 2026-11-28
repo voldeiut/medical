@@ -117,6 +117,7 @@
   .res.empty .v { color: #C8C0CF; }
   .note { font-size: 11px; color: var(--sub); margin-top: 12px; line-height: 1.6; }
   .reset { all: unset; font-size: 13px; color: var(--acc); margin-top: 12px; cursor: pointer; display: inline-block; }
+  .resets .reset { margin: 0; padding: 4px 10px; border-radius: 999px; background: var(--tint); font-weight: 600; }
 
   .rx .ico { background: var(--rx); }  .rx { --acc: var(--rx-d); --tint: var(--rx); }
   .gm .ico { background: var(--gm); }  .gm { --acc: var(--gm-d); --tint: var(--gm); }
@@ -143,8 +144,9 @@
   .res.alert .v { color: #C0473B; }
   .res.warn { background: #FFF1D6; }
   .res.warn .v { color: #A0660A; }
-  .resets { display: flex; flex-wrap: wrap; gap: 4px 20px; }
-  .reset.all { color: #9A8FA3; }
+  .resets { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 10px 0 2px; }
+  .resets .rl { font-size: 12px; color: var(--sub); margin-right: 2px; }
+  .resets .reset.all { color: #7E7389; background: #F1EEF3; }
   .res .d b { font-weight: 600; }
   .checks.sub { margin-top: 8px; }
   .sublbl { font-size: 12px; color: var(--sub); margin: 10px 0 4px; }
@@ -370,6 +372,7 @@
     <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
   </button>
   <div class="body">
+    <div class="resets"><span class="rl">入力値をクリア</span><button class="reset" type="button">このカードだけ</button><button class="reset all" type="button">症例全体</button></div>
     <h3>患者情報</h3>
     <div class="grid">
       <div class="f full" style="font-size:12px;color:var(--sub)">性別
@@ -393,7 +396,6 @@
     <p class="note">eGFRcr＝194×Cr<sup>−1.094</sup>×年齢<sup>−0.287</sup>（女性×0.739）。eGFRcys＝104×Cys<sup>−1.019</sup>×0.996<sup>年齢</sup>（女性×0.929）−8。<br>
       個別化＝標準化eGFR×BSA/1.73（BSAはDuBois式）。<br>
       eCCr＝Cockcroft-Gault（(140−年齢)×体重/(72×Cr)、女性×0.85）。日本の酵素法Crは Jaffe 法より約0.2 mg/dL低いため、Cr+0.2 で計算した値も併記。</p>
-    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -417,6 +419,7 @@
     <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
   </button>
   <div class="body">
+    <div class="resets"><span class="rl">入力値をクリア</span><button class="reset" type="button">このカードだけ</button><button class="reset all" type="button">症例全体</button></div>
     <h3>腎機能（腎機能カードと共通）</h3>
     <div class="grid">
       <div class="f full" style="font-size:12px;color:var(--sub)">性別
@@ -449,7 +452,6 @@
     <div class="pages" id="rx-pages"></div>
     <p class="note" id="rx-note"></p>
     <p class="note">セフェピム・タゾバクタム/ピペラシリン・メロペネムは院内推奨（作成者の所属施設の院内推奨）を先頭に表示し、左右にスライドすると一般的な推奨を表示する。一般的な推奨は 添付文書・Sanford Guide・日本腎臓病薬物療法学会の腎機能別投与量一覧などを参考にした成人の目安。添付文書の CCr は Cockcroft-Gault 式（実測Cr）を前提とするものが多い。eGFR を使う場合は体表面積補正を外した個別化 eGFR を用いる。るい痩・高齢者では Cr が低く過大評価になりやすい。必ず最新の添付文書・施設基準で確認する。</p>
-    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -472,6 +474,7 @@
     <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
   </button>
   <div class="body">
+    <div class="resets"><span class="rl">入力値をクリア</span><button class="reset" type="button">このカードだけ</button><button class="reset all" type="button">症例全体</button></div>
     <h3>患者情報（他のカードと共通）</h3>
     <div class="grid">
       <div class="f full" style="font-size:12px;color:var(--sub)">性別
@@ -514,7 +517,6 @@
     <p class="note">目標は 抗菌薬TDM臨床実践ガイドライン2022（日本化学療法学会・日本TDM学会）に準拠：AUC<sub>24</sub> 400–600 μg·h/mL（MIC 1 を前提）。AUC &gt;600 で腎障害リスクが上がる。トラフ値のみで管理する場合の目安は 10–15 μg/mL（トラフ &gt;20 は腎障害リスク）。重症例・腎機能が変動する例は AUC での管理が望ましい。初回 TDM は通常運用として投与開始3日目（開始48時間以降の最初の投与直前。q12h なら5回目、q24h なら3回目）に設定。重症例・腎機能が不安定な例では、ベイズ推定を前提に2日目の早期評価も選択肢になる。<br>
       予測は Matzke/Bauer の1-コンパートメント母集団モデル（消失速度定数 k＝0.00083×CCr＋0.0044 /時、分布容積 V＝0.7 L/kg 実体重）による初期設計の目安で、実測濃度にもとづくベイズ推定（PAT・Practical AUC-guided TDM など）とは一致しない。負荷投与は 25–30 mg/kg（実体重、上限の目安 3 g）。希釈は添付文書のとおり 0.5 g あたり 100 mL 以上（5 mg/mL 以下、生食または 5% ブドウ糖）。点滴時間は添付文書の 60 分以上を満たしたうえで、投与時反応（red neck 症候群）を避けるため 10 mg/分以下を目安に 30 分単位で切り上げて表示（0.5 g 60分、1 g 120分、1.5 g 150分）。施設の標準がある場合はそちらを優先する。<br>
       肥満（BMI ≥30）・浮腫・低栄養高齢者（Cr 低値）では CCr の推定誤差が大きい。血液透析・CRRT 中の患者には使わない。必ず実測濃度で再設計する。</p>
-    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -534,6 +536,7 @@
     <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
   </button>
   <div class="body">
+    <div class="resets"><span class="rl">入力値をクリア</span><button class="reset" type="button">このカードだけ</button><button class="reset all" type="button">症例全体</button></div>
     <h3>患者情報</h3>
     <div class="grid">
       <div class="f full" style="font-size:12px;color:var(--sub)">性別
@@ -581,7 +584,6 @@
       Harris-Benedict：男性 66.47+13.75W+5.0H−6.76A、女性 655.1+9.56W+1.85H−4.68A（W kg、H cm、A 歳）。TEE＝BEE×活動係数×ストレス係数。<br>
       タンパク質（静脈栄養ではアミノ酸量としてほぼ同量）：実体重で計算。BMI ≥25 と CKD・透析では標準体重で計算（肥満の体重の扱いは指針により標準体重・調整体重などで異なる）。一般 1.0–1.2、がん・侵襲・高齢者 1.2–1.5（ESPEN がんガイドライン 1.0–1.5）、重症 1.2–2.0 g/kg/日。CKD は日本腎臓学会の食事療法基準（G3b 以降 0.6–0.8、透析 0.9–1.2 g/kg 標準体重。KDIGO 2024 は 0.8）。低栄養・サルコペニア・急性期の異化亢進では制限を自動的に当てはめない。重症例は病期に応じて段階的に増やす。<br>
       脂質：総エネルギーの 20–30%（日本人の食事摂取基準）、1 g＝9 kcal。静脈栄養の脂肪乳剤は 1.0 g/kg/日以下、投与速度 0.1 g/kg/時以下が保守的な目安（製剤・病態で異なる。プロポフォール由来の脂質も合算する）。</p>
-    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -604,6 +606,7 @@
     <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
   </button>
   <div class="body">
+    <div class="resets"><span class="rl">入力値をクリア</span><button class="reset" type="button">このカードだけ</button><button class="reset all" type="button">症例全体</button></div>
     <h3>薬剤・希釈</h3>
     <div class="grid">
       <label class="f full">薬剤（選ぶと組成を自動入力）<select id="gm-drug"></select></label>
@@ -630,7 +633,6 @@
     </div>
     <p class="note">mL/時 ＝ 投与量（μg/kg/min）× 体重 × 60 ÷ 濃度（μg/mL）。<br>
       組成は代表例。施設の標準希釈と異なる場合は薬剤量・全量を書き換えて使う。用量範囲は目安。</p>
-    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -652,6 +654,7 @@
     <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
   </button>
   <div class="body">
+    <div class="resets"><span class="rl">入力値をクリア</span><button class="reset" type="button">このカードだけ</button><button class="reset all" type="button">症例全体</button></div>
     <h3>疾患・腫瘍量</h3>
     <div class="grid">
       <label class="f full">疾患
@@ -716,7 +719,6 @@
     <p class="note">Laboratory TLS（Cairo-Bishop）：尿酸 ≥8.0 mg/dL、K ≥6.0 mEq/L、P ≥4.5 mg/dL、補正Ca ≤7.0 mg/dL のうち2項目以上（または治療前から25%の変化）。Clinical TLS：LTLS＋Cr ≥1.5×基準上限・不整脈/突然死・痙攣のいずれか。Cr 基準上限は男性 1.07、女性 0.79（JCCLS）。<br>
       リスク分類は Cairo MS, et al. Br J Haematol 2010 と日本臨床腫瘍学会 TLS 診療ガイダンスに準拠。中間リスクで腎機能障害（Cr &gt;基準上限、自動判定）・腎浸潤、または尿酸・K・P が基準上限超（尿酸 &gt;7.0、K &gt;5.0、P &gt;4.5）なら高リスクへ。Burkitt・リンパ芽球性リンパ腫は、進行期（III/IV）・白血病型（Burkitt 白血病など）または LDH ≥2×基準上限なら高リスク、それ以外は中間リスク。バルキーは中高悪性度リンパ腫（LDH 高値例）と固形腫瘍で使う。ベネトクラクスは添付文書の腫瘍量分類（低：全リンパ節 &lt;5 cm かつ ALC &lt;25,000、高：リンパ節 ≥10 cm または ALC ≥25,000 かつリンパ節 ≥5 cm、他は中）。<br>
       輸液は 2,500–3,000 mL/m²/日、尿量 80–100 mL/m²/時を目標（心不全・腎不全では調整）。尿のアルカリ化はルーチンでは推奨されない。</p>
-    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -737,6 +739,7 @@
     <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
   </button>
   <div class="body">
+    <div class="resets"><span class="rl">入力値をクリア</span><button class="reset" type="button">このカードだけ</button><button class="reset all" type="button">症例全体</button></div>
     <h3>患者情報</h3>
     <div class="grid">
       <label class="f">年齢<input type="number" inputmode="numeric" id="ml-age" data-sync="age" placeholder="歳"></label>
@@ -792,7 +795,6 @@
       FLIPI2：年齢 &gt;60、β2MG &gt;基準上限、Hb &lt;12、骨髄浸潤、最大の罹患リンパ節の長径 &gt;6 cm。0 低、1–2 中、3–5 高（Federico M, et al. J Clin Oncol 2009）。<br>
       MIPI＝0.03535×年齢＋0.6978（PS &gt;1）＋1.367×log<sub>10</sub>(LDH/基準上限)＋0.9393×log<sub>10</sub>(WBC /μL)。&lt;5.7 低、5.7–6.2 未満 中、≥6.2 高（Hoster E, et al. Blood 2008）。<br>
       MIPI-c：MIPI 区分と Ki-67（≥30% を高値）の組み合わせ。低＋Ki-67低 → 低、低＋高 または 中＋低 → 低中、中＋高 または 高＋低 → 高中、高＋高 → 高（Hoster E, et al. J Clin Oncol 2016）。</p>
-    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -813,6 +815,7 @@
     <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
   </button>
   <div class="body">
+    <div class="resets"><span class="rl">入力値をクリア</span><button class="reset" type="button">このカードだけ</button><button class="reset all" type="button">症例全体</button></div>
     <h3>腫瘍量・血液検査</h3>
     <div class="grid">
       <label class="f">最大腫瘤径 <span class="unit">cm（節性・節外）</span><input type="number" inputmode="decimal" id="fl-mass"></label>
@@ -844,7 +847,6 @@
     <p class="note">GELF（高腫瘍量）：最大腫瘤 ≥7 cm、長径 ≥3 cm の節性病変が3領域以上、B症状、脾腫、胸水・腹水、臓器圧迫（またはそのおそれ）、血球減少（好中球または白血球 &lt;1,000/μL、または血小板 &lt;10万/μL）、白血化（腫瘍細胞 &gt;5,000/μL）のいずれか（NCCN の記載に準拠。原著 Brice P, et al. J Clin Oncol 1997 では「&gt;7 cm」「&gt;3 cm」と記載）。血球減少・白血化はリンパ腫によるものに限る。<br>
       BNLI：3か月以内の急速な全身性進行、生命を脅かす臓器浸潤、腎・肝浸潤、骨病変、全身症状または掻痒、骨髄浸潤による血球減少（Hb &lt;10 g/dL、WBC &lt;3,000/μL、または血小板 &lt;10万/μL）のいずれか（Ardeshna KM, et al. Lancet 2003）。<br>
       いずれも満たさなければ低腫瘍量として無治療経過観察（watch and wait）が選択肢になる。</p>
-    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -865,6 +867,7 @@
     <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
   </button>
   <div class="body">
+    <div class="resets"><span class="rl">入力値をクリア</span><button class="reset" type="button">このカードだけ</button><button class="reset all" type="button">症例全体</button></div>
     <h3>血液検査</h3>
     <div class="grid">
       <label class="f">Hb <span class="unit">g/dL</span><input type="number" inputmode="decimal" id="cl-hb" data-sync="hb"></label>
@@ -906,7 +909,6 @@
     <p class="note">改訂 Rai：0＝リンパ球増多のみ（低リスク）、I＝リンパ節腫大、II＝脾腫・肝腫大（I–II 中間リスク）、III＝Hb &lt;11 g/dL、IV＝血小板 &lt;10万/μL（III–IV 高リスク）。<br>
       Binet の領域は5つ：頸部・腋窩・鼠径のリンパ節（それぞれ片側でも両側でも1領域。右腋窩と左腋窩は合わせて1領域）、脾、肝。リンパ節の個数ではなく領域で数え、身体診察（触診）で判定する（Binet JL, et al. Cancer 1981）。Rai の I はこれ以外の部位を含め、触知するリンパ節腫大があれば該当。A＝Hb ≥10・血小板 ≥10万・2領域以下、B＝3領域以上、C＝Hb &lt;10 または血小板 &lt;10万。Rai・Binet とも自己免疫性の貧血・血小板減少は病期判定に用いない。<br>
       iwCLL 2018（Hallek M, et al. Blood 2018）：①進行性の骨髄不全（Hb &lt;10 g/dL・血小板 &lt;10万/μL が目安。ただし血小板減少が長期安定なら必須ではない）、②巨大（左肋骨弓下 ≥6 cm）・進行性・症候性の脾腫、③巨大（長径 ≥10 cm）・進行性・症候性のリンパ節腫大、④進行性リンパ球増多（2か月で ≥50% 増加、または倍加時間 &lt;6か月。初回リンパ球数 &lt;3万/μL では倍加時間だけで判断しない）、⑤ステロイド反応不良の自己免疫性血球減少、⑥症候性・機能障害のある節外病変、⑦病勢による症状（体重減少・倦怠感・発熱・盗汗）。いずれか1つで治療適応。早期・無症状なら経過観察。</p>
-    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -928,6 +930,7 @@
     <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
   </button>
   <div class="body">
+    <div class="resets"><span class="rl">入力値をクリア</span><button class="reset" type="button">このカードだけ</button><button class="reset all" type="button">症例全体</button></div>
     <h3>血液検査</h3>
     <div class="grid">
       <label class="f">β2MG <span class="unit">mg/L</span><input type="number" inputmode="decimal" id="mm-b2m"></label>
@@ -966,7 +969,6 @@
       R-ISS：高リスク染色体異常＝del(17p)・t(4;14)・t(14;16)。<br>
       R2-ISS：ISS II 1点、ISS III 1.5点、del(17p) 1点、LDH高値 1点、t(4;14) 1点、1q+ 0.5点（0 I、0.5–1 II、1.5–2.5 III、3–5 IV）。<br>
       D&amp;S：I＝Hb&gt;10・Ca≤12・骨正常/孤立性・低M蛋白（IgG&lt;5、IgA&lt;3、BJ&lt;4）をすべて満たす。III＝Hb&lt;8.5・Ca&gt;12・進行した溶骨病変・高M蛋白（IgG&gt;7、IgA&gt;5、BJ&gt;12）のいずれか。A：Cr&lt;2.0、B：Cr≥2.0。FISH は項目ごとに未検査・陰性・陽性を選ぶ。未検査が残り、陰性・陽性で病期が変わりうる場合は範囲で表示する（判定保留）。t(14;16) は R-ISS には入るが R2-ISS の配点には入らない。</p>
-    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -986,6 +988,7 @@
     <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
   </button>
   <div class="body">
+    <div class="resets"><span class="rl">入力値をクリア</span><button class="reset" type="button">このカードだけ</button><button class="reset all" type="button">症例全体</button></div>
     <h3>クローン性形質細胞・M蛋白</h3>
     <div class="grid">
       <label class="f">骨髄クローナル形質細胞 <span class="unit">%</span><input type="number" inputmode="decimal" id="mt-bmpc"></label>
@@ -1027,7 +1030,6 @@
       SMM：血清M ≥3 g/dL（IgG・IgA）または尿M ≥500 mg/24h、かつ／または骨髄クローナル形質細胞 10–59%、かつ MDE・アミロイドーシスなし。<br>
       Mayo 2/20/20（Lakshman A, et al. Blood Cancer J 2018）：血清M &gt;2 g/dL、FLC 比 &gt;20、骨髄形質細胞 &gt;20%。0 低、1 中、≥2 高リスク。<br>
       ダラツムマブ単剤（ダラキューロ配合皮下注、本邦 2025年11月承認）の対象＝AQUILA 試験の高リスク SMM：骨髄クローナル形質細胞 ≥10% かつ、①血清M ≥3 g/dL、②IgA 型、③非病変 Ig のうち2種以上の低下（免疫不全）、④FLC 比 ≥8 かつ &lt;100、⑤骨髄クローナル形質細胞 &gt;50% かつ &lt;60%（測定可能病変あり）のうち1つ以上。試験の対象は SMM 診断から5年以内で、測定可能病変を有すること（Dimopoulos MA, et al. N Engl J Med 2025）。最新の添付文書・最適使用推進ガイドラインで確認する。</p>
-    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -1048,6 +1050,7 @@
     <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
   </button>
   <div class="body">
+    <div class="resets"><span class="rl">入力値をクリア</span><button class="reset" type="button">このカードだけ</button><button class="reset all" type="button">症例全体</button></div>
     <h3>M蛋白・遊離軽鎖（FLC）</h3>
     <div class="tbl3">
       <span></span><span class="th">治療前</span><span class="th">最良値</span><span class="th">現在</span>
@@ -1101,7 +1104,6 @@
       <b>MR</b>：血清M 25–49%減少＋尿M 50–89%減少。<br>
       <b>PD</b>：最良値から ≥25%増加 かつ 血清M 絶対値 +0.5 g/dL 以上（最良値 ≥5 g/dL なら +1 g/dL）、尿M +200 mg/24h 以上、dFLC +100 mg/L 超（M蛋白測定不能例）、骨髄形質細胞 +10%以上、または新規病変・形質細胞腫の増大・末梢血形質細胞増加。<br>
       最良値（各項目の最低値）が空欄の場合、治療前値からの増加で基準を満たせば PD（最良値は治療前値以下のため）。満たさなければ奏効後の再増悪を否定できないため「PD 判定保留」とする。判定には2回連続の評価で確認が必要（Kumar S, et al. Lancet Oncol 2016）。</p>
-    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -1124,6 +1126,7 @@
     <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
   </button>
   <div class="body">
+    <div class="resets"><span class="rl">入力値をクリア</span><button class="reset" type="button">このカードだけ</button><button class="reset all" type="button">症例全体</button></div>
     <h3>レジメン</h3>
     <div class="grid">
       <label class="f full">検索 <span class="unit">レジメン・商品名・一般名（ひらがな可）</span><input type="search" id="dm-q" placeholder="例：krd、べるけいど、ベンダ" autocomplete="off"></label>
@@ -1168,7 +1171,6 @@
     </div>
     <p class="note">各薬剤の電子添文（PMDA 掲載の最新版）の「用法及び用量に関連する注意」に記載された血液毒性の基準をまとめた目安。Grade は CTCAE に準じて、好中球 Grade 3 &lt;1,000・Grade 4 &lt;500、血小板 Grade 3 &lt;50,000・Grade 4 &lt;25,000、Grade 1 以下＝好中球 ≥1,500・血小板 ≥75,000 として判定。非血液毒性（末梢神経障害・皮疹・CRS など）の基準は含まない。レジメンを選ぶと、このカードに基準を収載している構成薬をまとめて判定する（未収載の併用薬はレジメン名の下に表示。その基準は別途確認）。R-CHOP の各薬剤（リツキシマブ・シクロホスファミド・ドキソルビシン・ビンクリスチン）とオビヌツズマブは、電子添文に血球数の数値の基準がないため「規定なし」と表示（添文の記載を要約）。<br>
       「【ガイド】」や出典が適正使用ガイドのレジメンは、ガイドに掲載された臨床試験の規定（電子添文の基準ではない）。「【試験】」は、電子添文にも適正使用ガイドにも基準がない薬剤について、主要な臨床試験のプロトコル・論文の規定を載せたもの（試験の対象者向けの規定。施設のレジメン規定を優先）。適正使用ガイドが PMDA の資材一覧にない薬剤（ジャイパーカ・ブルキンザ・ポテリジオ）と、ガザイバ・R-CHOP の各薬剤は電子添文のみ（ミンジュビは適正使用ガイドも確認）。</p>
-    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -1192,6 +1194,7 @@
     <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
   </button>
   <div class="body">
+    <div class="resets"><span class="rl">入力値をクリア</span><button class="reset" type="button">このカードだけ</button><button class="reset all" type="button">症例全体</button></div>
     <h3>原因薬剤</h3>
     <div class="grid">
       <label class="f full">薬剤
@@ -1281,7 +1284,6 @@
     </div>
     <p class="note">CRS は発熱（≥38.0℃）があり、血圧低下・低酸素のうち重いほうで判定（いずれも他の原因によるものは除く）。CRS と診断された後に解熱薬・トシリズマブ・ステロイドなどを投与した場合、その後のグレード判定に発熱は不要で、血圧低下・低酸素で判定する（発熱欄で選択）。ICANS は ICE スコア・意識・痙攣・運動所見・脳浮腫のうち最も重いもので判定（Lee DW, et al. Biol Blood Marrow Transplant 2019）。<br>
       対応は ASCO・NCCN ガイドラインなどを参考にした一般的な目安。製品ごとの適正使用ガイド・施設プロトコルを優先する。トシリズマブは本邦では体重 30 kg 以上 8 mg/kg、30 kg 未満 12 mg/kg。</p>
-    <div class="resets"><button class="reset" type="button">このカードだけクリア</button><button class="reset all" type="button">症例全体をクリア</button></div>
   </div>
 </section>
 
@@ -1345,7 +1347,7 @@
     <ul>
       <li>カードをタップすると開き、入力した時点で結果が出ます。計算ボタンはありません。</li>
       <li>年齢・性別・身長・体重・Cr・LDH・Hb・血小板・WBC など<b>共通の項目は、1か所に入れると全カードに入ります</b>。</li>
-      <li>各カードの下の「このカードだけクリア」は、そのカード固有の入力だけを消します（年齢・体重・Cr など共通の項目は残ります）。「症例全体をクリア」は全カードの入力を消します（確認あり。保存した症例は消えません）。</li>
+      <li>各カードの上の「入力値をクリア」の「このカードだけ」は、そのカード固有の入力だけを消します（年齢・体重・Cr など共通の項目は残ります）。「症例全体」は全カードの入力を消します（確認あり。保存した症例は消えません）。</li>
       <li>検査項目は「未検査」と「陰性・なし」を区別します。未検査のままで結果が変わりうるときは、範囲（例：II〜III）や「判定保留」を<b>黄色</b>で表示します。</li>
       <li>赤い背景・赤字の結果は、注意が必要な判定（高リスク・治療適応・目標範囲外など）です。</li>
       <li>カードの下の小さな文字に、判定基準と出典を書いています。</li>
@@ -1357,7 +1359,7 @@
     <ul>
       <li>「今の入力を保存」で、全カードの入力をまとめて保存します。名前は自動で「症例1」「症例2」…になり、保存日時が付きます。</li>
       <li>名前はタップして変更できます。<b>患者名・ID など個人が特定できる情報は入れないでください。</b></li>
-      <li>「呼び出す」で入力を復元、「今の入力で上書き」で更新、「新しい症例（全クリア）」（各カードの「症例全体をクリア」と同じ）で全カードを空にします。</li>
+      <li>「呼び出す」で入力を復元、「今の入力で上書き」で更新、「新しい症例（全クリア）」（各カードの「入力値をクリア」→「症例全体」と同じ）で全カードを空にします。</li>
       <li>呼び出し中の症例名は画面上部に表示されます。</li>
     </ul>
 
