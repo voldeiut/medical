@@ -34,6 +34,7 @@
     --lr: #E5ECF4;   --lr-d: #56789E;
     --rc: #F2ECDD;   --rc-d: #9C8146;
     --cm: #E0ECEC;   --cm-d: #4F7F86;
+    --cq: #E6E9F3;   --cq-d: #5F6F9A;
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
@@ -135,6 +136,7 @@
   .lr .ico { background: var(--lr); }  .lr { --acc: var(--lr-d); --tint: var(--lr); }
   .rc .ico { background: var(--rc); }  .rc { --acc: var(--rc-d); --tint: var(--rc); }
   .cm .ico { background: var(--cm); }  .cm { --acc: var(--cm-d); --tint: var(--cm); }
+  .cq .ico { background: var(--cq); }  .cq { --acc: var(--cq-d); --tint: var(--cq); }
   /* 治療効果判定の標的病変の表（ML・固形がん）。病変ごとの行のまとまり .lgrp が表示・非表示の単位 */
   .lgrp { display: contents; }
   .lgrp.off { display: none; }
@@ -998,6 +1000,68 @@
   </div>
 </section>
 
+<!-- ================= CML 治療効果判定（ELN 2020） ================= -->
+<section class="card cq" id="cq">
+  <button class="head" type="button">
+    <div class="ico">
+      <!-- BCR::ABL1（IS、対数目盛）が下がって MMR の線（破線）を越える -->
+      <svg viewBox="0 0 64 64">
+        <rect x="8" y="8" width="48" height="46" rx="8" fill="#F7F8FC" stroke="#5F6F9A" stroke-width="2"/>
+        <path d="M14 20h36M14 30h36M14 40h36" stroke="#D5DAEA" stroke-width="1.4"/>
+        <path d="M14 36h36" stroke="#D97C93" stroke-width="2" stroke-dasharray="3.5 2.5"/>
+        <path d="M15 14c6 1 8 8 12 12s7 8 11 11 7 5 11 8" fill="none" stroke="#5F6F9A" stroke-width="2.6" stroke-linecap="round"/>
+        <circle cx="15" cy="14" r="2.6" fill="#8E9BC6"/><circle cx="27" cy="26" r="2.6" fill="#8E9BC6"/><circle cx="38" cy="37" r="2.6" fill="#8E9BC6"/><circle cx="49" cy="45" r="2.6" fill="#8E9BC6"/>
+      </svg>
+    </div>
+    <div class="ttl"><b>CML​治療効果判定</b><small>MMR・MR4・MR4.5 ・ ELN 2020 の Optimal／Warning／Failure ・ TKI 中止の条件</small></div>
+    <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
+  <div class="body">
+    <div class="resets"><span class="rl">入力値をクリア</span><button class="reset" type="button">このカードだけ</button><button class="reset all" type="button">症例全体</button></div>
+    <h3>今回の BCR::ABL1（IS）</h3>
+    <div class="grid">
+      <label class="f full">評価時点 <span class="unit">（TKI 開始から）</span><select id="cq-tp"><option value="">未選択</option><option value="3">3か月</option><option value="6">6か月</option><option value="12">12か月</option><option value="any">12か月以降（いつでも）</option><option value="tfr">TKI 中止後（TFR 中）</option></select></label>
+      <label class="f full">治療ライン<select id="cq-line"><option value="1">1次治療</option><option value="2i">2次治療（不耐容だけで TKI を変更）</option><option value="2r">2次治療（効果不十分で TKI を変更）</option><option value="3">3次治療以降</option></select></label>
+      <label class="f">BCR::ABL1（IS） <span class="unit">%</span><input type="number" inputmode="decimal" id="cq-is" placeholder="例 0.052"></label>
+      <label class="f">参照遺伝子 <span class="unit">コピー数（任意）</span><input type="number" inputmode="numeric" id="cq-ref"></label>
+      <label class="f full">参照遺伝子の種類<select id="cq-gene"><option value="abl">ABL1</option><option value="gus">GUSB</option></select></label>
+    </div>
+    <div class="checks sub">
+      <label class="chk"><input type="checkbox" id="cq-und"><span>BCR::ABL1 検出せず</span></label>
+      <label class="chk"><input type="checkbox" id="cq-conf"><span>1〜3か月以内の再検でも &gt;10%（確認済み）</span></label>
+      <label class="chk"><input type="checkbox" id="cq-prev"><span>以前に MMR（≤0.1%）を達成</span></label>
+      <label class="chk"><input type="checkbox" id="cq-tfrg"><span>TFR（TKI の中止）を目指している</span></label>
+    </div>
+    <div class="grid" style="margin-top:12px">
+      <label class="f">BCR::ABL1 KD 変異<select id="cq-mut"><option value="">未検査</option><option value="0">なし</option><option value="1">耐性変異あり</option></select></label>
+      <label class="f">Ph+ 細胞の ACA <span class="unit">（治療中）</span><select id="cq-aca"><option value="">未検査</option><option value="0">なし</option><option value="hr">高リスク ACA あり</option><option value="oth">その他の ACA のみ</option></select></label>
+    </div>
+    <div class="results">
+      <div class="res full" id="r-cqmr"></div>
+      <div class="res full txt" id="r-cqeln"></div>
+    </div>
+    <h3>TKI 中止（TFR）の条件（ELN 2020）</h3>
+    <div class="grid">
+      <label class="f">TKI の投与期間 <span class="unit">年</span><input type="number" inputmode="decimal" id="cq-yrs"></label>
+      <label class="f">TKI<select id="cq-tki"><option value="">未選択</option><option value="im">イマチニブ</option><option value="2g">第2世代 TKI</option></select></label>
+      <label class="f">DMR の深さ<select id="cq-dmr"><option value="">未選択</option><option value="mr4">MR4</option><option value="mr45">MR4.5 以上</option></select></label>
+      <label class="f">DMR の持続期間 <span class="unit">年</span><input type="number" inputmode="decimal" id="cq-dmry"></label>
+      <label class="f full">BCR::ABL1 の転写産物<select id="cq-tr"><option value="">未確認</option><option value="typ">典型的（e13a2・e14a2）</option><option value="aty">非典型（e1a2・e19a2 など）</option></select></label>
+    </div>
+    <div class="checks sub">
+      <label class="chk"><input type="checkbox" id="cq-apbp"><span>移行期・急性期の既往あり</span></label>
+      <label class="chk"><input type="checkbox" id="cq-fail"><span>治療不成功（Failure）の既往あり</span></label>
+    </div>
+    <div class="results">
+      <div class="res full txt" id="r-cqtfr"></div>
+    </div>
+    <p class="note">ELN 2020（Hochhaus A, et al. Leukemia 2020）。慢性期 CML で、典型的な転写産物（e13a2・e14a2）を国際標準値（IS）で定量した値が前提（非典型の転写産物は IS で定量できない）。BCR::ABL1 は IS の %。1%・0.1%・0.01%・0.0032%・0.001% はそれぞれ 2・3・4・4.5・5 log の減少。≤1% は CCyR に相当、≤0.1% が MMR（MR3）、≤0.01% または参照遺伝子 ABL1 &gt;10,000 で検出せず が MR4、≤0.0032% または ABL1 &gt;32,000 で検出せず が MR4.5。判定に必要な参照遺伝子の数（Table 3）：MMR・MR4 は ABL1 10,000／GUSB 24,000、MR4.5 は 32,000／77,000、MR5 は 100,000／240,000（MMR は正確な定量の最低感度）。コピー数を入れると、値の深さとあわせて、その数で確認できる深さを示す。≤1% の「CCyR 相当」は分子学的な近似で、染色体検査の CCyR とは別。<br>
+      目安（Table 4）：3か月 Optimal ≤10%・Warning &gt;10%・Failure 1〜3か月以内に確認された &gt;10%。6か月 ≤1%・&gt;1〜10%・&gt;10%。12か月 ≤0.1%・&gt;0.1〜1%・&gt;1%。いつでも ≤0.1%・&gt;0.1〜1% と MMR の喪失・&gt;1%、耐性変異、高リスク ACA（+8・+Ph・i(17q)・+19・−7/7q−・11q23・3q26.2・複雑核型）。TFR を目指す場合の最適は、いつでも ≤0.01%（MR4）。36〜48か月までに MMR に達しなければ治療変更を考慮してよい。TFR 中の MMR 喪失（&gt;0.1%）は Failure で、TKI を再開（2回目の確認は不要）。2次治療も同じ目安。3次以降は正式な目安がなく、&gt;1% または Ph+ &gt;0% は最適な生存には不十分。<br>
+      Optimal は治療を継続、Failure は治療の変更（KD 変異解析と骨髄の染色体分析も）、Warning は患者背景・合併症・忍容性をふまえて継続か変更かを慎重に判断。qPCR は MMR 達成後も少なくとも3か月ごと。評価時点は 3・6・12か月の目安のどれに当たる検査かを選ぶ。<br>
+      TKI 中止の条件（Table 8）：必須＝第一慢性期のみ、意欲のある患者と十分な説明、IS の高品質な qPCR（結果がすぐ出る）、中止後の頻回のモニタリング（6か月まで毎月、6〜12か月は2か月ごと、以後3か月ごと）への同意。最小（中止可）＝1次治療、又は不耐容だけで変更した2次治療、典型的な転写産物（e13a2・e14a2）、TKI &gt;5年（第2世代 TKI は &gt;4年）、DMR（MR4 以上）&gt;2年、治療不成功の既往なし。最適（中止の検討を推奨）＝TKI &gt;5年、DMR が MR4 なら &gt;3年・MR4.5 なら &gt;2年。中止は各 TKI の電子添文・施設の方針も確認する。</p>
+  </div>
+</section>
+
 <!-- ================= ML 治療効果判定（Lugano 2014） ================= -->
 <section class="card lr" id="lr">
   <button class="head" type="button">
@@ -1729,6 +1793,7 @@
       <li><b>ML治療効果判定</b>：Lugano 分類で判定します。上の切り替えで PET-CT と CT を選びます。PET-CT は、治療前に病変があった部位のうち<b>今回の PET で最も集積が高い部位</b>の SUVmax と、今回の肝・縦隔の SUVmax を入れると、Deauville スコアを自動で付けて判定します（肝以下なら CMR の範囲）。視覚評価と違うときはスコアを手で選びます。4・5 のときだけ治療前の PET と比べた集積の変化を選びます。新たな集積・骨髄も選ぶと CMR／PMR／NMR／PMD が確定します（治療終了時の PMR は残存病変として赤）。CT は標的病変（最大6個）の長径・短径を治療前と現在で入れます（cm）。いったん縮小した後の再増大を PD と判定するときは「＋ 最小時を追加」で最小時も入れます。</li>
       <li><b>固形がん治療効果判定</b>：RECIST 1.1 と iRECIST を切り替えます。標的病変（最大5個、腫瘤は長径・リンパ節は短径、mm）の治療前・現在を入れます。縮小した後の再増大を判定するときは「＋ 最小時を追加」で、径和が最小だった時点の各病変の径も入れます（径和はアプリが計算）。iRECIST では前回が iUPD なら、その理由と、前回（iUPD 時）の各病変の径（表の「前回」の列）、非標的・新病変の前回からの変化を入れると、iCPD（確定）・iUPD の継続・リセット（iCR/iPR/iSD）を判定します。</li>
       <li><b>CMLリスク分類</b>：診断時・治療開始前の年齢・脾臓（触診で左肋骨弓下の cm、触れなければ 0）・血小板・末梢血の芽球・好塩基球・好酸球を入れると、ELTS（ELN 2020 の推奨）・Sokal・Hasford（Euro）・EUTOS を表示します。スコアは慢性期のための指標なので、下の欄で病期（ELN と ICC 2022）も確かめます。Ph+ 細胞の付加的染色体異常（ACA）は「未検査／なし／種類」から選びます（未検査のままだと ICC の移行期を否定できないため黄色で表示）。</li>
+      <li><b>CML治療効果判定</b>：BCR::ABL1（IS、%）と、その検査が 3・6・12か月・12か月以降・TKI 中止後のどれに当たるかを選ぶと、分子遺伝学的効果（MMR・MR4・MR4.5 など）と ELN 2020 の Optimal／Warning／Failure を表示します。検出しなかったときは「検出せず」を選び、参照遺伝子（ABL1 か GUSB）のコピー数を入れると深さ（MR4・MR4.5・MR5）が決まります。数値があるときもコピー数を入れると、感度が足りない深さには判定しません。耐性変異・高リスク ACA は時点にかかわらず Failure です。下の欄に TKI の投与期間・DMR の深さと持続期間などを入れると、TKI 中止の条件（最小・最適）を確かめられます。</li>
       <li><b>MMリスク分類</b>：FISH は項目ごとに「未検査／陰性／陽性」を選びます。未検査が残っていて病期が変わりうるときは範囲で表示し、判定保留にします。</li>
       <li><b>MM治療開始規準</b>：SLiM-CRAB から MM／SMM を判定し、SMM なら Mayo 2/20/20 とダラツムマブ単剤の対象（AQUILA 基準）を表示します。MRI・骨病変の画像・FLC などが未評価のままだと、SMM と断定せず「MDE 未確定」と表示します。</li>
       <li><b>MM治療効果判定</b>：ふだんは治療前と現在だけを入れます。<b>奏効後の再増悪（PD）は最良値（最低値）からの増加で判定する</b>ので、経過中に下がってから上がってきた例では「＋ 最良値を追加」で最良値を入れてください（入れないと治療前との比較だけになり、再増悪は判定しません）。</li>
@@ -2027,6 +2092,120 @@ function calcCM() {
   else if (eltsG !== null && aca !== '') box('r-cmeln', 'ELN 2020 ベースライン', '該当なし', '高リスク ELTS・高リスク ACA なし');
   else if (eltsG !== null) box('r-cmeln', 'ELN 2020 ベースライン', '未確定', 'ELTS は高リスクではない。ACA が未検査', 'warn');
   else box('r-cmeln', 'ELN 2020 ベースライン', null, 'ELTS と ACA');
+}
+
+/* ---------- CML 治療効果判定（ELN 2020：MR の深さ・マイルストーン・TKI 中止の条件） ---------- */
+// MR4・MR4.5・MR5 に必要な参照遺伝子の数（ELN 2020 Table 3。MMR の正確な定量にも ABL1 10,000／GUSB 24,000）
+const CQ_REF = { abl: { n: 'ABL1', r4: 10000, r45: 32000, r5: 100000 }, gus: { n: 'GUSB', r4: 24000, r45: 77000, r5: 240000 } };
+const CQ_TXT = {
+  opt: '現在の治療を継続',
+  warn: '患者背景・合併症・忍容性をふまえ、継続か変更かを慎重に判断。服薬状況・休薬・減量も確認し、反応の推移が不明なら qPCR を追加',
+  fail: '治療の変更を推奨（服薬状況・休薬・減量も確認）。BCR::ABL1 KD 変異解析と、骨髄の染色体分析（クローン進化の確認）も',
+};
+function calcCQ() {
+  const tp = $('cq-tp').value, line = $('cq-line').value, und = chk('cq-und'), ref = num('cq-ref'), R = CQ_REF[$('cq-gene').value];
+  const v = und ? null : num('cq-is'), mut = $('cq-mut').value, aca = $('cq-aca').value;
+  $('cq-conf').closest('label').hidden = tp !== '3';
+  const lg = x => fmt(Math.log10(100 / x), 1);
+
+  // ---- 分子遺伝学的効果の深さ（up：ELN の判定に使う BCR::ABL1 の上限 %） ----
+  let up = null, lvlTxt = null, lvlDesc = '', lvlCls = '';
+  if (und) {
+    if (ref === null) { lvlTxt = '検出せず<small>（深さ未確定）</small>'; lvlDesc = `深さは${R.n}のコピー数で決まる（MR4 ≥${R.r4.toLocaleString()}・MR4.5 ≥${R.r45.toLocaleString()}・MR5 ≥${R.r5.toLocaleString()}）`; lvlCls = 'warn'; }
+    else if (ref >= R.r5) { lvlTxt = 'MR5'; up = 0.001; }
+    else if (ref >= R.r45) { lvlTxt = 'MR4.5'; up = 0.0032; }
+    else if (ref >= R.r4) { lvlTxt = 'MR4'; up = 0.01; }
+    else { lvlTxt = '検出せず<small>（感度不足）</small>'; lvlDesc = `${R.n} ${ref.toLocaleString()} は MR4 の判定に必要な ${R.r4.toLocaleString()} 未満：深さを判定できない`; lvlCls = 'warn'; }
+    if (up !== null) lvlDesc = `検出せず・${R.n} ${ref.toLocaleString()}（≥${lg(up)} log 減少）`;
+  } else if (v !== null && v >= 0) {
+    up = v;
+    // 値で決まる深さ。参照遺伝子の数を入れたときは、その数で確認できる深さ（ELN 2020 Table 3）を併記する（自動で浅くはしない）
+    const deep = [[0.001, 'MR5', R.r5], [0.0032, 'MR4.5', R.r45], [0.01, 'MR4', R.r4], [0.1, 'MMR（MR3）', R.r4]];
+    const i0 = deep.findIndex(([c]) => v <= c);
+    let capped = '';
+    if (i0 >= 0 && ref !== null && ref < deep[i0][2]) {
+      let j = i0; while (j < deep.length && ref < deep[j][2]) j++;
+      capped = `<br>${R.n} ${ref.toLocaleString()}：${deep[i0][1]} の確認に必要な ${deep[i0][2].toLocaleString()} に足りない` + (j < deep.length ? `（確認できるのは ${deep[j][1]} まで）` : '（MMR の正確な定量にも不足）') + '。検査室の報告を確認';
+      lvlTxt = deep[i0][1] + (j < deep.length ? `<small>（感度は ${deep[j][1]} まで）</small>` : '<small>（定量の感度不足）</small>');
+    } else if (i0 >= 0) lvlTxt = deep[i0][1];
+    else lvlTxt = v <= 1 ? 'MMR 未到達<small>（≤1%：CCyR 相当）</small>' : v <= 10 ? 'MMR 未到達<small>（≤10%）</small>' : 'MMR 未到達<small>（&gt;10%）</small>';
+    lvlDesc = `${v}%` + (v > 0 ? `（${lg(v)} log 減少）` : '') + capped + (ref === null && v <= 0.1 ? `<br>${R.n} のコピー数を入れると感度を確認（MMR・MR4 ≥${R.r4.toLocaleString()}、MR4.5 ≥${R.r45.toLocaleString()}）` : '');
+    if (capped) lvlCls = 'warn';
+  }
+  if (lvlTxt === null) box('r-cqmr', '分子遺伝学的効果', null, 'BCR::ABL1（IS）を入力（検出しなければ「検出せず」）');
+  else box('r-cqmr', '分子遺伝学的効果', lvlTxt, lvlDesc, lvlCls);
+
+  // ---- ELN 2020 のマイルストーン ----
+  const K = 'ELN 2020 の判定';
+  const failX = [mut === '1' && 'BCR::ABL1 の耐性変異', aca === 'hr' && '高リスク ACA'].filter(Boolean);
+  const li = a => a.length ? '<ul>' + a.map(x => `<li>${x}</li>`).join('') + '</ul>' : '';
+  const unkX = [mut === '' && 'KD 変異', aca === '' && 'ACA'].filter(Boolean);
+  if (!tp) box('r-cqeln', K, null, '評価時点（3・6・12か月・12か月以降・TKI 中止後）を選ぶ');
+  else if (tp === 'tfr') {
+    if (up === null && !failX.length) box('r-cqeln', K, null, und ? '検出せず：参照遺伝子のコピー数を入力' : 'BCR::ABL1（IS）を入力');
+    else if ((up !== null && up > 0.1) || failX.length)
+      box('r-cqeln', K, 'Failure<small>（TFR 中）</small>', li([up !== null && up > 0.1 && `MMR の喪失（${up}% &gt;0.1%）`, ...failX].filter(Boolean)) + 'TKI を再開（MMR 喪失の2回目の確認は不要）。通常は同じ TKI', 'alert');
+    else box('r-cqeln', K, 'MMR 維持', 'TKI 中止を継続。モニタリングは6か月まで毎月、6〜12か月は2か月ごと、以後3か月ごと。MMR〜MR4 の間で変動する例は慎重に経過観察');
+  } else if (line === '3') {
+    if (up === null && !failX.length) box('r-cqeln', K, null, 'BCR::ABL1（IS）を入力');
+    else if ((up !== null && up > 1) || failX.length) box('r-cqeln', K, '不十分', li([up !== null && up > 1 && `${up}%（&gt;1%）：最適な生存には不十分`, ...failX].filter(Boolean)) + '3次治療以降は正式な目安なし', 'alert');
+    else box('r-cqeln', K, '正式な目安なし', '3次治療以降：&gt;1% または Ph+ &gt;0% は最適な生存には不十分（ELN 2020）');
+  } else {
+    // [Optimal の上限, これを超えれば Failure]（3か月は確認された >10% のみ Failure）
+    const T = { 3: [10, 10], 6: [1, 10], 12: [0.1, 1], any: [0.1, 1] }[tp];
+    const TN = { 3: '3か月', 6: '6か月', 12: '12か月', any: '12か月以降' }[tp];
+    let g = null; const why = [];
+    if (up !== null) {
+      if (up <= T[0]) g = 'opt';
+      else if (tp === '3') { g = chk('cq-conf') ? 'fail' : 'warn'; why.push(`${up}%（&gt;10%）` + (g === 'fail' ? '：1〜3か月以内の再検で確認' : '：1〜3か月以内に再検し、&gt;10% が続けば Failure')); }
+      else { g = up > T[1] ? 'fail' : 'warn'; why.push(g === 'fail' ? `${up}%（&gt;${T[1]}%）` : `${up}%（&gt;${T[0]}〜${T[1]}%）`); }
+      if (chk('cq-prev') && up > 0.1 && g !== 'fail') { g = 'warn'; why.push('MMR の喪失（以前に ≤0.1% を達成）：単回の変動・検査の質も確認し、短い間隔で再検'); }
+    }
+    if (failX.length) { g = 'fail'; why.push(...failX); }
+    if (g === null) box('r-cqeln', K, null, und ? '検出せず：参照遺伝子のコピー数を入力（MR4 以上と確認できれば判定）' : 'BCR::ABL1（IS）を入力');
+    else {
+      const tfrMiss = chk('cq-tfrg') && g === 'opt' && (tp === '12' || tp === 'any') && up > 0.01;
+      const extra = [
+        tp === 'any' && up !== null && up > 0.1 && !chk('cq-prev') && 'MMR 未達が続く場合：36〜48か月までに MMR に達しなければ治療変更を考慮してよい',
+        $('cq-tr').value === 'aty' && '非典型の転写産物：IS で定量できず、この目安はそのまま使えない（検査室の方法で個別に評価）',
+        g !== 'opt' && unkX.length && `未検査：${unkX.join('・')}`,
+        line[0] === '2' && '2次治療も1次治療と同じ目安',
+      ].filter(Boolean);
+      if (tfrMiss) box('r-cqeln', K, 'TFR の目標に未到達', `${TN}：通常の目安では Optimal（≤0.1%）。TFR を目指す場合の最適は いつでも ≤0.01%（MR4）` + (extra.length ? '<br>' + extra.join('<br>') : ''), 'warn');
+      else box('r-cqeln', K, { opt: 'Optimal', warn: 'Warning', fail: 'Failure' }[g] + `<small>（${TN}）</small>`,
+        li(why) + CQ_TXT[g] + (extra.length ? '<br>' + extra.join('<br>') : ''), { opt: '', warn: 'warn', fail: 'alert' }[g]);
+    }
+  }
+
+  // ---- TKI 中止（TFR）の条件（ELN 2020 Table 8） ----
+  const yrs = num('cq-yrs'), tki = $('cq-tki').value, dmr = $('cq-dmr').value, dmry = num('cq-dmry'), tr = $('cq-tr').value;
+  const anyT = yrs !== null || tki || dmr || dmry !== null || tr || chk('cq-apbp') || chk('cq-fail');
+  if (!anyT) box('r-cqtfr', 'TKI 中止の条件', null, 'TKI の投与期間・DMR の深さと持続期間・転写産物など');
+  else {
+    const ng = [], unk = [];
+    if (chk('cq-apbp')) ng.push('移行期・急性期の既往（第一慢性期以外はデータがない）');
+    if (line === '2r' || line === '3') ng.push(line === '3' ? '3次治療以降' : '効果不十分で変更した2次治療');
+    if (tr === 'aty') ng.push('非典型の転写産物'); else if (!tr) unk.push('転写産物');
+    // TKI の投与期間：&gt;5年（第2世代 TKI は &gt;4年）
+    if (yrs === null) unk.push('TKI の投与期間');
+    else if (yrs <= 4) ng.push(`TKI ${yrs}年（&gt;5年、第2世代 TKI は &gt;4年が必要）`);
+    else if (yrs <= 5 && tki === 'im') ng.push(`TKI ${yrs}年（イマチニブは &gt;5年が必要）`);
+    else if (yrs <= 5 && !tki) unk.push('TKI の種類（第2世代なら &gt;4年で可、イマチニブは &gt;5年）');
+    if (!dmr) unk.push('DMR の深さ');
+    if (dmry === null) unk.push('DMR の持続期間'); else if (dmry <= 2) ng.push(`DMR ${dmry}年（MR4 以上が &gt;2年必要）`);
+    if (chk('cq-fail')) ng.push('治療不成功の既往');
+    // 今回の値も DMR（MR4 以上）であること。上の欄の値・判定と食い違えば満たさない
+    if (tp !== 'tfr' && up !== null && up > 0.01) ng.push(`今回の BCR::ABL1 ${up}% は DMR（MR4 ≤0.01%）に達していない`);
+    else if (tp !== 'tfr' && und && up === null) unk.push('今回の検出感度（参照遺伝子のコピー数）');
+    if (tp !== 'tfr' && failX.length) ng.push(...failX);
+    const optOk = yrs !== null && yrs > 5 && dmry !== null && (dmr === 'mr4' ? dmry > 3 : dmr === 'mr45' ? dmry > 2 : false);
+    const optWhy = [!(yrs !== null && yrs > 5) && 'TKI &gt;5年', dmr === 'mr4' && !(dmry > 3) && 'MR4 なら DMR &gt;3年', dmr === 'mr45' && !(dmry > 2) && 'MR4.5 なら DMR &gt;2年'].filter(Boolean);
+    const must = '<br>必須：第一慢性期、意欲のある患者と十分な説明、IS の高品質な qPCR（結果がすぐ出る）、中止後の頻回のモニタリングへの同意';
+    if (ng.length) box('r-cqtfr', 'TKI 中止の条件', '最小条件を満たさない', li(ng) + (unk.length ? `未入力：${unk.join('・')}` : '') + must);
+    else if (unk.length) box('r-cqtfr', 'TKI 中止の条件', '未確定', `未入力：${unk.join('・')}` + must, 'warn');
+    else if (optOk) box('r-cqtfr', 'TKI 中止の条件', '中止の検討を推奨<small>（最適条件）</small>', 'ELN 2020 の最小条件・最適条件を満たす' + must);
+    else box('r-cqtfr', 'TKI 中止の条件', '中止は可<small>（最小条件）</small>', `最適条件には未到達：${optWhy.join('・')}` + must);
+  }
 }
 
 /* ---------- MM ---------- */
@@ -3930,7 +4109,7 @@ function calcRC() {
       `確認できるさらなる増大はない${still.length ? `（進行のまま：${still.join('・')}）` : ''}。臨床的に安定なら次の評価で再確認` + (extra ? '<br>' + extra : '') + unkTxt(unk), unk.length || extra ? 'warn' : 'alert');
 }
 
-const calcAll = () => { calcML(); calcFL(); calcCL(); calcCM(); calcMM(); calcMT(); calcMR(); calcLR(); calcRC(); calcKD(); calcRX(); calcVC(); calcNT(); calcGM(); calcCT(); calcTL(); calcDM(); };
+const calcAll = () => { calcML(); calcFL(); calcCL(); calcCM(); calcCQ(); calcMM(); calcMT(); calcMR(); calcLR(); calcRC(); calcKD(); calcRX(); calcVC(); calcNT(); calcGM(); calcCT(); calcTL(); calcDM(); };
 
 /* ---------- 共通項目の同期（年齢・身長・体重・Cr・性別など） ---------- */
 const syncFrom = src => {
